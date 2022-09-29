@@ -7,6 +7,7 @@ class BaseSemanticModel(BaseModel):
             weights,
             model,
             optimizer,
+            lr,
             loss_fn,
             scheduler=None
     ):
@@ -15,5 +16,5 @@ class BaseSemanticModel(BaseModel):
             weights=self.weights
         )
         self.transforms = self.weights.transforms()
-        self.optimizer = optimizer(self.model.parameters())
+        self.optimizer = optimizer(self.model.parameters(), lr=lr)
         self.loss_fn = loss_fn
