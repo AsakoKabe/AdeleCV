@@ -8,12 +8,16 @@ from models.semantic.BaseSemanticModel import BaseSemanticModel
 class DeepLabV3MobileNet(BaseSemanticModel):
     def __init__(
             self,
+            optimizer,
+            loss_fn,
             num_classes=2,
             mode=''
     ):
         super(BaseSemanticModel, self).__init__(
+            optimizer=optimizer,
+            loss_fn=loss_fn,
             weights=DeepLabV3_MobileNet_V3_Large_Weights.DEFAULT,
-            model=models.segmentation.deeplabv3_mobilenet_v3_large
+            model=models.segmentation.deeplabv3_mobilenet_v3_large,
         )
 
         self.model.classifier = DeepLabHead(960, num_classes)
