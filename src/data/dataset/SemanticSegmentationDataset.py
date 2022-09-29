@@ -7,9 +7,9 @@ from base import BaseDataset
 
 
 class SemanticSegmentationDataset(BaseDataset):
-    def __init__(self, img_folder_path, mask_folder_path):
-        self.img_folder_path = img_folder_path
-        self.mask_folder_path = mask_folder_path
+    def __init__(self, path_to_dataset):
+        self.img_folder_path = path_to_dataset + '/image'
+        self.mask_folder_path = path_to_dataset + '/mask'
         self.imgs_path = np.array(os.listdir(self.img_folder_path))
         self.masks_path = self.imgs_path
 
