@@ -11,7 +11,7 @@ class DeepLabV3MobileNet(BaseSemanticModel):
             num_classes=2,
             mode=''
     ):
-        super().__init__(
+        super(BaseSemanticModel, self).__init__(
             weights=LRASPP_MobileNet_V3_Large_Weights.DEFAULT,
             model=models.segmentation.lraspp_mobilenet_v3_large
         )
