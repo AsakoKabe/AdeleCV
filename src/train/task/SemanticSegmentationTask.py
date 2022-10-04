@@ -41,3 +41,6 @@ class SemanticSegmentationTask(BaseTask):
                     lr=params[2]
                 )
             )
+
+    def __fit_models(self):
+        pass
