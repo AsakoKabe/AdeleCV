@@ -1,7 +1,12 @@
 import itertools
+from typing import Tuple, Any, List
 
 from torch.optim import AdamW, Adagrad, SGD
+from torch.utils.data import DataLoader
 
+from data.dataset.SemanticSegmentationDataset import \
+    SemanticSegmentationDataset
+from models.semantic.BaseSemanticModel import BaseSemanticModel
 from models.semantic.DeepLabV3MobileNet import DeepLabV3MobileNet
 from models.semantic.LRASPPMobileNetV3 import LRASPPMobileNetV3
 from train.task.base import BaseTask
@@ -9,7 +14,7 @@ from train.task.loss import bce_loss, dice_loss
 
 
 class SemanticSegmentationTask(BaseTask):
-    def __init__(self, dataset):
+    def __init__(self, dataset: SemanticSegmentationDataset):
         super(SemanticSegmentationTask, self).__init__(
             dataset=dataset
         )
@@ -17,7 +22,8 @@ class SemanticSegmentationTask(BaseTask):
         self.__lr = [0.001]
         self.__loss_fns = [bce_loss, dice_loss]
 
-        self.models = []
+        self.models: List[BaseSemanticModel] = []
+        self.__generate_models()
 
     def __generate_models(self):
         combinations_params = list(
@@ -42,5 +48,57 @@ class SemanticSegmentationTask(BaseTask):
                 )
             )
 
+    def __create_dataloaders(self) -> tuple[
+        DataLoader[Any],
+        DataLoader[Any],
+        DataLoader[Any]
+    ]:
+        train_dataloader = DataLoader(
+            self.dataset.train_dataset,
+            batch_size=self.dataset.batch_size,
+            shuffle=True
+        )
+        val_dataloader = DataLoader(
+            self.dataset.val_dataset,
+            batch_size=self.dataset.batch_size,
+            shuffle=True
+        )
+        test_dataloader = DataLoader(
+            self.dataset.test_dataset,
+            batch_size=self.dataset.batch_size,
+            shuffle=True
+        )
+
+        return train_dataloader, val_dataloader, test_dataloader
+
     def __fit_models(self):
-        pass
+        train_dataloader, val_dataloader, test_dataloader = \
+            self.__create_dataloaders()
+
+        for model in self.models:
+            # train
+            model.set_train_mode()
+            train_loss = 0
+            for x_batch, y_batch in train_dataloader:
+                loss = model.__train_step(x_batch, y_batch)
+                train_loss += loss
+
+            print(f'Train loss: {train_loss / len(train_dataloader)}')
+
+            model.set_test_mode()
+            val_loss = 0
+            for x_batch, y_batch in train_dataloader:
+                loss = model.__val_step(x_batch, y_batch)
+                val_loss += loss
+
+            print(f'Valid loss: {val_loss / len(val_dataloader)}')
+
+
+
+
+
+
+
+
+
+

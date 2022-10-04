@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from models.base.BaseModel import BaseModel
 
@@ -25,3 +25,9 @@ class BaseSemanticModel(BaseModel, ABC):
     def __str__(self):
         return f'{self.__class__.__name__}__{self.optimizer.__name__}__' \
                f'{self.loss_fn.__name__}__lr={self.lr}'
+
+    def set_train_mode(self):
+        self.model.train()
+
+    def set_test_mode(self):
+        self.model.eval()

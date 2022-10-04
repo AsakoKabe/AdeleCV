@@ -16,6 +16,7 @@ class SemanticSegmentationDataset(BaseDataset):
         self.train_dataset = None
         self.val_dataset = None
         self.test_dataset = None
+        self.batch_size = 16
 
     def __split_dataset(self):
         ix = np.random.choice(len(self.imgs_path), len(self.imgs_path), False)
