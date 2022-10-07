@@ -71,7 +71,7 @@ class SemanticSegmentationTask(BaseTask):
 
         return train_dataloader, val_dataloader, test_dataloader
 
-    def __fit_models(self):
+    def fit_models(self):
         train_dataloader, val_dataloader, test_dataloader = \
             self.__create_dataloaders()
 
