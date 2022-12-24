@@ -3,7 +3,7 @@ from torchvision import models
 from torchvision.models.segmentation.deeplabv3 import DeepLabHead, FCNHead, \
     DeepLabV3_MobileNet_V3_Large_Weights
 
-from models.semantic.BaseSemanticModel import BaseSemanticModel
+from .BaseSemanticModel import BaseSemanticModel
 
 
 class DeepLabV3MobileNet(BaseSemanticModel):
@@ -15,29 +15,28 @@ class DeepLabV3MobileNet(BaseSemanticModel):
             num_classes=2,
             mode=''
     ):
-        super(BaseSemanticModel, self).__init__(
+        super().__init__(
             optimizer=optimizer,
             loss_fn=loss_fn,
             lr=lr,
-            weights=DeepLabV3_MobileNet_V3_Large_Weights.DEFAULT,
+            weights=DeepLabV3_MobileNet_V3_Large_Weights,
             model=models.segmentation.deeplabv3_mobilenet_v3_large,
         )
-
         self.model.classifier = DeepLabHead(960, num_classes)
         self.model.aux_classifier = FCNHead(40, num_classes)
 
-    def __train_step(self, x_batch, y_batch):
+    def _train_step(self, x_batch, y_batch):
         self.optimizer.zero_grad()
-        pred = self.model(x_batch.cuda())
-        loss = self.loss_fn(y_batch.cuda(), pred)
+        pred = self.model(x_batch)['out'][:, 0, :, :]
+        loss = self.loss_fn(y_batch, pred)
         loss.backward()
         self.optimizer.step()
 
-        return loss.detach().numpy().cpu()
+        return loss.detach().numpy()
 
-    def __val_step(self, x_batch, y_batch):
+    def _val_step(self, x_batch, y_batch):
         with torch.no_grad():
-            pred = self.model(x_batch.cuda())
-            loss = self.loss_fn(y_batch, pred).detach().numpy().cpu()
+            pred = self.model(x_batch)['out'][:, 0, :, :]
+            loss = self.loss_fn(y_batch, pred).detach().numpy()
 
         return loss

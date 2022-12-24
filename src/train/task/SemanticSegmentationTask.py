@@ -15,7 +15,7 @@ from train.task.loss import bce_loss, dice_loss
 
 class SemanticSegmentationTask(BaseTask):
     def __init__(self, dataset: SemanticSegmentationDataset):
-        super(SemanticSegmentationTask, self).__init__(
+        super().__init__(
             dataset=dataset
         )
         self.__optimizers = [AdamW, Adagrad, SGD]
@@ -29,8 +29,9 @@ class SemanticSegmentationTask(BaseTask):
         combinations_params = list(
             itertools.product(
                 self.__optimizers,
+                self.__loss_fns,
                 self.__lr,
-                self.__loss_fns)
+                )
         )
         for params in combinations_params:
             self.models.append(
@@ -48,11 +49,12 @@ class SemanticSegmentationTask(BaseTask):
                 )
             )
 
-    def __create_dataloaders(self) -> tuple[
+    def _create_dataloaders(self) -> Tuple[
         DataLoader[Any],
         DataLoader[Any],
         DataLoader[Any]
     ]:
+
         train_dataloader = DataLoader(
             self.dataset.train_dataset,
             batch_size=self.dataset.batch_size,
@@ -73,14 +75,15 @@ class SemanticSegmentationTask(BaseTask):
 
     def fit_models(self):
         train_dataloader, val_dataloader, test_dataloader = \
-            self.__create_dataloaders()
+            self._create_dataloaders()
 
         for model in self.models:
             # train
             model.set_train_mode()
             train_loss = 0
             for x_batch, y_batch in train_dataloader:
-                loss = model.__train_step(x_batch, y_batch)
+                # print(x_batch.shape, y_batch.shape)
+                loss = model._train_step(x_batch, y_batch)
                 train_loss += loss
 
             print(f'Train loss: {train_loss / len(train_dataloader)}')
@@ -88,7 +91,7 @@ class SemanticSegmentationTask(BaseTask):
             model.set_test_mode()
             val_loss = 0
             for x_batch, y_batch in train_dataloader:
-                loss = model.__val_step(x_batch, y_batch)
+                loss = model._val_step(x_batch, y_batch)
                 val_loss += loss
 
             print(f'Valid loss: {val_loss / len(val_dataloader)}')

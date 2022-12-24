@@ -1,7 +1,9 @@
 from abc import ABC
 
+import torch
+from skimage.transform import resize
 from torch.utils.data import Dataset
-import cv2 as cv
+from skimage.io import imread
 
 
 class BaseDataset(ABC):
@@ -20,7 +22,12 @@ class CocoDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.imgs_path[idx]
         mask_path = self.masks_path[idx]
-        img = cv.imread(img_path, mode='RGB')
-        mask = cv.imread(mask_path, mode='RGB')
-
+        img = imread(img_path)
+        mask = imread(mask_path)
+        # todo: выкинуть
+        size = (256, 256)
+        img = resize(img, size, mode='constant', anti_aliasing=True,)
+        mask = resize(mask, size, mode='constant', anti_aliasing=False) > 0.5
+        img = torch.Tensor(img).permute(2, 0, 1)
+        mask = torch.Tensor(mask)
         return img, mask

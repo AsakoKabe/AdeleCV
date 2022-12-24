@@ -9,14 +9,15 @@ class BaseSemanticModel(BaseModel, ABC):
             weights,
             model,
             optimizer,
-            lr,
+            lr: float,
             loss_fn,
             scheduler=None
     ):
         self.weights = weights.DEFAULT
         self.model = model(
             weights=self.weights
-        ).cuda()
+        )
+        # self.model.cuda()
         self.transforms = self.weights.transforms()
         self.optimizer = optimizer(self.model.parameters(), lr=lr)
         self.loss_fn = loss_fn
