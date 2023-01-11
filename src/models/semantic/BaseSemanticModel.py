@@ -15,7 +15,7 @@ class BaseSemanticModel(BaseModel, ABC):
     ):
         self.weights = weights.DEFAULT
         self.model = model(
-            weights=self.weights
+            weights=self.weights,
         )
         # self.model.cuda()
         self.transforms = self.weights.transforms()

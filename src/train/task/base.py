@@ -1,10 +1,8 @@
 from abc import abstractmethod, ABC
 
-from data.dataset.base import BaseDataset
-
 
 class BaseTask(ABC):
-    def __init__(self, dataset: BaseDataset):
+    def __init__(self, dataset):
         self.dataset = dataset
 
     @abstractmethod

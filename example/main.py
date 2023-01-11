@@ -1,10 +1,11 @@
 from data.dataset.SemanticSegmentationDataset import \
-    SemanticSegmentationDataset
+    SemanticDataset
+from data.dataset.types import COCOSemantic
 from train.task.SemanticSegmentationTask import SemanticSegmentationTask
 from train.trainer import Trainer
 
 if __name__ == '__main__':
-    dataset = SemanticSegmentationDataset(r'F:\dataset\ph2')
+    dataset = SemanticDataset(r'F:\dataset\coco', COCOSemantic)
     task = SemanticSegmentationTask(dataset)
     trainer = Trainer(task)
 

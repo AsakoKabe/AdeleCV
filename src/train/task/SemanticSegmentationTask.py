@@ -5,7 +5,7 @@ from torch.optim import AdamW, Adagrad, SGD
 from torch.utils.data import DataLoader
 
 from data.dataset.SemanticSegmentationDataset import \
-    SemanticSegmentationDataset
+    SemanticDataset
 from models.semantic.BaseSemanticModel import BaseSemanticModel
 from models.semantic.DeepLabV3MobileNet import DeepLabV3MobileNet
 from models.semantic.LRASPPMobileNetV3 import LRASPPMobileNetV3
@@ -14,7 +14,7 @@ from train.task.loss import bce_loss, dice_loss
 
 
 class SemanticSegmentationTask(BaseTask):
-    def __init__(self, dataset: SemanticSegmentationDataset):
+    def __init__(self, dataset: SemanticDataset):
         super().__init__(
             dataset=dataset
         )
@@ -35,14 +35,14 @@ class SemanticSegmentationTask(BaseTask):
         )
         for params in combinations_params:
             self.models.append(
-                DeepLabV3MobileNet(
+                LRASPPMobileNetV3(
                     optimizer=params[0],
                     loss_fn=params[1],
                     lr=params[2]
                 )
             )
             self.models.append(
-                LRASPPMobileNetV3(
+                DeepLabV3MobileNet(
                     optimizer=params[0],
                     loss_fn=params[1],
                     lr=params[2]
@@ -56,17 +56,17 @@ class SemanticSegmentationTask(BaseTask):
     ]:
 
         train_dataloader = DataLoader(
-            self.dataset.train_dataset,
+            self.dataset.train,
             batch_size=self.dataset.batch_size,
             shuffle=True
         )
         val_dataloader = DataLoader(
-            self.dataset.val_dataset,
+            self.dataset.val,
             batch_size=self.dataset.batch_size,
             shuffle=True
         )
         test_dataloader = DataLoader(
-            self.dataset.test_dataset,
+            self.dataset.test,
             batch_size=self.dataset.batch_size,
             shuffle=True
         )
