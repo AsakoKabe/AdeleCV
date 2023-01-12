@@ -38,14 +38,16 @@ class SemanticSegmentationTask(BaseTask):
                 LRASPPMobileNetV3(
                     optimizer=params[0],
                     loss_fn=params[1],
-                    lr=params[2]
+                    lr=params[2],
+                    num_classes=self.dataset.num_classes
                 )
             )
             self.models.append(
                 DeepLabV3MobileNet(
                     optimizer=params[0],
                     loss_fn=params[1],
-                    lr=params[2]
+                    lr=params[2],
+                    num_classes=self.dataset.num_classes,
                 )
             )
 
@@ -82,7 +84,6 @@ class SemanticSegmentationTask(BaseTask):
             model.set_train_mode()
             train_loss = 0
             for x_batch, y_batch in train_dataloader:
-                # print(x_batch.shape, y_batch.shape)
                 loss = model._train_step(x_batch, y_batch)
                 train_loss += loss
 

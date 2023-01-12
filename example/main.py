@@ -5,7 +5,7 @@ from train.task.SemanticSegmentationTask import SemanticSegmentationTask
 from train.trainer import Trainer
 
 if __name__ == '__main__':
-    dataset = SemanticDataset(r'F:\dataset\coco', COCOSemantic)
+    dataset = SemanticDataset(r'F:\dataset\coco', COCOSemantic, (640, 640))
     task = SemanticSegmentationTask(dataset)
     trainer = Trainer(task)
 

@@ -3,9 +3,11 @@ from PIL import Image
 from albumentations.pytorch.transforms import ToTensor, ToTensorV2
 from skimage.io import imread
 import albumentations as A
+from torch.utils.data import Dataset
+import torch.nn.functional as F
 
 
-class SemanticTorchDataset(torch.utils.data.Dataset):
+class SemanticTorchDataset(Dataset):
     """
     A class to construct a PyTorch dataset from a FiftyOne dataset.
 
@@ -20,9 +22,9 @@ class SemanticTorchDataset(torch.utils.data.Dataset):
             # transforms=None,
     ):
         self.samples = fiftyone_dataset
-        # todo: нормализация изображений, возможно уже в моделях
         self.transforms = A.Compose([
-            A.Resize(self.samples.info['img_size']),
+            A.Resize(*self.samples.info['img_size']),
+            A.Normalize(),
             ToTensorV2()
         ])
         self.img_paths = self.samples.values("filepath")
@@ -35,10 +37,10 @@ class SemanticTorchDataset(torch.utils.data.Dataset):
         img = imread(img_path)
         mask = sample['semantic']['mask']
 
-        if self.transforms is not None:
-            # img, mask = self.transforms(img, mask)
-            img = self.transforms(image=img)['image'].float()
-            mask = self.transforms(image=mask)['image'].float()
+        transformed = self.transforms(image=img, mask=mask)
+        img = transformed['image'].float()
+        mask = transformed['mask'].long()
+        mask = F.one_hot(mask, num_classes=len(self.classes)).permute(2, 0, 1)
 
         return img, mask
 

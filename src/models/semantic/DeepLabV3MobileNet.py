@@ -12,7 +12,7 @@ class DeepLabV3MobileNet(BaseSemanticModel):
             optimizer,
             loss_fn,
             lr,
-            num_classes=37,
+            num_classes,
             mode=''
     ):
         super().__init__(
@@ -27,10 +27,8 @@ class DeepLabV3MobileNet(BaseSemanticModel):
 
     def _train_step(self, x_batch, y_batch):
         self.optimizer.zero_grad()
-        # todo
-        # pred = self.model(x_batch)['out'][:, 0, :, :]
         pred = self.model(x_batch)['out']
-        loss = self.loss_fn(y_batch, pred)
+        loss = self.loss_fn(pred, y_batch)
         loss.backward()
         self.optimizer.step()
 
@@ -38,8 +36,7 @@ class DeepLabV3MobileNet(BaseSemanticModel):
 
     def _val_step(self, x_batch, y_batch):
         with torch.no_grad():
-            # pred = self.model(x_batch)['out'][:, 0, :, :]
             pred = self.model(x_batch)['out']
-            loss = self.loss_fn(y_batch, pred).detach().numpy()
+            loss = self.loss_fn(pred, y_batch).detach().numpy()
 
         return loss

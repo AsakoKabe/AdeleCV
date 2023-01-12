@@ -18,6 +18,7 @@ class COCOSemantic(DatasetType):
 
         labels = dataset.distinct("segmentations.detections.label")
         map_labels = {i + 1: label for i, label in enumerate(labels)}
+        map_labels[0] = 'background'
         dataset.default_mask_targets = map_labels
 
         for sample in dataset.iter_samples(autosave=True):
