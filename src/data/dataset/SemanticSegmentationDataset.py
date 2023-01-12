@@ -7,6 +7,7 @@ class SemanticDataset:
             self,
             dataset_dir,
             dataset_type,
+            img_size,
             split=(0.7, 0.2, 0.1),
             batch_size=5
     ):
@@ -17,6 +18,7 @@ class SemanticDataset:
         self.val = None
         self.test = None
         self.batch_size = batch_size
+        self.dataset.info['img_size'] = img_size
 
         self._split_dataset()
         self._create_torch_datasets()

@@ -6,7 +6,8 @@ import albumentations as A
 
 
 class SemanticTorchDataset(torch.utils.data.Dataset):
-    """A class to construct a PyTorch dataset from a FiftyOne dataset.
+    """
+    A class to construct a PyTorch dataset from a FiftyOne dataset.
 
     Args: fiftyone_dataset: a FiftyOne dataset or view that will be used for
     training or testing transforms (None): a list of PyTorch transforms to
@@ -21,7 +22,7 @@ class SemanticTorchDataset(torch.utils.data.Dataset):
         self.samples = fiftyone_dataset
         # todo: нормализация изображений, возможно уже в моделях
         self.transforms = A.Compose([
-            A.Resize(640, 640),
+            A.Resize(self.samples.info['img_size']),
             ToTensorV2()
         ])
         self.img_paths = self.samples.values("filepath")

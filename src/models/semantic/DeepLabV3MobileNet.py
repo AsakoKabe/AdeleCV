@@ -27,6 +27,7 @@ class DeepLabV3MobileNet(BaseSemanticModel):
 
     def _train_step(self, x_batch, y_batch):
         self.optimizer.zero_grad()
+        # todo
         # pred = self.model(x_batch)['out'][:, 0, :, :]
         pred = self.model(x_batch)['out']
         loss = self.loss_fn(y_batch, pred)

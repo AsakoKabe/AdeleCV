@@ -21,10 +21,8 @@ class COCOSemantic(DatasetType):
         dataset.default_mask_targets = map_labels
 
         for sample in dataset.iter_samples(autosave=True):
-            # width = sample['metadata']['width']
-            # height = sample['metadata']['height']
-            width = 640
-            height = 640
+            width = sample['metadata']['width']
+            height = sample['metadata']['height']
             sample["semantic"] = sample['segmentations'].to_segmentation(
                 mask_targets=dataset.default_mask_targets,
                 frame_size=(width, height)
