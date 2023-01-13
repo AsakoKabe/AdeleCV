@@ -1,4 +1,7 @@
+import os
+
 import fiftyone as fo
+from skimage.io import imread
 
 
 class DatasetType:
@@ -28,5 +31,29 @@ class COCOSemantic(DatasetType):
                 mask_targets=dataset.default_mask_targets,
                 frame_size=(width, height)
             )
+
+        return dataset
+
+
+class ImageMaskSemantic(DatasetType):
+    @staticmethod
+    def create_dataset(dataset_dir):
+        samples = []
+        for filepath in os.listdir(dataset_dir + '/image'):
+            img_path = dataset_dir + '/image/' + filepath
+            mask_path = dataset_dir + '/mask/' + filepath
+
+            sample = fo.Sample(filepath=img_path)
+            mask = imread(mask_path) // 255
+            sample["semantic"] = fo.Segmentation(mask=mask)
+            samples.append(sample)
+
+        dataset = fo.Dataset()
+        dataset.add_samples(samples)
+
+        dataset.default_mask_targets = {
+            0: 'background',
+            1: 'target'
+        }
 
         return dataset
