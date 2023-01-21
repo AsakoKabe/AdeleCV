@@ -23,9 +23,9 @@ class SemanticSegmentationTask(BaseTask):
         self.__loss_fns = [bce_loss, dice_loss]
 
         self.models: List[BaseSemanticModel] = []
-        self.__generate_models()
+        self._generate_models()
 
-    def __generate_models(self):
+    def _generate_models(self):
         combinations_params = list(
             itertools.product(
                 self.__optimizers,
@@ -80,20 +80,21 @@ class SemanticSegmentationTask(BaseTask):
             self._create_dataloaders()
 
         for model in self.models:
+            model.set_device(self.device)
             # train
             model.set_train_mode()
             train_loss = 0
             for x_batch, y_batch in train_dataloader:
-                loss = model._train_step(x_batch, y_batch)
-                train_loss += loss
+                loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
+                train_loss += loss.cpu().numpy()
 
             print(f'Train loss: {train_loss / len(train_dataloader)}')
 
             model.set_test_mode()
             val_loss = 0
             for x_batch, y_batch in train_dataloader:
-                loss = model._val_step(x_batch, y_batch)
-                val_loss += loss
+                loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
+                val_loss += loss.cpu().numpy()
 
             print(f'Valid loss: {val_loss / len(val_dataloader)}')
 

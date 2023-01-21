@@ -19,7 +19,8 @@ class SemanticTorchDataset(Dataset):
     def __init__(
             self,
             fiftyone_dataset,
-            # transforms=None,
+            # TODO: aug
+            # augmentations=None,
     ):
         self.samples = fiftyone_dataset
         self.transforms = A.Compose([

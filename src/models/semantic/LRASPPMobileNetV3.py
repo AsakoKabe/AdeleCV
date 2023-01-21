@@ -30,7 +30,7 @@ class LRASPPMobileNetV3(BaseSemanticModel):
             num_classes=num_classes
         )
 
-    def _train_step(self, x_batch, y_batch):
+    def train_step(self, x_batch, y_batch):
         self.optimizer.zero_grad()
         pred = self.model(x_batch)['out']
         # loss = self.loss_fn(y_batch, pred)
@@ -39,11 +39,14 @@ class LRASPPMobileNetV3(BaseSemanticModel):
         loss.backward()
         self.optimizer.step()
 
-        return loss.detach().numpy()
+        return loss.detach()
 
-    def _val_step(self, x_batch, y_batch):
+    def val_step(self, x_batch, y_batch):
         with torch.no_grad():
             pred = self.model(x_batch)['out']
-            loss = self.loss_fn(pred, y_batch).detach().numpy()
+            loss = self.loss_fn(pred, y_batch).detach()
 
         return loss
+
+    def predict(self, x_batch):
+        raise NotImplemented

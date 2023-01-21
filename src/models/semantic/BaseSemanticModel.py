@@ -32,3 +32,6 @@ class BaseSemanticModel(BaseModel, ABC):
 
     def set_test_mode(self):
         self.model.eval()
+
+    def set_device(self, device):
+        self.model.to(device)

@@ -4,9 +4,13 @@ from abc import abstractmethod, ABC
 class BaseModel(ABC):
 
     @abstractmethod
-    def _train_step(self, x_batch, y_batch):
+    def train_step(self, x_batch, y_batch):
         pass
 
     @abstractmethod
-    def _val_step(self, x_batch, y_batch):
+    def val_step(self, x_batch, y_batch):
+        pass
+
+    @abstractmethod
+    def predict(self, x_batch):
         pass
