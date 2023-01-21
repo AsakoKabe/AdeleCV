@@ -51,7 +51,7 @@ class SemanticSegmentationTask(BaseTask):
                 )
             )
 
-    def _create_dataloaders(self) -> Tuple[
+    def create_dataloaders(self) -> Tuple[
         DataLoader[Any],
         DataLoader[Any],
         DataLoader[Any]
@@ -76,29 +76,29 @@ class SemanticSegmentationTask(BaseTask):
         return train_dataloader, val_dataloader, test_dataloader
 
     def fit_models(self):
-        train_dataloader, val_dataloader, test_dataloader = \
-            self._create_dataloaders()
-
-        for model in self.models:
-            model.set_device(self.device)
-            # train
-            model.set_train_mode()
-            train_loss = 0
-            for x_batch, y_batch in train_dataloader:
-                loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
-                train_loss += loss.cpu().numpy()
-
-            print(f'Train loss: {train_loss / len(train_dataloader)}')
-
-            model.set_test_mode()
-            val_loss = 0
-            for x_batch, y_batch in train_dataloader:
-                loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
-                val_loss += loss.cpu().numpy()
-
-            print(f'Valid loss: {val_loss / len(val_dataloader)}')
-
-
+        # train_dataloader, val_dataloader, test_dataloader = \
+        #     self.create_dataloaders()
+        #
+        # for model in self.models:
+        #     model.set_device(self.device)
+        #     # train
+        #     model.set_train_mode()
+        #     train_loss = 0
+        #     for x_batch, y_batch in train_dataloader:
+        #         loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
+        #         train_loss += loss.cpu().numpy()
+        #
+        #     print(f'Train loss: {train_loss / len(train_dataloader)}')
+        #
+        #     model.set_test_mode()
+        #     val_loss = 0
+        #     for x_batch, y_batch in train_dataloader:
+        #         loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
+        #         val_loss += loss.cpu().numpy()
+        #
+        #     print(f'Valid loss: {val_loss / len(val_dataloader)}')
+        #
+        raise NotImplemented
 
 
 
