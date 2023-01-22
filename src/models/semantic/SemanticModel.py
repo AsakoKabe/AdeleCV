@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from models.base.BaseModel import BaseModel
 
 
-class BaseSemanticModel(BaseModel, ABC):
+class SemanticModel(BaseModel, ABC):
     def __init__(
             self,
             weights,

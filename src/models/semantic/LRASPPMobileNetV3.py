@@ -3,10 +3,10 @@ from torchvision import models
 from torchvision.models.segmentation import LRASPP_MobileNet_V3_Large_Weights
 from torchvision.models.segmentation.lraspp import LRASPPHead
 
-from models.semantic.BaseSemanticModel import BaseSemanticModel
+from models.semantic.SemanticModel import SemanticModel
 
 
-class LRASPPMobileNetV3(BaseSemanticModel):
+class LRASPPMobileNetV3(SemanticModel):
     def __init__(
             self,
             optimizer,

@@ -1,9 +1,13 @@
+import torch
 import torch.optim as optim
 import optuna
 from optuna.trial import TrialState
+from torch import nn
+from torchmetrics.functional.classification import multiclass_jaccard_index
 
 from models.semantic.DeepLabV3MobileNet import DeepLabV3MobileNet
-from train.task.loss import dice_loss, bce_loss
+from models.semantic.utils.loss import bce_loss
+from models.semantic.utils.metrics import iou
 
 
 class HPOptimizer:
@@ -16,7 +20,7 @@ class HPOptimizer:
         self.device = task.device
 
     def optimize(self):
-        study = optuna.create_study(direction="minimize")
+        study = optuna.create_study(direction="maximize")
         study.optimize(self.__objective, n_trials=10, timeout=600)
 
         pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
@@ -40,9 +44,12 @@ class HPOptimizer:
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
         lr = trial.suggest_categorical("lr", self.lrs)
         optimizer = getattr(optim, optimizer_name)
+        # todo: понять как итерироваться по моделям
+        # todo: шаг обучения модели по даталоадеру
+        # todo: насколько логично хранить таску в оптимизаторе? если да как стоит изменить таску
         model = DeepLabV3MobileNet(
             optimizer,
-            bce_loss,
+            nn.CrossEntropyLoss(),
             lr,
             self.num_classes
         )
@@ -69,10 +76,12 @@ class HPOptimizer:
             # Handle pruning based on the intermediate value.
             if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
-
-        test_loss = 0
+        #
+        val_iou = 0
         for x_batch, y_batch in val_dataloader:
-            loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
-            test_loss += loss.cpu().numpy()
+            pred = model.predict(x_batch.to(self.device))
+            pred = (nn.Sigmoid()(pred) >= 0.5).float()
+            # y_batch = torch.argmax(y_batch, dim=1)
+            val_iou += multiclass_jaccard_index(pred, y_batch.to(self.device), num_classes=2)
 
-        return test_loss / len(val_dataloader)
+        return val_iou / len(val_dataloader)

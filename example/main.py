@@ -1,7 +1,7 @@
 from data.dataset.SemanticSegmentationDataset import \
     SemanticDataset
-from data.dataset.types import COCOSemantic, ImageMaskSemantic
-from train.task.SemanticSegmentationTask import SemanticSegmentationTask
+from data.dataset.types import ImageMaskSemantic
+from task.SemanticSegmentationTask import SemanticSegmentationTask
 from train.trainer import Trainer
 
 if __name__ == '__main__':

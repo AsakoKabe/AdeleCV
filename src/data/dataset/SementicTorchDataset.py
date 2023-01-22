@@ -41,7 +41,7 @@ class SemanticTorchDataset(Dataset):
         transformed = self.transforms(image=img, mask=mask)
         img = transformed['image'].float()
         mask = transformed['mask'].long()
-        mask = F.one_hot(mask, num_classes=len(self.classes)).permute(2, 0, 1)
+        mask = F.one_hot(mask, num_classes=len(self.classes)).permute(2, 0, 1).float()
 
         return img, mask
 

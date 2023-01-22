@@ -1,7 +1,7 @@
 import torch
 
 from optimize.hp_optimizer import HPOptimizer
-from .task.base import BaseTask
+from task.base import BaseTask
 
 
 class Trainer:

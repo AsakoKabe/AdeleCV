@@ -6,11 +6,11 @@ from torch.utils.data import DataLoader
 
 from data.dataset.SemanticSegmentationDataset import \
     SemanticDataset
-from models.semantic.BaseSemanticModel import BaseSemanticModel
+from models.semantic.SemanticModel import SemanticModel
 from models.semantic.DeepLabV3MobileNet import DeepLabV3MobileNet
 from models.semantic.LRASPPMobileNetV3 import LRASPPMobileNetV3
-from train.task.base import BaseTask
-from train.task.loss import bce_loss, dice_loss
+from task.base import BaseTask
+from models.semantic.utils.loss import bce_loss, dice_loss
 
 
 class SemanticSegmentationTask(BaseTask):
@@ -22,7 +22,7 @@ class SemanticSegmentationTask(BaseTask):
         self.__lr = [0.001]
         self.__loss_fns = [bce_loss, dice_loss]
 
-        self.models: List[BaseSemanticModel] = []
+        self.models: List[SemanticModel] = []
         self._generate_models()
 
     def _generate_models(self):

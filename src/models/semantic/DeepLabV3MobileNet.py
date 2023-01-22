@@ -3,10 +3,10 @@ from torchvision import models
 from torchvision.models.segmentation.deeplabv3 import DeepLabHead, FCNHead, \
     DeepLabV3_MobileNet_V3_Large_Weights
 
-from .BaseSemanticModel import BaseSemanticModel
+from .SemanticModel import SemanticModel
 
 
-class DeepLabV3MobileNet(BaseSemanticModel):
+class DeepLabV3MobileNet(SemanticModel):
     def __init__(
             self,
             optimizer,
@@ -42,4 +42,7 @@ class DeepLabV3MobileNet(BaseSemanticModel):
         return loss
 
     def predict(self, x_batch):
-        raise NotImplemented
+        with torch.no_grad():
+            pred = self.model(x_batch)['out']
+
+        return pred
