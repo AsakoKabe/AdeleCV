@@ -19,7 +19,6 @@ class SemanticTorchDataset(Dataset):
     def __init__(
             self,
             fiftyone_dataset,
-            # TODO: aug
             # augmentations=None,
     ):
         self.samples = fiftyone_dataset

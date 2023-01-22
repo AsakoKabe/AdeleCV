@@ -17,7 +17,6 @@ class SemanticModel(BaseModel, ABC):
         self.model = model(
             weights=self.weights,
         )
-        # self.model.cuda()
         self.transforms = self.weights.transforms()
         self.optimizer = optimizer(self.model.parameters(), lr=lr)
         self.loss_fn = loss_fn

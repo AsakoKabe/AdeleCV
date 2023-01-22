@@ -6,8 +6,6 @@ from torch import nn
 from torchmetrics.functional.classification import multiclass_jaccard_index
 
 from models.semantic.DeepLabV3MobileNet import DeepLabV3MobileNet
-from models.semantic.utils.loss import bce_loss
-from models.semantic.utils.metrics import iou
 
 
 class HPOptimizer:
@@ -20,7 +18,7 @@ class HPOptimizer:
         self.device = task.device
 
     def optimize(self):
-        study = optuna.create_study(direction="maximize")
+        study = optuna.create_study(direction="minimize")
         study.optimize(self.__objective, n_trials=10, timeout=600)
 
         pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
@@ -45,43 +43,36 @@ class HPOptimizer:
         lr = trial.suggest_categorical("lr", self.lrs)
         optimizer = getattr(optim, optimizer_name)
         # todo: понять как итерироваться по моделям
-        # todo: шаг обучения модели по даталоадеру
-        # todo: насколько логично хранить таску в оптимизаторе? если да как стоит изменить таску
         model = DeepLabV3MobileNet(
             optimizer,
             nn.CrossEntropyLoss(),
             lr,
             self.num_classes
         )
-        train_dataloader, val_dataloader, test_dataloader = \
-            self.task.create_dataloaders()
 
+        loss = 0
         for epoch in range(self.num_epoch):
-            model.set_device(self.device)
-            # train
-            model.set_train_mode()
-            train_loss = 0
-            for x_batch, y_batch in train_dataloader:
-                loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
-                train_loss += loss.cpu().numpy()
-
-            model.set_test_mode()
-            val_loss = 0
-            for x_batch, y_batch in val_dataloader:
-                loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
-                val_loss += loss.cpu().numpy()
-
-            trial.report(val_loss, epoch)
+            loss = self.__train_model(model)
+            trial.report(loss, epoch)
 
             # Handle pruning based on the intermediate value.
             if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
-        #
-        val_iou = 0
-        for x_batch, y_batch in val_dataloader:
-            pred = model.predict(x_batch.to(self.device))
-            pred = (nn.Sigmoid()(pred) >= 0.5).float()
-            # y_batch = torch.argmax(y_batch, dim=1)
-            val_iou += multiclass_jaccard_index(pred, y_batch.to(self.device), num_classes=2)
 
-        return val_iou / len(val_dataloader)
+        return loss
+
+    def __train_model(self, model):
+        model.set_device(self.device)
+        model.set_train_mode()
+        train_loss = 0
+        for x_batch, y_batch in self.task.dataset.train:
+            loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
+            train_loss += loss.cpu().numpy()
+
+        model.set_test_mode()
+        val_loss = 0
+        for x_batch, y_batch in self.task.dataset.val:
+            loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
+            val_loss += loss.cpu().numpy()
+
+        return val_loss / len(self.task.dataset.val)

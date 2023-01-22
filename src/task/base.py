@@ -6,10 +6,6 @@ class BaseTask(ABC):
         self.dataset = dataset
         self._device = None
 
-    @abstractmethod
-    def fit_models(self):
-        pass
-
     @property
     def device(self):
         return self._device

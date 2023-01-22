@@ -1,3 +1,7 @@
+from typing import Tuple, Any
+
+from torch.utils.data import DataLoader
+
 from data.dataset.SementicTorchDataset import SemanticTorchDataset
 from data.dataset.types import DatasetType
 
@@ -9,20 +13,15 @@ class SemanticDataset:
             dataset_type,
             img_size,  # height, width
             split=(0.7, 0.2, 0.1),
-            batch_size=5
+            batch_size=16
     ):
         self.dataset_dir = dataset_dir
         self.dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split
-        self.train = None
-        self.val = None
-        self.test = None
         self.batch_size = batch_size
         self.dataset.info['img_size'] = img_size
         self.num_classes = len(self.dataset.default_mask_targets)
-
-        self._split_dataset()
-        self._create_torch_datasets()
+        self.train, self.val, self.test = self._create_dataloaders()
 
     def _split_dataset(self):
         self.dataset.take(
@@ -42,6 +41,34 @@ class SemanticDataset:
         self.dataset.untag_samples('valid_test')
 
     def _create_torch_datasets(self):
-        self.train = SemanticTorchDataset(self.dataset.match_tags('train'))
-        self.val = SemanticTorchDataset(self.dataset.match_tags('valid'))
-        self.test = SemanticTorchDataset(self.dataset.match_tags('test'))
+        train = SemanticTorchDataset(self.dataset.match_tags('train'))
+        val = SemanticTorchDataset(self.dataset.match_tags('valid'))
+        test = SemanticTorchDataset(self.dataset.match_tags('test'))
+
+        return train, val, test
+
+    def _create_dataloaders(self) -> Tuple[
+        DataLoader[Any],
+        DataLoader[Any],
+        DataLoader[Any]
+    ]:
+        self._split_dataset()
+        train_ds, val_ds, test_ds = self._create_torch_datasets()
+
+        train_dataloader = DataLoader(
+            train_ds,
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+        val_dataloader = DataLoader(
+            val_ds,
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+        test_dataloader = DataLoader(
+            test_ds,
+            batch_size=self.batch_size,
+            shuffle=True
+        )
+
+        return train_dataloader, val_dataloader, test_dataloader

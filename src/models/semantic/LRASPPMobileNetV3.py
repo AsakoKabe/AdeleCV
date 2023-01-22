@@ -33,8 +33,6 @@ class LRASPPMobileNetV3(SemanticModel):
     def train_step(self, x_batch, y_batch):
         self.optimizer.zero_grad()
         pred = self.model(x_batch)['out']
-        # loss = self.loss_fn(y_batch, pred)
-
         loss = self.loss_fn(pred, y_batch)
         loss.backward()
         self.optimizer.step()
