@@ -10,7 +10,7 @@ controls = dbc.Card(
                 dcc.Dropdown(
                     id="x-variable",
                     options=[
-                        {"label": col, "value": col} for col in [1, 2, 3]
+                        {"label": col, "value": col} for col in [1, 2, 4]
                     ],
                     value="sepal length (cm)",
                 ),
@@ -22,7 +22,7 @@ controls = dbc.Card(
                 dcc.Dropdown(
                     id="y-variable",
                     options=[
-                        {"label": col, "value": col} for col in [1, 2, 3]
+                        {"label": col, "value": col} for col in [1, 2, 5]
                     ],
                     value="sepal width (cm)",
                 ),

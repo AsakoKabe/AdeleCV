@@ -13,7 +13,7 @@ class HPOptimizer:
         self.architectures = ["DeepLabV3MobileNet", "LRASPPMobileNetV3"]
         self.num_epoch = 2
         self.task = task
-        self.num_classes = task.dataset.num_classes
+        self.num_classes = task.fo_dataset.num_classes
         self.device = task.device
 
     def optimize(self):
@@ -66,14 +66,14 @@ class HPOptimizer:
         model.set_device(self.device)
         model.set_train_mode()
         train_loss = 0
-        for x_batch, y_batch in self.task.dataset.train:
+        for x_batch, y_batch in self.task.fo_dataset.train:
             loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
             train_loss += loss.cpu().numpy()
 
         model.set_test_mode()
         val_loss = 0
-        for x_batch, y_batch in self.task.dataset.val:
+        for x_batch, y_batch in self.task.fo_dataset.val:
             loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
             val_loss += loss.cpu().numpy()
 
-        return val_loss / len(self.task.dataset.val)
+        return val_loss / len(self.task.fo_dataset.val)

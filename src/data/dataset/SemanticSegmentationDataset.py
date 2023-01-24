@@ -16,34 +16,34 @@ class SemanticDataset:
             batch_size=16
     ):
         self.dataset_dir = dataset_dir
-        self.dataset = dataset_type.create_dataset(self.dataset_dir)
+        self.fo_dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split
         self.batch_size = batch_size
-        self.dataset.info['img_size'] = img_size
-        self.num_classes = len(self.dataset.default_mask_targets)
+        self.fo_dataset.info['img_size'] = img_size
+        self.num_classes = len(self.fo_dataset.default_mask_targets)
         self.train, self.val, self.test = self._create_dataloaders()
 
     def _split_dataset(self):
-        self.dataset.take(
-            int(self.split[0] * len(self.dataset))
+        self.fo_dataset.take(
+            int(self.split[0] * len(self.fo_dataset))
         ).tag_samples("train")
-        self.dataset.match_tags(
+        self.fo_dataset.match_tags(
             "train",
             bool=False
         ).tag_samples("valid_test")
-        self.dataset.match_tags("valid_test").take(
-            int(self.split[1] * len(self.dataset))
+        self.fo_dataset.match_tags("valid_test").take(
+            int(self.split[1] * len(self.fo_dataset))
         ).tag_samples("valid")
-        self.dataset.match_tags(
+        self.fo_dataset.match_tags(
             ["train", "valid"],
             bool=False
         ).tag_samples("test")
-        self.dataset.untag_samples('valid_test')
+        self.fo_dataset.untag_samples('valid_test')
 
     def _create_torch_datasets(self):
-        train = SemanticTorchDataset(self.dataset.match_tags('train'))
-        val = SemanticTorchDataset(self.dataset.match_tags('valid'))
-        test = SemanticTorchDataset(self.dataset.match_tags('test'))
+        train = SemanticTorchDataset(self.fo_dataset.match_tags('train'))
+        val = SemanticTorchDataset(self.fo_dataset.match_tags('valid'))
+        test = SemanticTorchDataset(self.fo_dataset.match_tags('test'))
 
         return train, val, test
 
