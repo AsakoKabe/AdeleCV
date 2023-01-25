@@ -20,8 +20,21 @@ class Trainer:
         # self.task.fit_models()
         self.hp_optimizer.optimize()
 
-    def load_dataset(self, dataset_path, dataset_type, img_size=(256, 256)):
-        self.dataset = SemanticDataset(dataset_path, dataset_type, img_size)
+    def load_dataset(
+            self,
+            dataset_path,
+            dataset_type,
+            img_size,
+            split,
+            batch_size,
+    ):
+        self.dataset = SemanticDataset(
+            dataset_path,
+            dataset_type,
+            img_size,
+            split,
+            batch_size
+        )
 
     def create_dataset_session(self):
         self.session_dataset.dataset = self.dataset.fo_dataset
