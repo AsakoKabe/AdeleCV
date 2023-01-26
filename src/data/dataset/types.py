@@ -44,8 +44,10 @@ class ImageMaskSemantic(DatasetType):
             mask_path = dataset_dir + '/mask/' + filepath
 
             sample = fo.Sample(filepath=img_path)
+            sample.compute_metadata()
             mask = imread(mask_path) // 255
             sample["semantic"] = fo.Segmentation(mask=mask)
+
             samples.append(sample)
 
         dataset = fo.Dataset()

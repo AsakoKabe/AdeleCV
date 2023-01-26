@@ -13,6 +13,7 @@ class SemanticModel(BaseModel, ABC):
             loss_fn,
             scheduler=None
     ):
+        super().__init__()
         self.weights = weights.DEFAULT
         self.model = model(
             weights=self.weights,
@@ -23,8 +24,8 @@ class SemanticModel(BaseModel, ABC):
         self.lr = lr
 
     def __str__(self):
-        return f'{self.__class__.__name__}__{self.optimizer.__name__}__' \
-               f'{self.loss_fn.__name__}__lr={self.lr}'
+        return f'{self.__class__.__name__}__{self.optimizer.__class__.__name__}__' \
+               f'{self.loss_fn.__class__.__name__}__lr={str(self.lr).replace(".", ",")}'
 
     def set_train_mode(self):
         self.model.train()
@@ -34,3 +35,4 @@ class SemanticModel(BaseModel, ABC):
 
     def set_device(self, device):
         self.model.to(device)
+        self.device = device

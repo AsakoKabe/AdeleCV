@@ -91,6 +91,8 @@ class HPOptimizer:
             test_iou += multiclass_jaccard_index(pred, y_batch.to(self.device), num_classes=2)
         print(test_iou)
 
+        self.task.dataset.add_predictions(model)
+
         return loss
 
     def _train_model(self, model):

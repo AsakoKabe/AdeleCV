@@ -1,6 +1,12 @@
 from typing import Tuple, Any
 
+import torch
+from PIL import Image
+from skimage.io import imread
 from torch.utils.data import DataLoader
+import fiftyone as fo
+import albumentations as A
+from albumentations.pytorch.transforms import ToTensor, ToTensorV2
 
 from data.dataset.SementicTorchDataset import SemanticTorchDataset
 from data.dataset.types import DatasetType
@@ -19,8 +25,9 @@ class SemanticDataset:
         self.fo_dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split
         self.batch_size = batch_size
-        # todo: возможно надо делать resize для датасета fo
+        # todo: сделать нормальный resize всего датасета
         self.fo_dataset.info['img_size'] = img_size
+        self.fo_dataset.save()
         self.num_classes = len(self.fo_dataset.default_mask_targets)
         self.train, self.val, self.test = self._create_dataloaders()
 
@@ -73,3 +80,18 @@ class SemanticDataset:
         )
 
         return train_dataloader, val_dataloader, test_dataloader
+
+    def add_predictions(self, model):
+        transforms = A.Compose([
+            A.Resize(*self.fo_dataset.info['img_size']),
+            A.Normalize(),
+            ToTensorV2()
+        ])
+        with fo.ProgressBar() as pb:
+            for sample in pb(self.fo_dataset.iter_samples(autosave=True)):
+                img = transforms(image=imread(sample.filepath))['image'].float().unsqueeze(0)
+                pred = model.predict(img.to(model.device))
+                pred = torch.argmax(pred, dim=1).cpu().numpy()
+                sample[str(model)] = fo.Segmentation(mask=pred)
+
+
