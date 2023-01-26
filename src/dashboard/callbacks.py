@@ -55,8 +55,8 @@ def update_dataset_params(
     State('loss-fns', 'value'),
     State('epoch-from', 'value'),
     State('epoch-to', 'value'),
-    State('hp-optimizer', 'value'),
-    State('num-epoch', 'value'),
+    State('strategy', 'value'),
+    State('num-trials', 'value'),
     State('device', 'value'),
 )
 def update_train_params(
@@ -71,12 +71,17 @@ def update_train_params(
         "loss_fns",
         "epoch_from",
         "epoch_to",
-        "hp_optimizer",
-        "num_epoch",
+        "strategy",
+        "num_trials",
         "device"
     ]
     train_params = dict(zip(param_names, args))
     if all(train_params.values()):
+        train_params['lr_range'] = (train_params['lr_from'], train_params['lr_to'])
+        train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
         print(train_params)
+        _trainer.create_task()
+        _trainer.create_optimizer(train_params)
+        _trainer.run_optimize()
 
     return ''

@@ -17,10 +17,6 @@ class SemanticSegmentationTask(BaseTask):
         super().__init__(
             dataset=dataset
         )
-        self.__optimizers = [AdamW, Adagrad, SGD]
-        self.__lr = [0.001]
-        self.__loss_fns = []
-
         self.models: List[SemanticModel] = []
 
 

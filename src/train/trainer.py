@@ -10,14 +10,11 @@ from task.base import BaseTask
 class Trainer:
     def __init__(self, task: BaseTask = None, cuda: bool = True):
         self.hp_optimizer = None
-        self.device = torch.device('cuda' if torch.cuda.is_available() and cuda else 'cpu')
         self.task = None
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
-        # self.session_dataset.wait()
 
     def run(self):
-        # self.task.fit_models()
         self.hp_optimizer.optimize()
 
     def load_dataset(
@@ -41,11 +38,23 @@ class Trainer:
 
     def create_task(self):
         self.task = SemanticSegmentationTask(self.dataset)
-        self.task.device = self.device
-    
-    def create_optimizer(self):
+
+    def create_optimizer(self, params):
         if not self.task:
             raise AttributeError('Task not created')
 
-        self.hp_optimizer = HPOptimizer(self.task)
+        self.hp_optimizer = HPOptimizer(
+            params["architectures"],
+            params["lr_range"],
+            params["optimizers"],
+            params["loss_fns"],
+            params["epoch_range"],
+            params["strategy"],
+            params["num_trials"],
+            params["device"],
+            self.task
+        )
+
+    def run_optimize(self):
+        self.hp_optimizer.optimize()
 

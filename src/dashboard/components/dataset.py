@@ -8,7 +8,7 @@ controls = [
         [
             # html.Br(),
             dbc.Label("Path Dataset"),
-            dbc.Input(id='dataset-path', value=r'F:\dataset\coco')
+            dbc.Input(id='dataset-path', value=r'F:\dataset\ph2')
         ]
     ),
     dbc.Form(
@@ -26,10 +26,10 @@ controls = [
             dbc.Row(
                 [
                     dbc.Col(
-                        [dbc.Input(id='img-height', placeholder='Height', type='number', min='0', value=640)]
+                        [dbc.Input(id='img-height', placeholder='Height', type='number', min='0', value=256)]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='img-width', placeholder='Width', type='number', min='0', value=640)]
+                        [dbc.Input(id='img-width', placeholder='Width', type='number', min='0', value=256)]
                     )
                 ]
             ),

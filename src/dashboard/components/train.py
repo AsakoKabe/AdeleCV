@@ -70,7 +70,7 @@ controls = [
                     "RandomSampler", "GridSampler", "TPESampler", "CmaEsSampler",
                     "NSGAIISampler", "QMCSampler", "MOTPESampler"
                 ],
-                id='hp-optimizer',
+                id='strategy',
                 value='TPESampler'
             )
         ]
@@ -78,7 +78,7 @@ controls = [
     dbc.Form(
         [
             dbc.Label("Num trials"),
-            dbc.Input(id='num-epoch', type='number', min='1', value=10)
+            dbc.Input(id='num-trials', type='number', min='1', value=10)
         ]
     ),
     dbc.Form(
