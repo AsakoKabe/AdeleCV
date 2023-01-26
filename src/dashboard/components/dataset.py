@@ -64,7 +64,7 @@ controls = [
             html.Br(),
             # dbc.Label("Load Dataset"),
             dbc.Button(
-                id='submit-button-state',
+                id='submit-button-dataset',
                 children='Load Dataset'
             ),
         ]

@@ -1,8 +1,8 @@
 from dash import html, dcc, Output, Input
-from dashboard.components import nav, controls, dataset
 
+
+from dashboard.components import nav, dataset, train_board
 from app import app
-from dashboard.components import nav
 import callbacks
 
 
@@ -19,14 +19,11 @@ app.layout = html.Div([nav, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == '/':
-        return html.Div(
-            [
-                controls
-            ],
-            className="m-5",
-        )
+        return "Page empty"
     elif pathname == '/dataset':
         return dataset
+    elif pathname == '/train':
+        return train_board
     else:
         return "ERROR 404: Page not found!"
 
