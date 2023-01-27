@@ -31,7 +31,7 @@ controls = [
         [
             dbc.Label("Optimizers"),
             dcc.Dropdown(
-                ["Adam", "RMSprop", "SGD"],
+                ["AdamW", "RMSprop", "SGD"],
                 id='optimizers',
                 multi=True
             )

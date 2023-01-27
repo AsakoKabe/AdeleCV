@@ -1,7 +1,7 @@
 import os
 
 import fiftyone as fo
-from skimage.io import imread
+import cv2 as cv
 
 
 class DatasetType:
@@ -44,10 +44,11 @@ class ImageMaskSemantic(DatasetType):
             mask_path = dataset_dir + '/mask/' + filepath
 
             sample = fo.Sample(filepath=img_path)
-            sample.compute_metadata()
-            mask = imread(mask_path) // 255
-            sample["semantic"] = fo.Segmentation(mask=mask)
 
+            mask = cv.imread(mask_path, cv.IMREAD_GRAYSCALE) // 255
+            # print(mask.shape)
+            sample["semantic"] = fo.Segmentation(mask=mask)
+            sample.compute_metadata()
             samples.append(sample)
 
         dataset = fo.Dataset()

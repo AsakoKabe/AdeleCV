@@ -1,12 +1,13 @@
 from typing import Tuple, Any
 
+import numpy as np
 import torch
 from PIL import Image
-from skimage.io import imread
 from torch.utils.data import DataLoader
 import fiftyone as fo
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensor, ToTensorV2
+import cv2 as cv
 
 from data.dataset.SementicTorchDataset import SemanticTorchDataset
 from data.dataset.types import DatasetType
@@ -89,9 +90,11 @@ class SemanticDataset:
         ])
         with fo.ProgressBar() as pb:
             for sample in pb(self.fo_dataset.iter_samples(autosave=True)):
-                img = transforms(image=imread(sample.filepath))['image'].float().unsqueeze(0)
+                img = transforms(image=cv.imread(sample.filepath, cv.IMREAD_COLOR))['image'].float().unsqueeze(0)
                 pred = model.predict(img.to(model.device))
-                pred = torch.argmax(pred, dim=1).cpu().numpy()
-                sample[str(model)] = fo.Segmentation(mask=pred)
-
-
+                pred = torch.argmax(pred, dim=1).cpu().numpy()[0]
+                mask = cv.resize(
+                    np.array(pred, dtype='uint8'),
+                    (sample.metadata.width, sample.metadata.height)
+                )
+                sample[str(model)] = fo.Segmentation(mask=mask)
