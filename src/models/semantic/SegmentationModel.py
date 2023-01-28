@@ -17,7 +17,7 @@ class SegmentationModel(BaseModel):
             loss_fn,
             num_classes,
             device,
-            encoder_name='resnet34',
+            encoder_name='timm-mobilenetv3_small_minimal_100',
             encoder_weights='imagenet',
     ):
         super().__init__()

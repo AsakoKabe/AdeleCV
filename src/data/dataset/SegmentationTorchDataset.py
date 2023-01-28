@@ -1,5 +1,7 @@
+import torch
 from torch.utils.data import Dataset
 import cv2
+import torch.nn.functional as F
 import numpy as np
 
 
@@ -28,10 +30,10 @@ class SegmentationTorchDataset(Dataset):
         sample = self.samples[img_path]
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        mask = sample['semantic']['mask']
+        mask = torch.Tensor(sample['semantic']['mask']).long()
 
-        masks = [(mask == v) for v in self.classes]
-        mask = np.stack(masks, axis=-1).astype('float')
+        # todo: долго?
+        mask = F.one_hot(mask, num_classes=len(self.classes)).numpy()
 
         transformed = self.transforms(image=img, mask=mask)
         img = transformed['image']

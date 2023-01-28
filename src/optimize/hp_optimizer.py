@@ -79,6 +79,7 @@ class HPOptimizer:
 
         loss = 0
         for epoch in range(num_epoch):
+            torch.cuda.empty_cache()
             loss = self._train_model(model)
             trial.report(loss, epoch)
 
