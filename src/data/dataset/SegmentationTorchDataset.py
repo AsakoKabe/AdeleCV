@@ -1,13 +1,9 @@
-import torch
-from PIL import Image
-from albumentations.pytorch.transforms import ToTensor, ToTensorV2
-from skimage.io import imread
-import albumentations as A
 from torch.utils.data import Dataset
-import torch.nn.functional as F
+import cv2
+import numpy as np
 
 
-class SemanticTorchDataset(Dataset):
+class SegmentationTorchDataset(Dataset):
     """
     A class to construct a PyTorch dataset from a FiftyOne dataset.
 
@@ -19,28 +15,27 @@ class SemanticTorchDataset(Dataset):
     def __init__(
             self,
             fiftyone_dataset,
+            transforms
             # augmentations=None,
     ):
         self.samples = fiftyone_dataset
-        self.transforms = A.Compose([
-            A.Resize(*self.samples.info['img_size']),
-            A.Normalize(),
-            ToTensorV2()
-        ])
+        self.transforms = transforms
         self.img_paths = self.samples.values("filepath")
-        self.labels_map_rev = self.samples.default_mask_targets
-        self.classes = self.labels_map_rev.keys()
+        self.classes = self.samples.default_mask_targets.keys()
 
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
         sample = self.samples[img_path]
-        img = imread(img_path)
+        img = cv2.imread(img_path)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         mask = sample['semantic']['mask']
 
+        masks = [(mask == v) for v in self.classes]
+        mask = np.stack(masks, axis=-1).astype('float')
+
         transformed = self.transforms(image=img, mask=mask)
-        img = transformed['image'].float()
-        mask = transformed['mask'].long()
-        mask = F.one_hot(mask, num_classes=len(self.classes)).permute(2, 0, 1).float()
+        img = transformed['image']
+        mask = transformed['mask']
 
         return img, mask
 

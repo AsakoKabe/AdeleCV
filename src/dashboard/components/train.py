@@ -6,7 +6,17 @@ controls = [
         [
             dbc.Label("Architectures"),
             dcc.Dropdown(
-                ["DeepLabV3MobileNet", "LRASPPMobileNetV3"],
+                [
+                    "Unet",
+                    "UnetPlusPlus",
+                    "MAnet",
+                    "Linknet",
+                    "FPN",
+                    "PSPNet",
+                    "DeepLabV3",
+                    "DeepLabV3Plus",
+                    "PAN",
+                ],
                 id='architectures',
                 multi=True
             )
@@ -41,7 +51,16 @@ controls = [
         [
             dbc.Label("Loss functions"),
             dcc.Dropdown(
-                ["CrossEntropyLoss"],
+                [
+                    "JaccardLoss",
+                    "DiceLoss",
+                    "FocalLoss",
+                    "LovaszLoss",
+                    "SoftBCEWithLogitsLoss",
+                    "SoftCrossEntropyLoss",
+                    "TverskyLoss",
+                    "MCCLoss",
+                ],
                 id='loss-fns',
                 multi=True
             )

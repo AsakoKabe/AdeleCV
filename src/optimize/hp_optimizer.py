@@ -2,11 +2,11 @@ import torch
 import torch.optim as optim
 import optuna
 from optuna.trial import TrialState
-from torch import nn
-from torchmetrics.functional.classification import multiclass_jaccard_index
 
-import models.semantic as semantic_models
 import optuna.samplers as samplers
+import segmentation_models_pytorch as smp
+
+from models.semantic.SegmentationModel import SegmentationModel
 
 
 class HPOptimizer:
@@ -61,18 +61,21 @@ class HPOptimizer:
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
         optimizer = getattr(optim, optimizer_name)
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
-        architecture = getattr(semantic_models, architecture_name)
+        architecture = getattr(smp, architecture_name)
         lr = trial.suggest_float("lr", self.lr_range[0], self.lr_range[1])
         loss_name = trial.suggest_categorical("loss", self.loss_fns)
-        loss_fn = getattr(nn, loss_name)()
+        loss_fn = getattr(smp.losses, loss_name)('binary')
         num_epoch = trial.suggest_int("num_epoch", self.epoch_range[0], self.epoch_range[1])
 
-        model = architecture(
-            optimizer,
-            loss_fn,
-            lr,
-            self.num_classes
+        model = SegmentationModel(
+            model=architecture,
+            optimizer=optimizer,
+            lr=lr,
+            loss_fn=loss_fn,
+            num_classes=self.num_classes,
+            device=self.device
         )
+        self.task.dataset.update_datasets(model.transforms)
 
         loss = 0
         for epoch in range(num_epoch):
@@ -83,30 +86,21 @@ class HPOptimizer:
             if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
 
-        test_iou = 0
-        for x_batch, y_batch in self.task.dataset.test:
-            pred = model.predict(x_batch.to(self.device))
-            pred = (nn.Sigmoid()(pred) >= 0.5).float()
-            # y_batch = torch.argmax(y_batch, dim=1)
-            test_iou += multiclass_jaccard_index(pred, y_batch.to(self.device), num_classes=2)
-        print(test_iou)
-
         self.task.dataset.add_predictions(model)
 
         return loss
 
-    def _train_model(self, model):
-        model.set_device(self.device)
-        model.set_train_mode()
+    def _train_model(self, model: SegmentationModel):
+        model.train_mode()
         train_loss = 0
         for x_batch, y_batch in self.task.dataset.train:
-            loss = model.train_step(x_batch.to(self.device), y_batch.to(self.device))
+            loss = model.train_step(x_batch, y_batch)
             train_loss += loss.cpu().numpy()
 
-        model.set_test_mode()
+        model.eval_mode()
         val_loss = 0
         for x_batch, y_batch in self.task.dataset.val:
-            loss = model.val_step(x_batch.to(self.device), y_batch.to(self.device))
+            loss = model.val_step(x_batch, y_batch)
             val_loss += loss.cpu().numpy()
 
         return val_loss / len(self.task.dataset.val)

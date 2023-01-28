@@ -1,9 +1,9 @@
 import torch
 import fiftyone as fo
 
-from data.dataset.SemanticSegmentationDataset import SemanticDataset
+from data.dataset.SegmentationDataset import SegmentationDataset
 from optimize.hp_optimizer import HPOptimizer
-from task.SemanticSegmentationTask import SemanticSegmentationTask
+from task.SegmentationTask import SegmentationTask
 from task.base import BaseTask
 
 
@@ -25,7 +25,7 @@ class Trainer:
             split,
             batch_size,
     ):
-        self.dataset = SemanticDataset(
+        self.dataset = SegmentationDataset(
             dataset_path,
             dataset_type,
             img_size,
@@ -37,7 +37,7 @@ class Trainer:
         self.session_dataset.dataset = self.dataset.fo_dataset
 
     def create_task(self):
-        self.task = SemanticSegmentationTask(self.dataset)
+        self.task = SegmentationTask(self.dataset)
 
     def create_optimizer(self, params):
         if not self.task:
