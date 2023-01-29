@@ -14,11 +14,11 @@ class BaseModel(ABC):
         self._device = device
 
     @abstractmethod
-    def train_step(self, x_batch, y_batch):
+    def train_step(self, train_ds):
         pass
 
     @abstractmethod
-    def val_step(self, x_batch, y_batch):
+    def val_step(self, val_ds):
         pass
 
     @abstractmethod

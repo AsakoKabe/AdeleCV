@@ -36,21 +36,29 @@ class SegmentationModel(BaseModel):
         self.loss_fn = loss_fn
         self.lr = lr
 
-    def train_step(self, x_batch, y_batch):
-        self.optimizer.zero_grad()
-        pred = self._torch_model(x_batch.to(self.device))
-        loss = self.loss_fn(pred, y_batch.long().to(self.device))
-        loss.backward()
-        self.optimizer.step()
-
-        return loss.detach()
-
-    def val_step(self, x_batch, y_batch):
-        with torch.no_grad():
+    def train_step(self, train_ds):
+        self.train_mode()
+        avg_loss = 0
+        for x_batch, y_batch in train_ds:
+            self.optimizer.zero_grad()
             pred = self._torch_model(x_batch.to(self.device))
             loss = self.loss_fn(pred, y_batch.long().to(self.device))
+            loss.backward()
+            self.optimizer.step()
+            avg_loss += loss.detach().cpu().numpy() / len(x_batch)
 
-        return loss.detach()
+        return avg_loss
+
+    def val_step(self, val_ds):
+        self.eval_mode()
+        avg_loss = 0
+        for x_batch, y_batch in val_ds:
+            with torch.no_grad():
+                pred = self._torch_model(x_batch.to(self.device))
+                loss = self.loss_fn(pred, y_batch.long().to(self.device))
+                avg_loss += loss.detach().cpu().numpy() / len(x_batch)
+
+        return avg_loss
 
     def predict(self, img):
         img = self.transforms(image=img)['image']
@@ -62,7 +70,7 @@ class SegmentationModel(BaseModel):
         return pred
 
     def __str__(self):
-        return f'{self.__class__.__name__}__{self.optimizer.__class__.__name__}__' \
+        return f'{self._torch_model.__class__.__name__}__{self.optimizer.__class__.__name__}__' \
                f'{self.loss_fn.__class__.__name__}__lr={str(self.lr).replace(".", ",")}'
 
     def train_mode(self):

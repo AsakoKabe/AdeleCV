@@ -3,7 +3,7 @@ import torch.optim as optim
 import optuna
 from optuna.trial import TrialState
 
-import optuna.samplers as samplers
+from optuna import samplers
 import segmentation_models_pytorch as smp
 
 from models.semantic.SegmentationModel import SegmentationModel
@@ -81,6 +81,7 @@ class HPOptimizer:
         for epoch in range(num_epoch):
             torch.cuda.empty_cache()
             loss = self._train_model(model)
+            # todo: Зачем туда передавать epoch?
             trial.report(loss, epoch)
 
             # Handle pruning based on the intermediate value.
@@ -92,16 +93,7 @@ class HPOptimizer:
         return loss
 
     def _train_model(self, model: SegmentationModel):
-        model.train_mode()
-        train_loss = 0
-        for x_batch, y_batch in self.task.dataset.train:
-            loss = model.train_step(x_batch, y_batch)
-            train_loss += loss.cpu().numpy()
+        train_loss = model.train_step(self.task.dataset.train)
+        val_loss = model.val_step(self.task.dataset.val)
 
-        model.eval_mode()
-        val_loss = 0
-        for x_batch, y_batch in self.task.dataset.val:
-            loss = model.val_step(x_batch, y_batch)
-            val_loss += loss.cpu().numpy()
-
-        return val_loss / len(self.task.dataset.val)
+        return val_loss

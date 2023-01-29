@@ -91,8 +91,8 @@ class SegmentationDataset:
         with fo.ProgressBar() as pb:
             for sample in pb(self.fo_dataset.iter_samples(autosave=True)):
                 img = cv2.imread(sample.filepath, cv2.IMREAD_COLOR)
-                pred = model.predict(img)
-                pred = torch.argmax(pred, dim=1).cpu().numpy()[0]
+                pred = model.predict(img)[0]
+                pred = torch.argmax(pred, dim=0).cpu().numpy()
                 mask = cv2.resize(
                     np.array(pred, dtype='uint8'),
                     (sample.metadata.width, sample.metadata.height)

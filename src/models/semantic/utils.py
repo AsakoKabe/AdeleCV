@@ -1,7 +1,7 @@
 import albumentations as A
 
 
-def get_preprocessing(preprocessing_fn):
+def get_preprocessing(preprocessing_fn, img_size=(256, 256)):
     """Construct preprocessing transform
 
     Args:
@@ -9,11 +9,13 @@ def get_preprocessing(preprocessing_fn):
             (can be specific for each pretrained neural network)
     Return:
         transform: albumentations.Compose
+        :param preprocessing_fn:
+        :param img_size:
 
     """
 
     _transform = [
-        A.Resize(256, 256),
+        A.Resize(*img_size),
         A.Lambda(image=preprocessing_fn),
         A.Lambda(image=to_tensor, mask=to_tensor),
     ]
