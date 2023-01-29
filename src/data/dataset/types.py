@@ -1,7 +1,7 @@
 import os
 
 import fiftyone as fo
-import cv2 as cv
+import cv2
 
 
 class DatasetType:
@@ -45,13 +45,13 @@ class ImageMaskSemantic(DatasetType):
 
             sample = fo.Sample(filepath=img_path)
 
-            mask = cv.imread(mask_path, cv.IMREAD_GRAYSCALE) // 255
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE) // 255
             # print(mask.shape)
             sample["semantic"] = fo.Segmentation(mask=mask)
             sample.compute_metadata()
             samples.append(sample)
 
-        dataset = fo.Dataset()
+        dataset = fo.Dataset("ImageMask")
         dataset.add_samples(samples)
 
         dataset.default_mask_targets = {

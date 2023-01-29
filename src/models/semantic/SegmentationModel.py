@@ -17,6 +17,7 @@ class SegmentationModel(BaseModel):
             loss_fn,
             num_classes,
             device,
+            img_size,
             encoder_name='timm-mobilenetv3_small_minimal_100',
             encoder_weights='imagenet',
     ):
@@ -30,7 +31,7 @@ class SegmentationModel(BaseModel):
         )
         self._torch_model.to(self.device)
         self._transforms = get_preprocessing(
-            get_preprocessing_fn(encoder_name, pretrained=encoder_weights)
+            get_preprocessing_fn(encoder_name, pretrained=encoder_weights), img_size
         )
         self.optimizer = optimizer(self._torch_model.parameters(), lr=lr)
         self.loss_fn = loss_fn
@@ -61,6 +62,7 @@ class SegmentationModel(BaseModel):
         return avg_loss
 
     def predict(self, img):
+        self.eval_mode()
         img = self.transforms(image=img)['image']
         img = torch.Tensor(img).float().unsqueeze(0)
 

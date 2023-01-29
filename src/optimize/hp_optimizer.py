@@ -73,15 +73,14 @@ class HPOptimizer:
             lr=lr,
             loss_fn=loss_fn,
             num_classes=self.num_classes,
-            device=self.device
+            device=self.device,
+            img_size=self.task.dataset.img_size
         )
         self.task.dataset.update_datasets(model.transforms)
 
         loss = 0
         for epoch in range(num_epoch):
-            torch.cuda.empty_cache()
             loss = self._train_model(model)
-            # todo: Зачем туда передавать epoch?
             trial.report(loss, epoch)
 
             # Handle pruning based on the intermediate value.
@@ -93,7 +92,8 @@ class HPOptimizer:
         return loss
 
     def _train_model(self, model: SegmentationModel):
-        train_loss = model.train_step(self.task.dataset.train)
+        torch.cuda.empty_cache()
+        model.train_step(self.task.dataset.train)
         val_loss = model.val_step(self.task.dataset.val)
 
         return val_loss

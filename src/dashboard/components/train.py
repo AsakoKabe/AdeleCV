@@ -31,7 +31,7 @@ controls = [
                         [dbc.Input(id='lr-from', placeholder='from', type='number', min='0', value=0.001)]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='lr-to', placeholder='to', type='number', min='0', value=0.3)]
+                        [dbc.Input(id='lr-to', placeholder='to', type='number', min='0', value=0.001)]
                     )
                 ]
             ),
