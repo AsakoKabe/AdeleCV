@@ -87,6 +87,7 @@ class HPOptimizer:
             if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
 
+        model.log_test_metrics(self.task.dataset.test)
         self.task.dataset.add_predictions(model)
 
         return loss

@@ -1,5 +1,7 @@
 import torch
 import fiftyone as fo
+from tensorboard import program
+
 
 from data.dataset.SegmentationDataset import SegmentationDataset
 from optimize.hp_optimizer import HPOptimizer
@@ -13,6 +15,9 @@ class Trainer:
         self.task = None
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
+        self.tb = program.TensorBoard()
+        self.tb.configure(argv=[None, '--logdir', '../logs'])
+        self.tb.launch()
 
     def run(self):
         self.hp_optimizer.optimize()

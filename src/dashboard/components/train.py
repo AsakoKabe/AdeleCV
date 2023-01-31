@@ -139,12 +139,12 @@ train_board = dbc.Container(
                 ),
                 dbc.Col(
                     [
-                        # html.Div(
-                        #     html.Iframe(
-                        #         src="http://localhost:5151/datasets/",
-                        #         style={"height": "100vh", "width": "100%"},
-                        #     )
-                        # ),
+                        html.Div(
+                            html.Iframe(
+                                src="http://localhost:6006/",
+                                style={"height": "100vh", "width": "100%"},
+                            )
+                        ),
                     ],
                     # md=6
                 )
