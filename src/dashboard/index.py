@@ -1,3 +1,6 @@
+import os
+import shutil
+
 from dash import html, dcc, Output, Input
 
 
@@ -31,3 +34,5 @@ def render_page_content(pathname):
 if __name__ == "__main__":
     # set debug to false when deploying app
     app.run_server(debug=True, port=8080)
+    if os.path.exists('../logs/'):
+        shutil.rmtree('../logs/')

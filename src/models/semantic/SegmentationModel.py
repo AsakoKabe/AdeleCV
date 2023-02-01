@@ -1,19 +1,18 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
+from uuid import uuid4
 
 import torch
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
 import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.metrics import fbeta_score, f1_score, iou_score, accuracy, recall, precision
-from torch.utils.tensorboard import SummaryWriter
 
 from models.base.BaseModel import BaseModel
-from models.semantic.utils import get_preprocessing
+from models.logger.Logger import Logger
+from models.semantic.utils import get_preprocessing, denormalize
 
 
 class SegmentationModel(BaseModel):
-    num_model = 0
-
     def __init__(
             self,
             model,
@@ -21,13 +20,13 @@ class SegmentationModel(BaseModel):
             lr: float,
             loss_fn,
             num_classes,
+            num_epoch,
             device,
             img_size,
             encoder_name='timm-mobilenetv3_small_minimal_100',
             encoder_weights='imagenet',
     ):
         super().__init__()
-        SegmentationModel.num_model += 1
         self.device = device
         self._torch_model = model(
             encoder_name=encoder_name,
@@ -36,6 +35,7 @@ class SegmentationModel(BaseModel):
             classes=num_classes,
         )
         self.num_classes = num_classes
+        self.num_epoch = num_epoch
         self._torch_model.to(self.device)
         self._transforms = get_preprocessing(
             get_preprocessing_fn(encoder_name, pretrained=encoder_weights), img_size
@@ -43,8 +43,9 @@ class SegmentationModel(BaseModel):
         self.optimizer = optimizer(self._torch_model.parameters(), lr=lr)
         self.loss_fn = loss_fn
         self.lr = lr
-        self.count_epoch = 0
-        self.writer = SummaryWriter(log_dir=f'../logs/{self.__str__()}')
+        self.curr_epoch = 0
+        self.id = uuid4().hex[::5]
+        self.logger = Logger(f'../logs/{self.id}')
         self.metrics = [
             fbeta_score, f1_score,
             iou_score, accuracy,
@@ -53,7 +54,7 @@ class SegmentationModel(BaseModel):
 
     def train_step(self, train_ds):
         self.train_mode()
-        self.count_epoch += 1
+        self.curr_epoch += 1
         scores = defaultdict(float)
         for x_batch, y_batch in train_ds:
             self.optimizer.zero_grad()
@@ -64,9 +65,27 @@ class SegmentationModel(BaseModel):
             scores['loss'] += loss.detach().cpu().numpy() / len(train_ds)
             for score, val in self._compute_metrics(y_batch, pred).items():
                 scores[score] += val / len(train_ds)
-        self._log_metrics(scores, self.count_epoch, 'Train')
+
+        self.logger.log_metrics(scores, self.curr_epoch, 'Train')
+        self.logger.log_images(
+            *self._get_images_for_logging(train_ds),
+            id_model=self.id,
+            epoch=self.curr_epoch,
+            stage='Train'
+        )
 
         return scores['loss']
+
+    def _get_images_for_logging(self, dataset, index=0):
+        img = torch.Tensor(dataset.dataset[index][0]).to(self.device)
+        gt = torch.Tensor(dataset.dataset[index][1]).to(self.device)
+        pred = self._torch_model(img.unsqueeze(0))
+
+        img_denormalized = denormalize(img)
+        gt_merged = torch.argmax(gt, dim=0).unsqueeze(0)
+        pred_merged = torch.argmax(pred[0], dim=0).unsqueeze(0)
+
+        return img_denormalized, gt_merged, pred_merged
 
     def val_step(self, val_ds):
         self.eval_mode()
@@ -79,11 +98,17 @@ class SegmentationModel(BaseModel):
                 for score, val in self._compute_metrics(y_batch, pred).items():
                     scores[score] += val / len(val_ds)
 
-        self._log_metrics(scores, self.count_epoch, 'Valid')
+        self.logger.log_metrics(scores, self.curr_epoch, 'Valid')
+        self.logger.log_images(
+            *self._get_images_for_logging(val_ds),
+            id_model=self.id,
+            epoch=self.curr_epoch,
+            stage='Valid'
+        )
 
         return scores['loss']
 
-    def log_test_metrics(self, test_ds):
+    def log_test(self, test_ds):
         self.eval_mode()
         scores = defaultdict(float)
         for x_batch, y_batch in test_ds:
@@ -92,7 +117,23 @@ class SegmentationModel(BaseModel):
                 for score, val in self._compute_metrics(y_batch, pred).items():
                     scores[score] += val / len(test_ds)
 
-        self._log_metrics(scores, 1, 'Test')
+        self.logger.log_metrics(scores, 1, 'Test')
+        self.logger.log_hps(self._get_hparams(), scores)
+        self.logger.log_images(
+            *self._get_images_for_logging(test_ds),
+            id_model=self.id,
+            epoch=self.curr_epoch,
+            stage='Test'
+        )
+
+    def _get_hparams(self):
+        return {
+            'architecture': self._torch_model.__class__.__name__,
+            'lr': self.lr,
+            'optimizer': self.optimizer.__class__.__name__,
+            'loss_fn': self.loss_fn.__class__.__name__,
+            'num_epoch': self.num_epoch,
+        }
 
     def predict(self, img):
         self.eval_mode()
@@ -103,10 +144,6 @@ class SegmentationModel(BaseModel):
             pred = self._torch_model(img.to(self.device))
 
         return pred
-
-    def _log_metrics(self, scores, epoch, stage):
-        for name, val in scores.items():
-            self.writer.add_scalar(f'{stage}/{name}', val, epoch)
 
     def _compute_metrics(self, y_true, y_pred):
         tp, fp, fn, tn = smp.metrics.get_stats(
@@ -122,7 +159,7 @@ class SegmentationModel(BaseModel):
         return scores
 
     def __str__(self):
-        return f'{self.num_model}_{self._torch_model.__class__.__name__}_{self.optimizer.__class__.__name__}_' \
+        return f'{self.id}_{self._torch_model.__class__.__name__}_{self.optimizer.__class__.__name__}_' \
                f'{self.loss_fn.__class__.__name__}_lr={str(self.lr).replace(".", ",")}'
 
     def train_mode(self):
