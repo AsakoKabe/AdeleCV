@@ -1,13 +1,9 @@
-import torch
 from torch.utils.tensorboard import SummaryWriter
-
-from models.semantic.utils import denormalize
 
 
 class Logger:
     def __init__(self, log_path):
         self.log_path = log_path
-        # SummaryWriter(log_dir=log_path)
 
     def log_metrics(self, scores, epoch, stage):
         with SummaryWriter(log_dir=self.log_path) as w:
