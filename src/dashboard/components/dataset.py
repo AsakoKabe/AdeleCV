@@ -68,7 +68,16 @@ controls = [
                 children='Load Dataset'
             ),
         ]
-    )
+    ),
+    # dbc.Form(
+    #     [
+    #         html.Br(),
+    #         dbc.Button(
+    #             "Hide settings",
+    #             id="collapse-dataset-settings-btn",
+    #         ),
+    #     ]
+    # )
 ]
 
 dataset = dbc.Container(
@@ -78,14 +87,21 @@ dataset = dbc.Container(
             id='hidden-div',
             style={'display': 'none'}
         ),
+        dbc.Button(
+            "Hide settings",
+            id="collapse-dataset-settings-btn",
+            style={"margin-bottom": "1%"}
+        ),
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                        dbc.Card(controls, body=True),
-                    ],
-                    md=3,
+                dbc.Collapse(
+                    dbc.Card(controls, body=True),
+                    id="collapse-dataset-settings",
+                    is_open=True,
+                    class_name='col-md-3',
+                    dimension='width',
                 ),
+
                 dbc.Col(
                     [
                         html.Div(

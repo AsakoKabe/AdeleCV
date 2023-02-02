@@ -120,7 +120,16 @@ controls = [
                 children='Start'
             ),
         ]
-    )
+    ),
+    # dbc.Form(
+    #     [
+    #         html.Br(),
+    #         dbc.Button(
+    #             "Hide settings",
+    #             id="collapse-train-settings-btn",
+    #         ),
+    #     ]
+    # )
 ]
 
 train_board = dbc.Container(
@@ -130,13 +139,19 @@ train_board = dbc.Container(
             id='hidden-div-train',
             style={'display': 'none'}
         ),
+        dbc.Button(
+            "Hide settings",
+            id="collapse-train-settings-btn",
+            style={"margin-bottom": "1%"}
+        ),
         dbc.Row(
             [
-                dbc.Col(
-                    [
-                        dbc.Card(controls, body=True),
-                    ],
-                    md=3,
+                dbc.Collapse(
+                    dbc.Card(controls, body=True),
+                    id="collapse-train-settings",
+                    is_open=True,
+                    class_name='col-md-3',
+                    dimension='width',
                 ),
                 dbc.Col(
                     [

@@ -18,7 +18,7 @@ from app import _trainer
     State('batch-size', 'value'),
 )
 def update_dataset_params(
-    *args
+        *args
 ):
     param_names = [
         "n_clicks",
@@ -85,3 +85,25 @@ def update_train_params(
         _trainer.run_optimize()
 
     return ''
+
+
+@app.callback(
+    Output("collapse-dataset-settings", "is_open"),
+    [Input("collapse-dataset-settings-btn", "n_clicks")],
+    [State("collapse-dataset-settings", "is_open")],
+)
+def collapse_dataset(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    Output("collapse-train-settings", "is_open"),
+    [Input("collapse-train-settings-btn", "n_clicks")],
+    [State("collapse-train-settings", "is_open")],
+)
+def collapse_train(n, is_open):
+    if n:
+        return not is_open
+    return is_open
