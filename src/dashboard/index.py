@@ -34,5 +34,5 @@ def render_page_content(pathname):
 if __name__ == "__main__":
     # set debug to false when deploying app
     app.run_server(debug=True, port=8080)
-    if os.path.exists('../logs/'):
-        shutil.rmtree('../logs/')
+    if os.path.exists(f'{os.getenv("TMP_PATH")}'):
+        shutil.rmtree(f'{os.getenv("TMP_PATH")}')

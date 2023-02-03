@@ -1,3 +1,5 @@
+import os
+
 import torch
 import fiftyone as fo
 from tensorboard import program
@@ -16,7 +18,7 @@ class Trainer:
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
         self.tb = program.TensorBoard()
-        self.tb.configure(argv=[None, '--logdir', '../logs'])
+        self.tb.configure(argv=[None, '--logdir', f'{os.getenv("TMP_PATH")}/logs'])
         self.tb.launch()
 
     def run(self):

@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.optim as optim
 import optuna
@@ -88,8 +90,7 @@ class HPOptimizer:
             if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
 
-        model.log_test(self.task.dataset.test)
-        self.task.dataset.add_predictions(model)
+        self._postprocessing_model(model)
 
         return loss
 
@@ -99,3 +100,8 @@ class HPOptimizer:
         val_loss = model.val_step(self.task.dataset.val)
 
         return val_loss
+
+    def _postprocessing_model(self, model):
+        model.log_test(self.task.dataset.test)
+        self.task.dataset.add_predictions(model)
+        model.save(f'{os.getenv("TMP_PATH")}/weights/')

@@ -1,5 +1,8 @@
+import os
 from abc import abstractmethod, ABC
 from uuid import uuid4
+
+import torch
 
 from models.logger.Logger import Logger
 
@@ -28,9 +31,14 @@ class BaseModel(ABC):
         self._num_classes = num_classes
         self._curr_epoch = 0
         self._id = uuid4().hex[::5]
-        self._logger = Logger(f'../logs/{self._id}')
+        self._logger = Logger(f'{os.getenv("TMP_PATH")}/logs')
         self._device = device
         self._torch_model.to(self._device)
+
+    def save(self, path):
+        if not os.path.exists(path):
+            os.mkdir(path)
+        torch.save(self._torch_model, f'{path}/{self._id}.pt')
 
     @property
     def device(self):
