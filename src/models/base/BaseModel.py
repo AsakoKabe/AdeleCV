@@ -1,7 +1,9 @@
 import os
+import pathlib
 from abc import abstractmethod, ABC
 from uuid import uuid4
 
+import pandas as pd
 import torch
 
 from models.logger.Logger import Logger
@@ -31,14 +33,28 @@ class BaseModel(ABC):
         self._num_classes = num_classes
         self._curr_epoch = 0
         self._id = uuid4().hex[::5]
-        self._logger = Logger(f'{os.getenv("TMP_PATH")}/logs')
         self._device = device
         self._torch_model.to(self._device)
 
-    def save(self, path):
+        self._tmp_path = pathlib.Path(os.getenv("TMP_PATH"))
+        self._logger = Logger(self._tmp_path / 'logs' / str(self._id))
+
+    def save(self):
+        path = self._tmp_path / 'weights'
         if not os.path.exists(path):
             os.mkdir(path)
-        torch.save(self._torch_model, f'{path}/{self._id}.pt')
+        torch.save(self._torch_model, path / f'{self._id}.pt')
+
+    def _to_csv(self, hparams, scores):
+        data = {"_id": self._id, "name": self.__str__()}
+        data.update(hparams)
+        for score in scores:
+            data[score] = float(scores[score])
+
+        path = self._tmp_path / 'models.csv'
+        df = pd.read_csv(path) if path.exists() else pd.DataFrame()
+        df = pd.concat([df, pd.DataFrame([data])], ignore_index=True)
+        df.to_csv(path, index=False)
 
     @property
     def device(self):

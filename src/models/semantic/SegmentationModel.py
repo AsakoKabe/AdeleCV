@@ -1,5 +1,7 @@
+import csv
 from collections import defaultdict
 
+import pandas as pd
 import torch
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
 import segmentation_models_pytorch as smp
@@ -81,7 +83,7 @@ class SegmentationModel(BaseModel):
 
         return img_denormalized, gt_merged, pred_merged
 
-    def val_step(self, val_ds):
+    def _val(self, val_ds):
         self.eval_mode()
         scores = defaultdict(float)
         for x_batch, y_batch in val_ds:
@@ -91,6 +93,11 @@ class SegmentationModel(BaseModel):
                 scores['loss'] += loss.detach().cpu().numpy() / len(val_ds)
                 for score, val in self._compute_metrics(y_batch, pred).items():
                     scores[score] += val / len(val_ds)
+
+        return scores
+
+    def val_step(self, val_ds):
+        scores = self._val(val_ds)
 
         self._logger.log_metrics(scores, self._curr_epoch, 'Valid')
         self._logger.log_images(
@@ -103,22 +110,18 @@ class SegmentationModel(BaseModel):
         return scores['loss']
 
     def log_test(self, test_ds):
-        self.eval_mode()
-        scores = defaultdict(float)
-        for x_batch, y_batch in test_ds:
-            with torch.no_grad():
-                pred = self._torch_model(x_batch.to(self.device))
-                for score, val in self._compute_metrics(y_batch, pred).items():
-                    scores[score] += val / len(test_ds)
+        scores = self._val(test_ds)
+        hparams = self._get_hparams()
 
         self._logger.log_metrics(scores, 1, 'Test')
-        self._logger.log_hps(self._get_hparams(), scores)
+        self._logger.log_hps(hparams, scores)
         self._logger.log_images(
             *self._get_images_for_logging(test_ds),
             id_model=self._id,
             epoch=self._curr_epoch,
             stage='Test'
         )
+        self._to_csv(hparams, scores)
 
     def predict(self, img):
         self.eval_mode()

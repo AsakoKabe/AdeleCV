@@ -104,4 +104,4 @@ class HPOptimizer:
     def _postprocessing_model(self, model):
         model.log_test(self.task.dataset.test)
         self.task.dataset.add_predictions(model)
-        model.save(f'{os.getenv("TMP_PATH")}/weights/')
+        model.save()

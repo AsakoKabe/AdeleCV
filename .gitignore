@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 .idea/
-src/logs/
+tmp/
