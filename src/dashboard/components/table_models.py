@@ -27,7 +27,8 @@ def table_models(df):
                             'width': '{}%'.format(len(df.columns)),
                             'textOverflow': 'ellipsis',
                             'overflow': 'hidden'
-                        }
+                        },
+                        export_format='xlsx',
                     ),
                 ]
             )

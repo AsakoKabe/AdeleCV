@@ -40,7 +40,7 @@ class BaseModel(ABC):
         self._logger = Logger(self._tmp_path / 'logs' / str(self._id))
         self._stats_model = None
 
-    def save(self):
+    def save_weights(self):
         path = self._tmp_path / 'weights'
         if not os.path.exists(path):
             os.mkdir(path)
@@ -54,7 +54,7 @@ class BaseModel(ABC):
         self._stats_model = {"_id": self._id, "name": self.__str__()}
         self._stats_model.update(hparams)
         for score in scores:
-            self._stats_model[score] = float(scores[score])
+            self._stats_model[score] = round(float(scores[score]), 3)
 
     @property
     def device(self):
