@@ -121,7 +121,7 @@ class SegmentationModel(BaseModel):
             epoch=self._curr_epoch,
             stage='Test'
         )
-        self._to_csv(hparams, scores)
+        self._save_stats_model(hparams, scores)
 
     def predict(self, img):
         self.eval_mode()

@@ -2,7 +2,7 @@ from dash import Output, Input, html, State
 
 from app import app
 from data.dataset import types
-from app import _trainer
+from app import _task
 
 
 @app.callback(
@@ -33,14 +33,14 @@ def update_dataset_params(
     ]
     dataset_params = dict(zip(param_names, args))
     if all(dataset_params.values()):
-        _trainer.load_dataset(
+        _task.load_dataset(
             dataset_path=dataset_params["dataset_path"],
             dataset_type=getattr(types, dataset_params["dataset_type"]),
             img_size=(dataset_params["img_height"], dataset_params["img_width"]),
             split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
             batch_size=dataset_params["batch_size"],
         )
-        _trainer.create_dataset_session()
+        _task.create_dataset_session()
 
     return ''
 
@@ -80,9 +80,8 @@ def update_train_params(
         train_params['lr_range'] = (train_params['lr_from'], train_params['lr_to'])
         train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
         print(train_params)
-        _trainer.create_task()
-        _trainer.create_optimizer(train_params)
-        _trainer.run_optimize()
+        _task.create_optimizer(train_params)
+        _task.run_optimize()
 
     return ''
 

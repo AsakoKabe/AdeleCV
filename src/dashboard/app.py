@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 
-from train.trainer import Trainer
+from task.SegmentationTask import SegmentationTask
 
 
 app = dash.Dash(
@@ -16,5 +16,5 @@ app.config.suppress_callback_exceptions = True
 
 app.title = "AutoDL-CV"
 
-_trainer = Trainer()
+_task = SegmentationTask()
 

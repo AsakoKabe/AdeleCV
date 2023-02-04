@@ -38,6 +38,7 @@ class BaseModel(ABC):
 
         self._tmp_path = pathlib.Path(os.getenv("TMP_PATH"))
         self._logger = Logger(self._tmp_path / 'logs' / str(self._id))
+        self._stats_model = None
 
     def save(self):
         path = self._tmp_path / 'weights'
@@ -45,16 +46,15 @@ class BaseModel(ABC):
             os.mkdir(path)
         torch.save(self._torch_model, path / f'{self._id}.pt')
 
-    def _to_csv(self, hparams, scores):
-        data = {"_id": self._id, "name": self.__str__()}
-        data.update(hparams)
-        for score in scores:
-            data[score] = float(scores[score])
+    @property
+    def stats_model(self):
+        return self._stats_model
 
-        path = self._tmp_path / 'models.csv'
-        df = pd.read_csv(path) if path.exists() else pd.DataFrame()
-        df = pd.concat([df, pd.DataFrame([data])], ignore_index=True)
-        df.to_csv(path, index=False)
+    def _save_stats_model(self, hparams, scores):
+        self._stats_model = {"_id": self._id, "name": self.__str__()}
+        self._stats_model.update(hparams)
+        for score in scores:
+            self._stats_model[score] = float(scores[score])
 
     @property
     def device(self):

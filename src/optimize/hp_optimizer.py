@@ -104,4 +104,5 @@ class HPOptimizer:
     def _postprocessing_model(self, model):
         model.log_test(self.task.dataset.test)
         self.task.dataset.add_predictions(model)
+        self.task.add_stats_model(model)
         model.save()

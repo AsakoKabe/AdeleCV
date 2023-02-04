@@ -4,7 +4,7 @@ import shutil
 from dash import html, dcc, Output, Input
 
 
-from dashboard.components import nav, dataset, train_board
+from dashboard.components import nav, dataset, train_board, table_models
 from app import app
 import callbacks
 
@@ -27,6 +27,8 @@ def render_page_content(pathname):
         return dataset
     elif pathname == '/train':
         return train_board
+    elif pathname == '/table-models':
+        return table_models()
     else:
         return "ERROR 404: Page not found!"
 
