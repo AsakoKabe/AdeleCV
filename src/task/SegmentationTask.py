@@ -19,7 +19,6 @@ class SegmentationTask(BaseTask):
         self.models: List[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
         self.hp_optimizer = None
-        self.task = None
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
         self.tb = program.TensorBoard()
@@ -27,7 +26,6 @@ class SegmentationTask(BaseTask):
         self.tb.launch()
 
     def add_stats_model(self, model: SegmentationModel):
-        print(model.stats_model)
         self._stats_models = pd.concat(
             [self._stats_models, pd.DataFrame([model.stats_model])],
             ignore_index=True

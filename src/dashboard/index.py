@@ -5,7 +5,7 @@ from dash import html, dcc, Output, Input
 
 
 from dashboard.components import nav, dataset, train_board, table_models
-from app import app
+from app import app, _task
 import callbacks
 
 
@@ -28,12 +28,14 @@ def render_page_content(pathname):
     elif pathname == '/train':
         return train_board
     elif pathname == '/table-models':
-        return table_models()
+        return table_models(_task.stats_models)
     else:
         return "ERROR 404: Page not found!"
 
 
 if __name__ == "__main__":
+    if os.path.exists(f'{os.getenv("TMP_PATH")}'):
+        shutil.rmtree(f'{os.getenv("TMP_PATH")}')
     # set debug to false when deploying app
     app.run_server(debug=True, port=8080)
     if os.path.exists(f'{os.getenv("TMP_PATH")}'):
