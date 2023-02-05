@@ -1,4 +1,10 @@
-from dash import Output, Input, html, State
+import os
+import shutil
+import zipfile
+from pathlib import Path
+
+from dash import Output, Input, html, State, dcc
+from dash.exceptions import PreventUpdate
 
 from app import app
 from data.dataset import types
@@ -16,6 +22,7 @@ from app import _task
     State('val-size', 'value'),
     State('test-size', 'value'),
     State('batch-size', 'value'),
+    prevent_initial_call=True
 )
 def update_dataset_params(
         *args
@@ -58,6 +65,7 @@ def update_dataset_params(
     State('strategy', 'value'),
     State('num-trials', 'value'),
     State('device', 'value'),
+    prevent_initial_call=True
 )
 def update_train_params(
         *args
@@ -90,6 +98,7 @@ def update_train_params(
     Output("collapse-dataset-settings", "is_open"),
     [Input("collapse-dataset-settings-btn", "n_clicks")],
     [State("collapse-dataset-settings", "is_open")],
+    prevent_initial_call=True
 )
 def collapse_dataset(n, is_open):
     if n:
@@ -101,8 +110,36 @@ def collapse_dataset(n, is_open):
     Output("collapse-train-settings", "is_open"),
     [Input("collapse-train-settings-btn", "n_clicks")],
     [State("collapse-train-settings", "is_open")],
+    prevent_initial_call=True
 )
 def collapse_train(n, is_open):
     if n:
         return not is_open
     return is_open
+
+
+@app.callback(
+    Output("download-weights", "data"),
+    Input("export-weights", "n_clicks"),
+    State('stats-models-table', "derived_virtual_data"),
+    State('stats-models-table', "derived_virtual_selected_rows"),
+    prevent_initial_call=True
+)
+def export_weights(n_clicks, rows, derived_virtual_selected_rows):
+    id_selected = set([rows[i]['_id'] for i in derived_virtual_selected_rows])
+    zip_path = _task.export_weights(id_selected)
+
+    return dcc.send_file(zip_path.as_posix())
+
+
+@app.callback(
+    Output('hidden-div-table2', component_property='children'),
+    Input("convert-weights", "n_clicks"),
+    State('stats-models-table', "derived_virtual_data"),
+    State('stats-models-table', "derived_virtual_selected_rows"),
+    prevent_initial_call=True
+)
+def convert_weights(n_clicks, rows, derived_virtual_selected_rows):
+    print('convert weights', derived_virtual_selected_rows)
+    print(rows)
+    return ''

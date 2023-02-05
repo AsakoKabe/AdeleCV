@@ -1,5 +1,7 @@
 import itertools
 import os
+import zipfile
+from pathlib import Path
 from typing import Tuple, Any, List
 
 import pandas as pd
@@ -18,6 +20,7 @@ class SegmentationTask(BaseTask):
         super().__init__()
         self.models: List[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
+        self._weights_dir = Path(os.getenv('TMP_PATH')) / 'weights'
         self.hp_optimizer = None
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
@@ -73,3 +76,12 @@ class SegmentationTask(BaseTask):
 
     def create_dataset_session(self):
         self.session_dataset.dataset = self.dataset.fo_dataset
+
+    def export_weights(self, id_selected):
+        zip_path = self._weights_dir.parent / 'weights.zip'
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            for entry in self._weights_dir.rglob("*"):
+                if entry.stem in id_selected:
+                    zip_file.write(entry, entry.relative_to(self._weights_dir))
+
+        return zip_path
