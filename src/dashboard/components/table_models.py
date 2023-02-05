@@ -7,6 +7,15 @@ def table_models(df):
 
     return dbc.Container(
         [
+            html.Hr(),
+            dbc.DropdownMenu(
+                label="Menu",
+                children=[
+                    dbc.DropdownMenuItem("Export weights"),
+                    dbc.DropdownMenuItem("Convert weights"),
+                ],
+                style={"margin-bottom": "1%"}
+            ),
             html.Div(
                 [
                     dash_table.DataTable(
@@ -22,7 +31,9 @@ def table_models(df):
                         page_action="native",
                         page_current=0,
                         page_size=10,
-                        css=[{'selector': 'table', 'rule': 'table-layout: fixed'}],
+                        css=[
+                            {'selector': 'table', 'rule': 'table-layout: fixed'},
+                        ],
                         style_cell={
                             'width': '{}%'.format(len(df.columns)),
                             'textOverflow': 'ellipsis',
@@ -30,7 +41,8 @@ def table_models(df):
                         },
                         export_format='xlsx',
                     ),
-                ]
+                ],
+                # className='table'
             )
         ]
     )

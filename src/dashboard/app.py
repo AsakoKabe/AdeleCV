@@ -6,7 +6,8 @@ from task.SegmentationTask import SegmentationTask
 
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    update_title=None,
+    external_stylesheets=[dbc.themes.FLATLY],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
 )
 
