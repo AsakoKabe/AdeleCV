@@ -6,6 +6,7 @@ from uuid import uuid4
 import pandas as pd
 import torch
 
+from config import get_settings
 from models.logger.Logger import Logger
 
 
@@ -36,12 +37,12 @@ class BaseModel(ABC):
         self._device = device
         self._torch_model.to(self._device)
 
-        self._tmp_path = pathlib.Path(os.getenv("TMP_PATH"))
-        self._logger = Logger(self._tmp_path / 'logs' / str(self._id))
+        self._weights_path = get_settings().WEIGHTS_PATH
+        self._logger = Logger(get_settings().LOGS_PATH / str(self._id))
         self._stats_model = None
 
     def save_weights(self):
-        path = self._tmp_path / 'weights'
+        path = self._weights_path
         if not os.path.exists(path):
             os.mkdir(path)
         torch.save(self._torch_model, path / f'{self._id}.pt')

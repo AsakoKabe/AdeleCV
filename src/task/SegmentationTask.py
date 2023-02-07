@@ -8,6 +8,7 @@ import pandas as pd
 import fiftyone as fo
 from tensorboard import program
 
+from config import get_settings
 from data.dataset.SegmentationDataset import \
     SegmentationDataset
 from models.semantic.SegmentationModel import SegmentationModel
@@ -20,12 +21,12 @@ class SegmentationTask(BaseTask):
         super().__init__()
         self.models: List[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
-        self._weights_dir = Path(os.getenv('TMP_PATH')) / 'weights'
+        self._weights_dir = get_settings().WEIGHTS_PATH
         self.hp_optimizer = None
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
         self.tb = program.TensorBoard()
-        self.tb.configure(argv=[None, '--logdir', f'{os.getenv("TMP_PATH")}/logs'])
+        self.tb.configure(argv=[None, '--logdir', get_settings().LOGS_PATH.as_posix()])
         self.tb.launch()
 
     @property

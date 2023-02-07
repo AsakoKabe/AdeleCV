@@ -17,7 +17,10 @@ from app import _task
     State('val-size', 'value'),
     State('test-size', 'value'),
     State('batch-size', 'value'),
-    prevent_initial_call=True
+    prevent_initial_call=True,
+    # running=[
+    #     (Output("submit-button-dataset", "disabled"), True, False),
+    # ],
 )
 def update_dataset_params(
         *args
@@ -59,7 +62,10 @@ def update_dataset_params(
     State('strategy', 'value'),
     State('num-trials', 'value'),
     State('device', 'value'),
-    prevent_initial_call=True
+    prevent_initial_call=True,
+    # running=[
+    #     (Output("submit-button-train", "disabled"), True, False),
+    # ],
 )
 def update_train_params(
         *args
