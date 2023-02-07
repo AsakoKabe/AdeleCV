@@ -28,17 +28,11 @@ class SegmentationTask(BaseTask):
         self.tb.configure(argv=[None, '--logdir', f'{os.getenv("TMP_PATH")}/logs'])
         self.tb.launch()
 
-    def add_stats_model(self, model: SegmentationModel):
-        self._stats_models = pd.concat(
-            [self._stats_models, pd.DataFrame([model.stats_model])],
-            ignore_index=True
-        )
-
     @property
     def stats_models(self):
         return self._stats_models
 
-    def create_optimizer(self, params):
+    def train(self, params):
         self.hp_optimizer = HPOptimizer(
             params["architectures"],
             params["lr_range"],
@@ -48,14 +42,12 @@ class SegmentationTask(BaseTask):
             params["strategy"],
             params["num_trials"],
             params["device"],
-            # todo: переписать, добавление информации о модели в таск
-            self
+            dataset=self.dataset,
         )
+        self._run_optimize()
+        self._stats_models = self.hp_optimizer.stats_models
 
-    def run_optimize(self):
-        self.hp_optimizer.optimize()
-
-    def run(self):
+    def _run_optimize(self):
         self.hp_optimizer.optimize()
 
     def load_dataset(
@@ -73,8 +65,9 @@ class SegmentationTask(BaseTask):
             split,
             batch_size
         )
+        self._create_dataset_session()
 
-    def create_dataset_session(self):
+    def _create_dataset_session(self):
         self.session_dataset.dataset = self.dataset.fo_dataset
 
     def export_weights(self, id_selected):

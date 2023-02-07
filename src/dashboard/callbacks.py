@@ -1,8 +1,3 @@
-import os
-import shutil
-import zipfile
-from pathlib import Path
-
 from dash import Output, Input, html, State, dcc
 from dash.exceptions import PreventUpdate
 
@@ -47,7 +42,6 @@ def update_dataset_params(
             split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
             batch_size=dataset_params["batch_size"],
         )
-        _task.create_dataset_session()
 
     return ''
 
@@ -88,8 +82,7 @@ def update_train_params(
         train_params['lr_range'] = (train_params['lr_from'], train_params['lr_to'])
         train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
         print(train_params)
-        _task.create_optimizer(train_params)
-        _task.run_optimize()
+        _task.train(train_params)
 
     return ''
 

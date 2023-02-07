@@ -35,6 +35,7 @@ class SegmentationTorchDataset(Dataset):
         # todo: долго?
         mask = F.one_hot(mask, num_classes=len(self.classes)).numpy()
 
+        # if transforms
         transformed = self.transforms(image=img, mask=mask)
         img = transformed['image']
         mask = transformed['mask']

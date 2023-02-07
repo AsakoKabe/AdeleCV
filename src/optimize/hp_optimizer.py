@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 import torch
 import torch.optim as optim
 import optuna
@@ -22,7 +23,7 @@ class HPOptimizer:
             strategy,
             num_trials,
             device,
-            task,
+            dataset,
     ):
         # todo: optimizer для разных тасок
         self.lr_range = lr_range
@@ -32,9 +33,10 @@ class HPOptimizer:
         self.loss_fns = loss_fns
         self.strategy = strategy
         self.num_trials = num_trials
-        self.task = task
-        self.num_classes = task.dataset.num_classes
+        self.dataset = dataset
+        self.num_classes = dataset.num_classes
         self.device = torch.device('cuda' if torch.cuda.is_available() and device == 'GPU' else 'cpu')
+        self._stats_models = pd.DataFrame()
 
     def optimize(self):
         study = optuna.create_study(
@@ -60,7 +62,7 @@ class HPOptimizer:
         for key, value in trial.params.items():
             print("    {}: {}".format(key, value))
 
-    def _objective(self, trial):
+    def _create_model(self, trial):
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
         optimizer = getattr(optim, optimizer_name)
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
@@ -78,9 +80,14 @@ class HPOptimizer:
             num_classes=self.num_classes,
             num_epoch=num_epoch,
             device=self.device,
-            img_size=self.task.dataset.img_size
+            img_size=self.dataset.img_size,
         )
-        self.task.dataset.update_datasets(model.transforms)
+
+        return model, num_epoch
+
+    def _objective(self, trial):
+        model, num_epoch = self._create_model(trial)
+        self.dataset.update_datasets(model.transforms)
 
         loss = 0
         for epoch in range(num_epoch):
@@ -97,13 +104,23 @@ class HPOptimizer:
 
     def _train_model(self, model: SegmentationModel):
         torch.cuda.empty_cache()
-        model.train_step(self.task.dataset.train)
-        val_loss = model.val_step(self.task.dataset.val)
+        model.train_step(self.dataset.train)
+        val_loss = model.val_step(self.dataset.val)
 
         return val_loss
 
     def _postprocessing_model(self, model):
-        model.log_test(self.task.dataset.test)
-        self.task.dataset.add_predictions(model)
-        self.task.add_stats_model(model)
+        model.log_test(self.dataset.test)
+        self.dataset.add_predictions(model)
+        self._add_stats_model(model)
         model.save_weights()
+
+    def _add_stats_model(self, model: SegmentationModel):
+        self._stats_models = pd.concat(
+            [self._stats_models, pd.DataFrame([model.stats_model])],
+            ignore_index=True
+        )
+
+    @property
+    def stats_models(self):
+        return self._stats_models
