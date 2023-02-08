@@ -16,6 +16,7 @@ class HPOptimizer:
     def __init__(
             self,
             architectures,
+            encoders,
             lr_range,
             optimizers,
             loss_fns,
@@ -29,6 +30,7 @@ class HPOptimizer:
         self.lr_range = lr_range
         self.optimizers = optimizers
         self.architectures = architectures
+        self.encoders = encoders
         self.epoch_range = epoch_range
         self.loss_fns = loss_fns
         self.strategy = strategy
@@ -67,6 +69,8 @@ class HPOptimizer:
         optimizer = getattr(optim, optimizer_name)
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
         architecture = getattr(smp, architecture_name)
+        encoder = trial.suggest_categorical("encoders", self.encoders)
+        # encoder = getattr(smp, architecture_name)
         lr = trial.suggest_float("lr", self.lr_range[0], self.lr_range[1])
         loss_name = trial.suggest_categorical("loss", self.loss_fns)
         loss_fn = getattr(smp.losses, loss_name)('binary')
@@ -74,6 +78,7 @@ class HPOptimizer:
 
         model = SegmentationModel(
             model=architecture,
+            encoder_name=encoder,
             optimizer=optimizer,
             lr=lr,
             loss_fn=loss_fn,

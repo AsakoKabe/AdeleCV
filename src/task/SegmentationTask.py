@@ -36,6 +36,7 @@ class SegmentationTask(BaseTask):
     def train(self, params):
         self.hp_optimizer = HPOptimizer(
             params["architectures"],
+            params['encoders'],
             params["lr_range"],
             params["optimizers"],
             params["loss_fns"],

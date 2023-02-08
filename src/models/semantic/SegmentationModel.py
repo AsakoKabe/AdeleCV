@@ -15,6 +15,7 @@ class SegmentationModel(BaseModel):
     def __init__(
             self,
             model,
+            encoder_name,
             optimizer,
             lr: float,
             loss_fn,
@@ -22,7 +23,6 @@ class SegmentationModel(BaseModel):
             num_epoch,
             device,
             img_size,
-            encoder_name='timm-mobilenetv3_small_minimal_100',
             encoder_weights='imagenet',
     ):
         super().__init__(

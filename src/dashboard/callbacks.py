@@ -53,6 +53,7 @@ def update_dataset_params(
     Output('hidden-div-train', component_property='children'),
     Input('submit-button-train', 'n_clicks'),
     State('architectures', 'value'),
+    State('encoders', 'value'),
     State('lr-from', 'value'),
     State('lr-to', 'value'),
     State('optimizers', 'value'),
@@ -73,6 +74,7 @@ def update_train_params(
     param_names = [
         "n_clicks",
         "architectures",
+        "encoders",
         "lr_from",
         "lr_to",
         "optimizers",

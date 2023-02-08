@@ -1,5 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
+import segmentation_models_pytorch as smp
+
 
 controls = [
     dbc.Form(
@@ -19,6 +21,17 @@ controls = [
                 ],
                 id='architectures',
                 multi=True
+            )
+        ]
+    ),
+    dbc.Form(
+        [
+            dbc.Label("Encoder"),
+            dcc.Dropdown(
+                smp.encoders.get_encoder_names(),
+                id='encoders',
+                multi=True,
+                value=['mobilenet_v2'],
             )
         ]
     ),
