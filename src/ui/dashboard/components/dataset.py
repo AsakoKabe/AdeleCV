@@ -1,22 +1,21 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
 
-from data.dataset import dataset_types
 
 controls = [
     dbc.Form(
         [
             # html.Br(),
             dbc.Label("Path Dataset"),
-            dbc.Input(id='dataset-path', value=r'F:\dataset\ph2')
+            dbc.Input(id='segmentations-path', value=r'F:\dataset\ph2')
         ]
     ),
     dbc.Form(
         [
             dbc.Label("Type Dataset"),
             dcc.Dropdown(
-                [dataset_type.__name__ for dataset_type in dataset_types],
-                id='dataset-type'
+                ["ImageMask", "COCOSemantic"],
+                id='segmentations-type'
             )
         ]
     ),
@@ -37,7 +36,7 @@ controls = [
     ),
     dbc.Form(
         [
-            dbc.Label('Split dataset'),
+            dbc.Label('Split segmentations'),
             dbc.Row(
                 [
                     dbc.Col(
@@ -64,7 +63,7 @@ controls = [
             html.Br(),
             # dbc.Label("Load Dataset"),
             dbc.Button(
-                id='submit-button-dataset',
+                id='submit-button-segmentations',
                 children='Load Dataset'
             ),
         ]
@@ -74,7 +73,7 @@ controls = [
     #         html.Br(),
     #         dbc.Button(
     #             "Hide settings",
-    #             id="collapse-dataset-settings-btn",
+    #             id="collapse-segmentations-settings-btn",
     #         ),
     #     ]
     # )
@@ -89,14 +88,14 @@ dataset = dbc.Container(
         ),
         dbc.Button(
             "Hide settings",
-            id="collapse-dataset-settings-btn",
+            id="collapse-segmentations-settings-btn",
             style={"margin-bottom": "1%"}
         ),
         dbc.Row(
             [
                 dbc.Collapse(
                     dbc.Card(controls, body=True),
-                    id="collapse-dataset-settings",
+                    id="collapse-segmentations-settings",
                     is_open=True,
                     class_name='col-md-3',
                     dimension='width',

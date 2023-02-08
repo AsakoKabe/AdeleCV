@@ -1,13 +1,11 @@
-from typing import Tuple, Any
-
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import fiftyone as fo
 import cv2
 
-from data.dataset.SegmentationTorchDataset import SegmentationTorchDataset
-from models.semantic.SegmentationModel import SegmentationModel
+from .torch_dataset import SegmentationTorchDataset
+from api.models.semantic import SegmentationModel
 
 
 class SegmentationDataset:

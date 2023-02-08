@@ -1,5 +1,3 @@
-import os
-
 import pandas as pd
 import torch
 import torch.optim as optim
@@ -9,7 +7,7 @@ from optuna.trial import TrialState
 from optuna import samplers
 import segmentation_models_pytorch as smp
 
-from models.semantic.SegmentationModel import SegmentationModel
+from api.models.semantic import SegmentationModel
 
 
 class HPOptimizer:

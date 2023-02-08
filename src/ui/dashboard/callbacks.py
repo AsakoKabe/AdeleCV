@@ -1,16 +1,14 @@
-from dash import Output, Input, html, State, dcc
-from dash.exceptions import PreventUpdate
+from dash import Output, Input, State, dcc
 
-from app import app
-from data.dataset import types
-from app import _task
+from ui.dashboard.app import app, _task
+from api.data.segmentations import types
 
 
 @app.callback(
     Output('hidden-div', component_property='children'),
-    Input('submit-button-dataset', 'n_clicks'),
-    State('dataset-type', 'value'),
-    State('dataset-path', 'value'),
+    Input('submit-button-segmentations', 'n_clicks'),
+    State('segmentations-type', 'value'),
+    State('segmentations-path', 'value'),
     State('img-height', 'value'),
     State('img-width', 'value'),
     State('train-size', 'value'),
@@ -19,7 +17,7 @@ from app import _task
     State('batch-size', 'value'),
     prevent_initial_call=True,
     # running=[
-    #     (Output("submit-button-dataset", "disabled"), True, False),
+    #     (Output("submit-button-segmentations", "disabled"), True, False),
     # ],
 )
 def update_dataset_params(
@@ -96,9 +94,9 @@ def update_train_params(
 
 
 @app.callback(
-    Output("collapse-dataset-settings", "is_open"),
-    [Input("collapse-dataset-settings-btn", "n_clicks")],
-    [State("collapse-dataset-settings", "is_open")],
+    Output("collapse-segmentations-settings", "is_open"),
+    [Input("collapse-segmentations-settings-btn", "n_clicks")],
+    [State("collapse-segmentations-settings", "is_open")],
     prevent_initial_call=True
 )
 def collapse_dataset(n, is_open):

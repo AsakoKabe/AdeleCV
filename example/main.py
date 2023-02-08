@@ -1,12 +1,12 @@
-from data.dataset.SegmentationDataset import \
+from api.data.segmentations.dataset import \
     SegmentationDataset
-from data.dataset.types import ImageMaskSemantic
-from task.SegmentationTask import SegmentationTask
+from api.data.segmentations.types import ImageMask
+from api.task.SegmentationTask import SegmentationTask
 from train.trainer import Trainer
 
 if __name__ == '__main__':
-    # dataset = SemanticDataset(r'F:\dataset\coco', COCOSemantic, (640, 640))
-    dataset = SegmentationDataset(r'F:\dataset\ph2', ImageMaskSemantic, (256, 256))
+    # segmentations = SemanticDataset(r'F:\segmentations\coco', COCOSemantic, (640, 640))
+    dataset = SegmentationDataset(r'F:\dataset\ph2', ImageMask, (256, 256))
     task = SegmentationTask(dataset)
     trainer = Trainer(task)
 

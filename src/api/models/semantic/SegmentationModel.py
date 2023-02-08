@@ -1,14 +1,12 @@
-import csv
 from collections import defaultdict
 
-import pandas as pd
 import torch
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
 import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.metrics import fbeta_score, f1_score, iou_score, accuracy, recall, precision
 
-from models.base.BaseModel import BaseModel
-from models.semantic.utils import get_preprocessing, denormalize
+from api.models.base import BaseModel
+from .utils import get_preprocessing, denormalize
 
 
 class SegmentationModel(BaseModel):

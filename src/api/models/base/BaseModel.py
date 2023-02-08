@@ -1,13 +1,11 @@
 import os
-import pathlib
 from abc import abstractmethod, ABC
 from uuid import uuid4
 
-import pandas as pd
 import torch
 
-from config import get_settings
-from models.logger.Logger import Logger
+from api.config import get_settings
+from api.models.logger import Logger
 
 
 class BaseModel(ABC):

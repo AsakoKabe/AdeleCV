@@ -35,7 +35,7 @@ class COCOSemantic(DatasetType):
         return dataset
 
 
-class ImageMaskSemantic(DatasetType):
+class ImageMask(DatasetType):
     @staticmethod
     def create_dataset(dataset_dir):
         samples = []

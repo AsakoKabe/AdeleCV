@@ -1,19 +1,15 @@
-import itertools
-import os
 import zipfile
-from pathlib import Path
-from typing import Tuple, Any, List
+from typing import List
 
 import pandas as pd
 import fiftyone as fo
 from tensorboard import program
 
-from config import get_settings
-from data.dataset.SegmentationDataset import \
-    SegmentationDataset
-from models.semantic.SegmentationModel import SegmentationModel
-from optimize.hp_optimizer import HPOptimizer
-from task.base import BaseTask
+from api.config import get_settings
+from api.data.segmentations import SegmentationDataset
+from api.models.semantic import SegmentationModel
+from api.optimize import HPOptimizer
+from . import BaseTask
 
 
 class SegmentationTask(BaseTask):

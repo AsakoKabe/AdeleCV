@@ -1,6 +1,6 @@
 from os import environ
 
-from src.config.default import DefaultSettings
+from api.config.default import DefaultSettings
 
 
 def get_settings() -> DefaultSettings:

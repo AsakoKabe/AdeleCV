@@ -7,9 +7,9 @@ import numpy as np
 
 class SegmentationTorchDataset(Dataset):
     """
-    A class to construct a PyTorch dataset from a FiftyOne dataset.
+    A class to construct a PyTorch segmentations from a FiftyOne segmentations.
 
-    Args: fiftyone_dataset: a FiftyOne dataset or view that will be used for
+    Args: fiftyone_dataset: a FiftyOne segmentations or view that will be used for
     training or testing transforms (None): a list of PyTorch transforms to
     apply to images and targets when loading
     """

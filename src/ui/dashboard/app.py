@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 
-from task.SegmentationTask import SegmentationTask
+from api.task import SegmentationTask
 
 # celery + docker + redis
 app = dash.Dash(

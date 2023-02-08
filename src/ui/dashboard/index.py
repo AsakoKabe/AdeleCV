@@ -3,9 +3,9 @@ import shutil
 
 from dash import html, dcc, Output, Input
 
-from config import get_settings
-from dashboard.components import nav, dataset, train_board, table_models
-from app import app, _task
+from api.config import get_settings
+from ui.dashboard.components import nav, dataset, train_board, table_models
+from ui.dashboard.app import app, _task
 import callbacks
 
 
@@ -23,7 +23,7 @@ app.layout = html.Div([nav, content])
 def render_page_content(pathname):
     if pathname == '/':
         return "Page empty"
-    elif pathname == '/dataset':
+    elif pathname == '/segmentations':
         return dataset
     elif pathname == '/train':
         return train_board
