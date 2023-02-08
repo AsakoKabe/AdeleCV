@@ -6,7 +6,7 @@ from dash import html, dcc, Output, Input
 from api.config import get_settings
 from ui.dashboard.components import nav, dataset, train_board, table_models
 from ui.dashboard.app import app, _task
-import callbacks
+from callbacks import *
 
 
 content = html.Div(
