@@ -17,6 +17,7 @@ class SegmentationDataset:
             split=(0.7, 0.2, 0.1),
             batch_size=16
     ):
+        # todo: name dataset
         self.dataset_dir = dataset_dir
         self.fo_dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split

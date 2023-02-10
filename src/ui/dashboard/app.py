@@ -1,6 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
-from dash_extensions.enrich import DashProxy, LogTransform
+from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
 from api.task import SegmentationTask
 
@@ -10,9 +10,7 @@ app = DashProxy(
     update_title=None,
     external_stylesheets=[dbc.themes.FLATLY],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    transforms=[LogTransform(
-        # log_config=log_confid
-    )],
+    transforms=[LogTransform(), NoOutputTransform()],
     prevent_initial_callbacks=True,
 )
 

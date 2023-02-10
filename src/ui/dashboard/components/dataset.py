@@ -67,25 +67,12 @@ controls = [
                 children='Load Dataset'
             ),
         ]
-    ),
-    # dbc.Form(
-    #     [
-    #         html.Br(),
-    #         dbc.Button(
-    #             "Hide settings",
-    #             id="collapse-segmentations-settings-btn",
-    #         ),
-    #     ]
-    # )
+    )
 ]
 
 dataset = dbc.Container(
     [
         html.Hr(),
-        html.Div(
-            id='hidden-div',
-            style={'display': 'none'}
-        ),
         dbc.Button(
             "Hide settings",
             id="collapse-segmentations-settings-btn",

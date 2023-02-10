@@ -148,10 +148,6 @@ controls = [
 train_board = dbc.Container(
     [
         html.Hr(),
-        html.Div(
-            id='hidden-div-train',
-            style={'display': 'none'}
-        ),
         dbc.Button(
             "Hide settings",
             id="collapse-train-settings-btn",

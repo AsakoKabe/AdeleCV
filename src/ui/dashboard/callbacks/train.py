@@ -1,10 +1,11 @@
 from dash import Output, Input, State, dcc
+from dash.exceptions import PreventUpdate
+from dash_extensions.enrich import DashLogger
 
 from ui.dashboard.app import app, _task
 
 
 @app.callback(
-    Output('hidden-div-train', component_property='children'),
     Input('submit-button-train', 'n_clicks'),
     State('architectures', 'value'),
     State('encoders', 'value'),
@@ -21,12 +22,17 @@ from ui.dashboard.app import app, _task
     # running=[
     #     (Output("submit-button-train", "disabled"), True, False),
     # ],
+    log=True,
 )
 def update_train_params(
-        *args
+    n_clicks,
+    *args,
+    dash_logger: DashLogger,
 ):
+    if not n_clicks:
+        raise PreventUpdate()
+
     param_names = [
-        "n_clicks",
         "architectures",
         "encoders",
         "lr_from",
@@ -45,8 +51,6 @@ def update_train_params(
         train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
         print(train_params)
         _task.train(train_params)
-
-    return ''
 
 
 @app.callback(

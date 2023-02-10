@@ -1,4 +1,5 @@
 from dash import Output, Input, State, dcc
+from dash.exceptions import PreventUpdate
 from dash_extensions.enrich import DashLogger
 
 from ui.dashboard.app import app, _task
@@ -6,7 +7,7 @@ from api.data.segmentations import types
 
 
 @app.callback(
-    Output('hidden-div', component_property='children'),
+    # Output('hidden-div', component_property='children'),
     Input('submit-button-segmentations', 'n_clicks'),
     State('segmentations-type', 'value'),
     State('segmentations-path', 'value'),
@@ -23,12 +24,14 @@ from api.data.segmentations import types
     log=True
 )
 def update_dataset_params(
+    n_clicks,
     *args,
     dash_logger: DashLogger,
 ):
-    print('1234')
+    if not n_clicks:
+        raise PreventUpdate()
+
     param_names = [
-        "n_clicks",
         "dataset_type",
         "dataset_path",
         "img_height",
@@ -51,7 +54,6 @@ def update_dataset_params(
     dash_logger.warning("This is a warning")
     dash_logger.error("Some error occurred")
     dash_logger.info("Here goes some info")
-    return ''
 
 
 @app.callback(

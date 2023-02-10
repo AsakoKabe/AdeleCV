@@ -10,14 +10,6 @@ def table_models(df):
 
     return dbc.Container(
         [
-            html.Div(
-                id='hidden-div-table',
-                style={'display': 'none'}
-            ),
-            html.Div(
-                id='hidden-div-table2',
-                style={'display': 'none'}
-            ),
             html.Hr(),
             dbc.DropdownMenu(
                 label="Menu",
