@@ -23,7 +23,7 @@ app.layout = html.Div([nav, content])
 def render_page_content(pathname):
     if pathname == '/':
         return "Page empty"
-    elif pathname == '/segmentations':
+    elif pathname == '/dataset':
         return dataset
     elif pathname == '/train':
         return train_board

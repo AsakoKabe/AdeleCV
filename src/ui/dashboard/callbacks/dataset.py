@@ -1,4 +1,5 @@
 from dash import Output, Input, State, dcc
+from dash_extensions.enrich import DashLogger
 
 from ui.dashboard.app import app, _task
 from api.data.segmentations import types
@@ -19,10 +20,13 @@ from api.data.segmentations import types
     # running=[
     #     (Output("submit-button-segmentations", "disabled"), True, False),
     # ],
+    log=True
 )
 def update_dataset_params(
-        *args
+    *args,
+    dash_logger: DashLogger,
 ):
+    print('1234')
     param_names = [
         "n_clicks",
         "dataset_type",
@@ -43,7 +47,10 @@ def update_dataset_params(
             split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
             batch_size=dataset_params["batch_size"],
         )
-
+    dash_logger.info("Here goes some info")
+    dash_logger.warning("This is a warning")
+    dash_logger.error("Some error occurred")
+    dash_logger.info("Here goes some info")
     return ''
 
 
