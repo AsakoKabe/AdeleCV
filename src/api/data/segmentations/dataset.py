@@ -5,7 +5,7 @@ import fiftyone as fo
 import cv2
 
 from .torch_dataset import SegmentationTorchDataset
-from api.models.semantic import SegmentationModel
+from api.models.segmentations import SegmentationModel
 
 
 class SegmentationDataset:

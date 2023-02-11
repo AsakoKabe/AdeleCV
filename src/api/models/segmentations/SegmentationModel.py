@@ -6,8 +6,8 @@ import segmentation_models_pytorch as smp
 from segmentation_models_pytorch.metrics import fbeta_score, f1_score, iou_score, accuracy, recall, precision
 
 from api.models.base import BaseModel
+from api.logs import get_logger
 from .utils import get_preprocessing, denormalize
-from ...logs import get_logger
 
 
 class SegmentationModel(BaseModel):
@@ -146,12 +146,3 @@ class SegmentationModel(BaseModel):
             scores[metric.__name__] = metric(tp, fp, fn, tn, reduction='macro-imagewise')
 
         return scores
-
-    def _get_hparams(self):
-        return {
-            'architecture': self._torch_model.__class__.__name__,
-            'lr': self._lr,
-            'optimizer': self._optimizer.__class__.__name__,
-            'loss_fn': self._loss_fn.__class__.__name__,
-            'num_epoch': self._num_epoch,
-        }

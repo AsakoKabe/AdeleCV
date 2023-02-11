@@ -55,6 +55,15 @@ class BaseModel(ABC):
         for score in scores:
             self._stats_model[score] = round(float(scores[score]), 3)
 
+    def _get_hparams(self):
+        return {
+            'architecture': self._torch_model.__class__.__name__,
+            'lr': self._lr,
+            'optimizer': self._optimizer.__class__.__name__,
+            'loss_fn': self._loss_fn.__class__.__name__,
+            'num_epoch': self._num_epoch,
+        }
+
     @property
     def device(self):
         return self._device

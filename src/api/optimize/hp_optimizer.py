@@ -8,7 +8,27 @@ from optuna import samplers
 import segmentation_models_pytorch as smp
 
 from api.logs import get_logger
-from api.models.semantic import SegmentationModel
+from api.models.segmentations import SegmentationModel
+
+
+def _log_study(study):
+    pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
+    complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
+
+    logger = get_logger()
+    logger.info("Study statistics:")
+    logger.info(f"Number of finished trials: {len(study.trials)}")
+    logger.info(f"Number of pruned trials: {len(pruned_trials)}")
+    logger.info(f"Number of complete trials: {len(complete_trials)}")
+
+    logger.info("Best trial:")
+    trial = study.best_trial
+
+    logger.info(f"Value: {trial.value}")
+
+    logger.info("Params: ")
+    for key, value in trial.params.items():
+        logger.info(f"{key}: {value}")
 
 
 class HPOptimizer:
@@ -45,24 +65,7 @@ class HPOptimizer:
             sampler=getattr(samplers, self.strategy)()
         )
         study.optimize(self._objective, n_trials=self.num_trials, timeout=600)
-
-        pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
-        complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
-
-        logger = get_logger()
-        logger.info("Study statistics:")
-        logger.info(f"Number of finished trials: {len(study.trials)}")
-        logger.info(f"Number of pruned trials: {len(pruned_trials)}")
-        logger.info(f"Number of complete trials: {len(complete_trials)}")
-
-        logger.info("Best trial:")
-        trial = study.best_trial
-
-        logger.info(f"Value: {trial.value}")
-
-        logger.info("Params: ")
-        for key, value in trial.params.items():
-            logger.info(f"{key}: {value}")
+        _log_study(study)
 
     def _create_model(self, trial):
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
@@ -70,7 +73,6 @@ class HPOptimizer:
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
         architecture = getattr(smp, architecture_name)
         encoder = trial.suggest_categorical("encoders", self.encoders)
-        # encoder = getattr(smp, architecture_name)
         lr = trial.suggest_float("lr", self.lr_range[0], self.lr_range[1])
         loss_name = trial.suggest_categorical("loss", self.loss_fns)
         loss_fn = getattr(smp.losses, loss_name)('binary')
