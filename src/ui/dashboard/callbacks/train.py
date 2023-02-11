@@ -1,7 +1,7 @@
-from dash import Output, Input, State, dcc
+from dash import Output, Input, State
 from dash.exceptions import PreventUpdate
-from dash_extensions.enrich import DashLogger
 
+from api.logs import get_logger
 from ui.dashboard.app import app, _task
 
 
@@ -22,12 +22,10 @@ from ui.dashboard.app import app, _task
     # running=[
     #     (Output("submit-button-train", "disabled"), True, False),
     # ],
-    log=True,
 )
 def update_train_params(
     n_clicks,
     *args,
-    dash_logger: DashLogger,
 ):
     if not n_clicks:
         raise PreventUpdate()
@@ -49,8 +47,11 @@ def update_train_params(
     if all(train_params.values()):
         train_params['lr_range'] = (train_params['lr_from'], train_params['lr_to'])
         train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
-        print(train_params)
-        _task.train(train_params)
+        try:
+            _task.train(train_params)
+        except Exception as e:
+            logger = get_logger()
+            logger.error(e)
 
 
 @app.callback(

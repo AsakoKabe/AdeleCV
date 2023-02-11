@@ -1,3 +1,4 @@
+import logging
 import os
 from os import environ
 from pathlib import Path
@@ -9,6 +10,8 @@ class DefaultSettings:
     """
 
     TMP_PATH: Path = Path(os.getenv('TMP_PATH'))
-    LOGS_PATH: Path = TMP_PATH / 'logs'
+    TENSORBOARD_LOGS_PATH: Path = TMP_PATH / 'tensorboard'
     WEIGHTS_PATH: Path = TMP_PATH / 'weights'
     CACHE_PATH: Path = TMP_PATH / 'cache'
+    LOGFILE_PATH: Path = TMP_PATH / 'logfile.log'
+    LOGGER_NAME: str = 'autodl'

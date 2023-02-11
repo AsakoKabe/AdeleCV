@@ -1,4 +1,5 @@
 from .dataset import update_dataset_params, collapse_dataset
+from .notifications import notify
 from .train import collapse_train, update_train_params
 from .table_models import export_weights, convert_weights
 
@@ -9,5 +10,6 @@ __all__ = [
     "collapse_train",
     "update_train_params",
     "export_weights",
-    "convert_weights"
+    "convert_weights",
+    "notify",
 ]

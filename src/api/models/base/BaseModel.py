@@ -4,8 +4,8 @@ from uuid import uuid4
 
 import torch
 
-from api.config import get_settings
-from api.models.logger import Logger
+from config import get_settings
+from api.models.tensorboard_logger import TensorboardLogger
 
 
 class BaseModel(ABC):
@@ -36,7 +36,7 @@ class BaseModel(ABC):
         self._torch_model.to(self._device)
 
         self._weights_path = get_settings().WEIGHTS_PATH
-        self._logger = Logger(get_settings().LOGS_PATH / str(self._id))
+        self._logger = TensorboardLogger(get_settings().TENSORBOARD_LOGS_PATH / str(self._id))
         self._stats_model = None
 
     def save_weights(self):

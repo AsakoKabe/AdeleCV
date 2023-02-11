@@ -1,7 +1,7 @@
-from dash import Output, Input, State, dcc
+from dash import Output, Input, State
 from dash.exceptions import PreventUpdate
-from dash_extensions.enrich import DashLogger
 
+from api.logs import get_logger
 from ui.dashboard.app import app, _task
 from api.data.segmentations import types
 
@@ -21,12 +21,10 @@ from api.data.segmentations import types
     # running=[
     #     (Output("submit-button-segmentations", "disabled"), True, False),
     # ],
-    log=True
 )
 def update_dataset_params(
     n_clicks,
     *args,
-    dash_logger: DashLogger,
 ):
     if not n_clicks:
         raise PreventUpdate()
@@ -43,17 +41,17 @@ def update_dataset_params(
     ]
     dataset_params = dict(zip(param_names, args))
     if all(dataset_params.values()):
-        _task.load_dataset(
-            dataset_path=dataset_params["dataset_path"],
-            dataset_type=getattr(types, dataset_params["dataset_type"]),
-            img_size=(dataset_params["img_height"], dataset_params["img_width"]),
-            split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
-            batch_size=dataset_params["batch_size"],
-        )
-    dash_logger.info("Here goes some info")
-    dash_logger.warning("This is a warning")
-    dash_logger.error("Some error occurred")
-    dash_logger.info("Here goes some info")
+        try:
+            _task.load_dataset(
+                dataset_path=dataset_params["dataset_path"],
+                dataset_type=getattr(types, dataset_params["dataset_type"]),
+                img_size=(dataset_params["img_height"], dataset_params["img_width"]),
+                split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
+                batch_size=dataset_params["batch_size"],
+            )
+        except Exception as e:
+            logger = get_logger()
+            logger.error(e)
 
 
 @app.callback(

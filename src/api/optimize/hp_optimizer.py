@@ -7,6 +7,7 @@ from optuna.trial import TrialState
 from optuna import samplers
 import segmentation_models_pytorch as smp
 
+from api.logs import get_logger
 from api.models.semantic import SegmentationModel
 
 
@@ -48,19 +49,20 @@ class HPOptimizer:
         pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
         complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
 
-        print("Study statistics: ")
-        print("  Number of finished trials: ", len(study.trials))
-        print("  Number of pruned trials: ", len(pruned_trials))
-        print("  Number of complete trials: ", len(complete_trials))
+        logger = get_logger()
+        logger.info("Study statistics:")
+        logger.info(f"Number of finished trials: {len(study.trials)}")
+        logger.info(f"Number of pruned trials: {len(pruned_trials)}")
+        logger.info(f"Number of complete trials: {len(complete_trials)}")
 
-        print("Best trial:")
+        logger.info("Best trial:")
         trial = study.best_trial
 
-        print("  Value: ", trial.value)
+        logger.info(f"Value: {trial.value}")
 
-        print("  Params: ")
+        logger.info("Params: ")
         for key, value in trial.params.items():
-            print("    {}: {}".format(key, value))
+            logger.info(f"{key}: {value}")
 
     def _create_model(self, trial):
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)

@@ -7,6 +7,7 @@ from segmentation_models_pytorch.metrics import fbeta_score, f1_score, iou_score
 
 from api.models.base import BaseModel
 from .utils import get_preprocessing, denormalize
+from ...logs import get_logger
 
 
 class SegmentationModel(BaseModel):
@@ -120,6 +121,8 @@ class SegmentationModel(BaseModel):
             stage='Test'
         )
         self._save_stats_model(hparams, scores)
+        logger = get_logger()
+        logger.info(f"Model {self.__str__()} trained with test loss {scores['loss']}")
 
     def predict(self, img):
         self.eval_mode()

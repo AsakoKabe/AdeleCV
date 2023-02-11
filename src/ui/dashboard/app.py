@@ -2,6 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
+from api.logs import enable_logs, LogMonitoringHandler
 from api.task import SegmentationTask
 
 # celery + docker + redis
@@ -22,3 +23,4 @@ app.title = "AutoDL-CV"
 
 _task = SegmentationTask()
 
+enable_logs(LogMonitoringHandler)

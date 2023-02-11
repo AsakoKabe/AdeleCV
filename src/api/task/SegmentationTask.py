@@ -1,3 +1,4 @@
+import os
 import zipfile
 from typing import List
 
@@ -5,11 +6,12 @@ import pandas as pd
 import fiftyone as fo
 from tensorboard import program
 
-from api.config import get_settings
+from config import get_settings
 from api.data.segmentations import SegmentationDataset
 from api.models.semantic import SegmentationModel
 from api.optimize import HPOptimizer
 from . import BaseTask
+from ..logs import get_logger
 
 
 class SegmentationTask(BaseTask):
@@ -22,14 +24,17 @@ class SegmentationTask(BaseTask):
         self.dataset = None
         self.session_dataset = fo.launch_app(remote=True)
         self.tb = program.TensorBoard()
-        self.tb.configure(argv=[None, '--logdir', get_settings().LOGS_PATH.as_posix()])
+        self.tb.configure(argv=[None, '--logdir', get_settings().TENSORBOARD_LOGS_PATH.as_posix()])
         self.tb.launch()
+        # os.mkdir(get_settings().TMP_PATH)
 
     @property
     def stats_models(self):
         return self._stats_models
 
     def train(self, params):
+        logger = get_logger()
+        logger.info("Train models started")
         self.hp_optimizer = HPOptimizer(
             params["architectures"],
             params['encoders'],
@@ -44,6 +49,7 @@ class SegmentationTask(BaseTask):
         )
         self._run_optimize()
         self._stats_models = self.hp_optimizer.stats_models
+        logger.info("Train models is over")
 
     def _run_optimize(self):
         self.hp_optimizer.optimize()
@@ -56,6 +62,8 @@ class SegmentationTask(BaseTask):
             split,
             batch_size,
     ):
+        logger = get_logger()
+        logger.info("Creating a dataset")
         self.dataset = SegmentationDataset(
             dataset_path,
             dataset_type,
@@ -64,6 +72,7 @@ class SegmentationTask(BaseTask):
             batch_size
         )
         self._create_dataset_session()
+        logger.info("Dataset created")
 
     def _create_dataset_session(self):
         self.session_dataset.dataset = self.dataset.fo_dataset
