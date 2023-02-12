@@ -37,6 +37,17 @@ controls = [
     ),
     dbc.Form(
         [
+            dbc.Label("Pretrained weight"),
+            dcc.Dropdown(
+                ['imagenet', 'None'],
+                id='pretrained-weight',
+                multi=True,
+                value=['imagenet'],
+            )
+        ]
+    ),
+    dbc.Form(
+        [
             dbc.Label("Learning rate"),
             dbc.Row(
                 [

@@ -14,6 +14,7 @@ class SegmentationTask(BaseTask):
         self._hp_optimizer = HPOptimizer(
             params["architectures"],
             params['encoders'],
+            params['pretrained-weight'],
             params["lr_range"],
             params["optimizers"],
             params["loss_fns"],

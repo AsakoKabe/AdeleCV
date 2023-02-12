@@ -36,6 +36,7 @@ class HPOptimizer:
             self,
             architectures,
             encoders,
+            pretrained_weights,
             lr_range,
             optimizers,
             loss_fns,
@@ -50,6 +51,7 @@ class HPOptimizer:
         self.optimizers = optimizers
         self.architectures = architectures
         self.encoders = encoders
+        self._pretrained_weights = pretrained_weights
         self.epoch_range = epoch_range
         self.loss_fns = loss_fns
         self.strategy = strategy
@@ -73,6 +75,7 @@ class HPOptimizer:
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
         architecture = getattr(smp, architecture_name)
         encoder = trial.suggest_categorical("encoders", self.encoders)
+        pretrained_weight = trial.suggest_categorical("pretrained_weight", self._pretrained_weights)
         lr = trial.suggest_float("lr", self.lr_range[0], self.lr_range[1])
         loss_name = trial.suggest_categorical("loss", self.loss_fns)
         loss_fn = getattr(smp.losses, loss_name)('binary')
@@ -81,6 +84,7 @@ class HPOptimizer:
         model = SegmentationModel(
             model=architecture,
             encoder_name=encoder,
+            pretrained_weight=pretrained_weight if pretrained_weight != "None" else None,
             optimizer=optimizer,
             lr=lr,
             loss_fn=loss_fn,

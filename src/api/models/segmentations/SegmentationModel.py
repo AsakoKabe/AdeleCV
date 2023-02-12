@@ -15,6 +15,7 @@ class SegmentationModel(BaseModel):
             self,
             model,
             encoder_name,
+            pretrained_weight,
             optimizer,
             lr: float,
             loss_fn,
@@ -22,12 +23,11 @@ class SegmentationModel(BaseModel):
             num_epoch,
             device,
             img_size,
-            encoder_weights='imagenet',
     ):
         super().__init__(
             model=model(
                 encoder_name=encoder_name,
-                encoder_weights=encoder_weights,
+                encoder_weights=pretrained_weight,
                 in_channels=3,
                 classes=num_classes,
             ),
@@ -35,7 +35,8 @@ class SegmentationModel(BaseModel):
             lr=lr,
             loss_fn=loss_fn,
             transforms=get_preprocessing(
-                get_preprocessing_fn(encoder_name, pretrained=encoder_weights), img_size
+                get_preprocessing_fn(encoder_name, pretrained=pretrained_weight) if pretrained_weight else None,
+                img_size
             ),
             metrics=[
                 fbeta_score, f1_score,
@@ -46,6 +47,8 @@ class SegmentationModel(BaseModel):
             num_epoch=num_epoch,
             device=device,
         )
+        self._encoder_name = encoder_name
+        self._pretrained_weight = pretrained_weight
 
     def train_step(self, train_ds):
         self.train_mode()
@@ -146,3 +149,8 @@ class SegmentationModel(BaseModel):
             scores[metric.__name__] = metric(tp, fp, fn, tn, reduction='macro-imagewise')
 
         return scores
+
+    def __str__(self):
+        return f'{self._id}_{self._torch_model.__class__.__name__}_{self._encoder_name}_{self._pretrained_weight}_' \
+               f'{self._optimizer.__class__.__name__}_' \
+               f'{self._loss_fn.__class__.__name__}_lr={str(self._lr).replace(".", ",")}'

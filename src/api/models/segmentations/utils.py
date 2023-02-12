@@ -14,10 +14,14 @@ def get_preprocessing(preprocessing_fn, img_size=(256, 256)):
         :param img_size:
 
     """
-
+    preprocessing = A.Lambda(image=preprocessing_fn) if preprocessing_fn else \
+        A.Normalize(
+            mean=(0.485, 0.456, 0.406),
+            std=(0.229, 0.224, 0.225)
+        )
     _transform = [
         A.Resize(*img_size),
-        A.Lambda(image=preprocessing_fn),
+        preprocessing,
         A.Lambda(image=to_tensor, mask=to_tensor),
     ]
     return A.Compose(_transform)

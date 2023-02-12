@@ -9,6 +9,7 @@ from ui.dashboard.app import app, _task
     Input('submit-button-train', 'n_clicks'),
     State('architectures', 'value'),
     State('encoders', 'value'),
+    State('pretrained-weight', 'value'),
     State('lr-from', 'value'),
     State('lr-to', 'value'),
     State('optimizers', 'value'),
@@ -33,6 +34,7 @@ def update_train_params(
     param_names = [
         "architectures",
         "encoders",
+        'pretrained-weight',
         "lr_from",
         "lr_to",
         "optimizers",
