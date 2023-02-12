@@ -18,6 +18,7 @@ from ui.dashboard.app import app, _task
     State('epoch-to', 'value'),
     State('strategy', 'value'),
     State('num-trials', 'value'),
+    State('optimize-score', 'value'),
     State('device', 'value'),
     prevent_initial_call=True,
     # running=[
@@ -34,7 +35,7 @@ def update_train_params(
     param_names = [
         "architectures",
         "encoders",
-        'pretrained-weight',
+        'pretrained_weight',
         "lr_from",
         "lr_to",
         "optimizers",
@@ -43,7 +44,8 @@ def update_train_params(
         "epoch_to",
         "strategy",
         "num_trials",
-        "device"
+        'optimize_score',
+        "device",
     ]
     train_params = dict(zip(param_names, args))
     if all(train_params.values()):

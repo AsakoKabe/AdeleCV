@@ -2,7 +2,6 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc
 import segmentation_models_pytorch as smp
 
-
 controls = [
     dbc.Form(
         [
@@ -64,6 +63,7 @@ controls = [
     dbc.Form(
         [
             dbc.Label("Optimizers"),
+            # todo: add
             dcc.Dropdown(
                 ["AdamW", "RMSprop", "SGD"],
                 id='optimizers',
@@ -122,6 +122,18 @@ controls = [
         [
             dbc.Label("Num trials"),
             dbc.Input(id='num-trials', type='number', min='1', value=10)
+        ]
+    ),
+    dbc.Form(
+        [
+            dbc.Label("Optimize score"),
+            dcc.Dropdown(
+                ['loss', 'fbeta_score', 'f1_score',
+                 'iou_score', 'accuracy',
+                 'precision', 'recall'],
+                id='optimize-score',
+                value='loss',
+            )
         ]
     ),
     dbc.Form(

@@ -14,7 +14,7 @@ class SegmentationTask(BaseTask):
         self._hp_optimizer = HPOptimizer(
             params["architectures"],
             params['encoders'],
-            params['pretrained-weight'],
+            params['pretrained_weight'],
             params["lr_range"],
             params["optimizers"],
             params["loss_fns"],
@@ -23,6 +23,7 @@ class SegmentationTask(BaseTask):
             params["num_trials"],
             params["device"],
             dataset=self._dataset,
+            optimize_score=params['optimize_score']
         )
         self._run_optimize()
         self._stats_models = self._hp_optimizer.stats_models

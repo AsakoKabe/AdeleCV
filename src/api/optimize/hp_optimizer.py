@@ -45,6 +45,7 @@ class HPOptimizer:
             num_trials,
             device,
             dataset,
+            optimize_score,
     ):
         # todo: optimizer для разных тасок
         self.lr_range = lr_range
@@ -60,10 +61,12 @@ class HPOptimizer:
         self.num_classes = dataset.num_classes
         self.device = torch.device('cuda' if torch.cuda.is_available() and device == 'GPU' else 'cpu')
         self._stats_models = pd.DataFrame()
+        self._optimize_score = optimize_score
 
     def optimize(self):
+        direction = 'minimize' if self._optimize_score == 'loss' else 'maximize'
         study = optuna.create_study(
-            direction="minimize",
+            direction=direction,
             sampler=getattr(samplers, self.strategy)()
         )
         study.optimize(self._objective, n_trials=self.num_trials, timeout=600)
@@ -100,10 +103,10 @@ class HPOptimizer:
         model, num_epoch = self._create_model(trial)
         self.dataset.update_datasets(model.transforms)
 
-        loss = 0
+        score = 0
         for epoch in range(num_epoch):
-            loss = self._train_model(model)
-            trial.report(loss, epoch)
+            score = self._train_model(model)
+            trial.report(score, epoch)
 
             # Handle pruning based on the intermediate value.
             if trial.should_prune():
@@ -111,14 +114,14 @@ class HPOptimizer:
 
         self._postprocessing_model(model)
 
-        return loss
+        return score
 
     def _train_model(self, model: SegmentationModel):
         torch.cuda.empty_cache()
         model.train_step(self.dataset.train)
         val_loss = model.val_step(self.dataset.val)
 
-        return val_loss
+        return val_loss[self._optimize_score]
 
     def _postprocessing_model(self, model):
         model.log_test(self.dataset.test)

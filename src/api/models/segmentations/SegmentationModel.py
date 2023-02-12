@@ -72,7 +72,7 @@ class SegmentationModel(BaseModel):
             stage='Train'
         )
 
-        return scores['loss']
+        return scores
 
     def _get_images_for_logging(self, dataset, index=0):
         img = torch.Tensor(dataset.dataset[index][0]).to(self.device)
@@ -109,7 +109,7 @@ class SegmentationModel(BaseModel):
             stage='Valid'
         )
 
-        return scores['loss']
+        return scores
 
     def log_test(self, test_ds):
         scores = self._val(test_ds)
@@ -154,3 +154,14 @@ class SegmentationModel(BaseModel):
         return f'{self._id}_{self._torch_model.__class__.__name__}_{self._encoder_name}_{self._pretrained_weight}_' \
                f'{self._optimizer.__class__.__name__}_' \
                f'{self._loss_fn.__class__.__name__}_lr={str(self._lr).replace(".", ",")}'
+
+    def _get_hparams(self):
+        return {
+            'architecture': self._torch_model.__class__.__name__,
+            'encoder': self._encoder_name,
+            'pretrained_weight': self._pretrained_weight,
+            'lr': self._lr,
+            'optimizer': self._optimizer.__class__.__name__,
+            'loss_fn': self._loss_fn.__class__.__name__,
+            'num_epoch': self._num_epoch,
+        }
