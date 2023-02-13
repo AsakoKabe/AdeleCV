@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
 
+from api.data.segmentations import get_segmentations_dataset_types
 
 controls = [
     dbc.Form(
@@ -14,7 +15,7 @@ controls = [
         [
             dbc.Label("Type Dataset"),
             dcc.Dropdown(
-                ["ImageMask", "COCOSemantic"],
+                get_segmentations_dataset_types(),
                 id='segmentations-type'
             )
         ]

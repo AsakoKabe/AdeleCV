@@ -2,22 +2,17 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc
 import segmentation_models_pytorch as smp
 
+from api.models.segmentations import get_segmentations_models, get_encoders, get_pretrained_weights, \
+    get_torch_optimizers, get_losses, get_optimize_scores
+from api.optimize import get_hp_optimizers
+
 controls = [
+    # dbc.Label("Model hyper params", class_name='font-weight-bold'),
     dbc.Form(
         [
             dbc.Label("Architectures"),
             dcc.Dropdown(
-                [
-                    "Unet",
-                    "UnetPlusPlus",
-                    "MAnet",
-                    "Linknet",
-                    "FPN",
-                    "PSPNet",
-                    "DeepLabV3",
-                    "DeepLabV3Plus",
-                    "PAN",
-                ],
+                get_segmentations_models(),
                 id='architectures',
                 multi=True
             )
@@ -27,7 +22,7 @@ controls = [
         [
             dbc.Label("Encoder"),
             dcc.Dropdown(
-                smp.encoders.get_encoder_names(),
+                get_encoders(),
                 id='encoders',
                 multi=True,
                 value=['mobilenet_v2'],
@@ -38,7 +33,7 @@ controls = [
         [
             dbc.Label("Pretrained weight"),
             dcc.Dropdown(
-                ['imagenet', 'None'],
+                get_pretrained_weights(),
                 id='pretrained-weight',
                 multi=True,
                 value=['imagenet'],
@@ -63,9 +58,8 @@ controls = [
     dbc.Form(
         [
             dbc.Label("Optimizers"),
-            # todo: add
             dcc.Dropdown(
-                ["AdamW", "RMSprop", "SGD"],
+                get_torch_optimizers(),
                 id='optimizers',
                 multi=True
             )
@@ -75,16 +69,7 @@ controls = [
         [
             dbc.Label("Loss functions"),
             dcc.Dropdown(
-                [
-                    "JaccardLoss",
-                    "DiceLoss",
-                    "FocalLoss",
-                    "LovaszLoss",
-                    "SoftBCEWithLogitsLoss",
-                    "SoftCrossEntropyLoss",
-                    "TverskyLoss",
-                    "MCCLoss",
-                ],
+                get_losses(),
                 id='loss-fns',
                 multi=True
             )
@@ -105,14 +90,13 @@ controls = [
             ),
         ]
     ),
+    html.Hr(),
+    # dbc.Label("Algorith optimize params", class_name='font-weight-bold'),
     dbc.Form(
         [
             dbc.Label("Hyperparameter optimizer"),
             dcc.Dropdown(
-                [
-                    "RandomSampler", "GridSampler", "TPESampler", "CmaEsSampler",
-                    "NSGAIISampler", "QMCSampler", "MOTPESampler"
-                ],
+                get_hp_optimizers(),
                 id='strategy',
                 value='TPESampler'
             )
@@ -128,9 +112,7 @@ controls = [
         [
             dbc.Label("Optimize score"),
             dcc.Dropdown(
-                ['loss', 'fbeta_score', 'f1_score',
-                 'iou_score', 'accuracy',
-                 'precision', 'recall'],
+                get_optimize_scores(),
                 id='optimize-score',
                 value='loss',
             )
@@ -157,15 +139,6 @@ controls = [
             ),
         ]
     ),
-    # dbc.Form(
-    #     [
-    #         html.Br(),
-    #         dbc.Button(
-    #             "Hide settings",
-    #             id="collapse-train-settings-btn",
-    #         ),
-    #     ]
-    # )
 ]
 
 train_board = dbc.Container(

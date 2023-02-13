@@ -22,6 +22,8 @@ class BaseModel(ABC):
             device,
     ):
         self._torch_model = model
+        self._device = device
+        self._torch_model.to(self._device)
         self._optimizer = optimizer(self._torch_model.parameters(), lr=lr)
         self._loss_fn = loss_fn
         self._lr = lr
@@ -32,8 +34,6 @@ class BaseModel(ABC):
         self._num_classes = num_classes
         self._curr_epoch = 0
         self._id = uuid4().hex[::5]
-        self._device = device
-        self._torch_model.to(self._device)
 
         self._weights_path = get_settings().WEIGHTS_PATH
         self._logger = TensorboardLogger(get_settings().TENSORBOARD_LOGS_PATH / str(self._id))
