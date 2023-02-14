@@ -1,21 +1,23 @@
+import albumentations as A
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import fiftyone as fo
 import cv2
 
-from .torch_dataset import SegmentationTorchDataset
 from api.models.segmentations import SegmentationModel
+from .torch_dataset import SegmentationTorchDataset
+from .types import DatasetType
 
 
 class SegmentationDataset:
     def __init__(
             self,
-            dataset_dir,
-            dataset_type,
-            img_size,  # height, width
-            split=(0.7, 0.2, 0.1),
-            batch_size=16
+            dataset_dir: str,
+            dataset_type: DatasetType,
+            img_size: tuple[int, int],  # height, width
+            split: tuple[float, float, float] = (0.7, 0.2, 0.1),
+            batch_size: int = 16
     ):
         # todo: name dataset
         self.dataset_dir = dataset_dir
@@ -30,7 +32,7 @@ class SegmentationDataset:
         self._transforms = None
         self._split_dataset()
 
-    def _split_dataset(self):
+    def _split_dataset(self) -> None:
         self.fo_dataset.take(
             int(self.split[0] * len(self.fo_dataset))
         ).tag_samples("train")
@@ -47,7 +49,11 @@ class SegmentationDataset:
         ).tag_samples("test")
         self.fo_dataset.untag_samples('valid_test')
 
-    def _create_torch_datasets(self, transforms):
+    def _create_torch_datasets(self, transforms: A.Compose) -> tuple[
+        SegmentationTorchDataset,
+        SegmentationTorchDataset,
+        SegmentationTorchDataset
+    ]:
         train = SegmentationTorchDataset(self.fo_dataset.match_tags('train'), transforms)
         val = SegmentationTorchDataset(self.fo_dataset.match_tags('valid'), transforms)
         test = SegmentationTorchDataset(self.fo_dataset.match_tags('test'), transforms)
@@ -55,11 +61,11 @@ class SegmentationDataset:
         return train, val, test
 
     @property
-    def transforms(self):
+    def transforms(self) -> A.Compose:
         return self._transforms
 
     @transforms.setter
-    def transforms(self, transforms):
+    def transforms(self, transforms: A.Compose) -> None:
         self._transforms = transforms
 
     def _create_dataloaders(self) -> None:
@@ -81,11 +87,11 @@ class SegmentationDataset:
             shuffle=True
         )
 
-    def update_datasets(self, transforms):
+    def update_datasets(self, transforms: A.Compose) -> None:
         self.transforms = transforms
         self._create_dataloaders()
 
-    def add_predictions(self, model: SegmentationModel):
+    def add_predictions(self, model: SegmentationModel) -> None:
         with fo.ProgressBar() as pb:
             for sample in pb(self.fo_dataset.iter_samples(autosave=True)):
                 img = cv2.imread(sample.filepath, cv2.IMREAD_COLOR)

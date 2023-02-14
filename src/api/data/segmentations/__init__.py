@@ -4,7 +4,7 @@ from .types import COCOSemantic, ImageMask
 
 __all__ = [
     "SegmentationDataset",
-    "get_segmentations_dataset_types"
+    "get_segmentations_dataset_types",
 ]
 
 
@@ -14,5 +14,5 @@ _segmentations_dataset_types = [
 ]
 
 
-def get_segmentations_dataset_types():
-    return list(map(lambda cls: cls.__name__, _segmentations_dataset_types))
+def get_segmentations_dataset_types() -> list[str]:
+    return [obj.__name__ for obj in _segmentations_dataset_types]

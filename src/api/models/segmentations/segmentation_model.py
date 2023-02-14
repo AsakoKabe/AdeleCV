@@ -1,9 +1,16 @@
+from __future__ import annotations
+
 from collections import defaultdict
 
+import numpy as np
 import torch
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
 import segmentation_models_pytorch as smp
-from segmentation_models_pytorch.metrics import fbeta_score, f1_score, iou_score, accuracy, recall, precision
+from segmentation_models_pytorch.metrics import fbeta_score, f1_score,\
+    iou_score, accuracy, recall, precision
+from torch import optim
+from torch.nn.modules.loss import _Loss
+from torch.utils.data import DataLoader
 
 from api.models.base import BaseModel
 from api.logs import get_logger
@@ -13,16 +20,16 @@ from .utils import get_preprocessing, denormalize
 class SegmentationModel(BaseModel):
     def __init__(
             self,
-            model,
-            encoder_name,
-            pretrained_weight,
-            optimizer,
+            model: torch.nn.Module,
+            encoder_name: str,
+            pretrained_weight: str | None,
+            optimizer: optim.Optimizer,
             lr: float,
-            loss_fn,
-            num_classes,
-            num_epoch,
-            device,
-            img_size,
+            loss_fn: _Loss,
+            num_classes: int,
+            num_epoch: int,
+            device: torch.device,
+            img_size: tuple[int, int],
     ):
         super().__init__(
             model=model(
@@ -35,7 +42,8 @@ class SegmentationModel(BaseModel):
             lr=lr,
             loss_fn=loss_fn,
             transforms=get_preprocessing(
-                get_preprocessing_fn(encoder_name, pretrained=pretrained_weight) if pretrained_weight else None,
+                get_preprocessing_fn(encoder_name, pretrained=pretrained_weight)
+                if pretrained_weight else None,
                 img_size
             ),
             metrics=[
@@ -50,7 +58,7 @@ class SegmentationModel(BaseModel):
         self._encoder_name = encoder_name
         self._pretrained_weight = pretrained_weight
 
-    def train_step(self, train_ds):
+    def train_step(self, train_ds: DataLoader) -> dict[str, float]:
         self.train_mode()
         self._curr_epoch += 1
         scores = defaultdict(float)
@@ -74,7 +82,11 @@ class SegmentationModel(BaseModel):
 
         return scores
 
-    def _get_images_for_logging(self, dataset, index=0):
+    def _get_images_for_logging(
+            self,
+            dataset: DataLoader,
+            index: int = 0
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         img = torch.Tensor(dataset.dataset[index][0]).to(self.device)
         gt = torch.Tensor(dataset.dataset[index][1]).to(self.device)
         pred = self._torch_model(img.unsqueeze(0))
@@ -85,7 +97,7 @@ class SegmentationModel(BaseModel):
 
         return img_denormalized, gt_merged, pred_merged
 
-    def _val(self, val_ds):
+    def _val(self, val_ds: DataLoader) -> dict[str, float]:
         self.eval_mode()
         scores = defaultdict(float)
         for x_batch, y_batch in val_ds:
@@ -98,7 +110,7 @@ class SegmentationModel(BaseModel):
 
         return scores
 
-    def val_step(self, val_ds):
+    def val_step(self, val_ds: DataLoader) -> dict[str, float]:
         scores = self._val(val_ds)
 
         self._logger.log_metrics(scores, self._curr_epoch, 'Valid')
@@ -111,7 +123,7 @@ class SegmentationModel(BaseModel):
 
         return scores
 
-    def log_test(self, test_ds):
+    def log_test(self, test_ds: DataLoader) -> None:
         scores = self._val(test_ds)
         hparams = self._get_hparams()
 
@@ -125,9 +137,9 @@ class SegmentationModel(BaseModel):
         )
         self._save_stats_model(hparams, scores)
         logger = get_logger()
-        logger.info(f"Model {self.__str__()} trained with test loss {scores['loss']}")
+        logger.info("Model %s trained with test loss %s", str(self), scores['loss'])
 
-    def predict(self, img):
+    def predict(self, img: np.ndarray) -> torch.Tensor:
         self.eval_mode()
         img = self.transforms(image=img)['image']
         img = torch.Tensor(img).float().unsqueeze(0)
@@ -137,7 +149,11 @@ class SegmentationModel(BaseModel):
 
         return pred
 
-    def _compute_metrics(self, y_true, y_pred):
+    def _compute_metrics(
+            self,
+            y_true: torch.Tensor,
+            y_pred: torch.Tensor
+    ) -> dict[str, torch.Tensor]:
         tp, fp, fn, tn = smp.metrics.get_stats(
             y_pred.to(self.device),
             y_true.to(self.device).long(),
@@ -150,12 +166,13 @@ class SegmentationModel(BaseModel):
 
         return scores
 
-    def __str__(self):
-        return f'{self._id}_{self._torch_model.__class__.__name__}_{self._encoder_name}_{self._pretrained_weight}_' \
+    def __str__(self) -> str:
+        return f'{self._id}_{self._torch_model.__class__.__name__}_' \
+               f'{self._encoder_name}_{self._pretrained_weight}_' \
                f'{self._optimizer.__class__.__name__}_' \
                f'{self._loss_fn.__class__.__name__}_lr={str(self._lr).replace(".", ",")}'
 
-    def _get_hparams(self):
+    def _get_hparams(self) -> dict[str, str | float | int]:
         return {
             'architecture': self._torch_model.__class__.__name__,
             'encoder': self._encoder_name,

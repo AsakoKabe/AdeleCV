@@ -1,8 +1,9 @@
 import torch
 from torch.utils.data import Dataset
-import cv2
 import torch.nn.functional as F
-import numpy as np
+import cv2
+import albumentations as A
+import fiftyone as fo
 
 
 class SegmentationTorchDataset(Dataset):
@@ -16,8 +17,8 @@ class SegmentationTorchDataset(Dataset):
 
     def __init__(
             self,
-            fiftyone_dataset,
-            transforms
+            fiftyone_dataset: fo.Dataset,
+            transforms: A.Compose
             # augmentations=None,
     ):
         self.samples = fiftyone_dataset
@@ -25,7 +26,7 @@ class SegmentationTorchDataset(Dataset):
         self.img_paths = self.samples.values("filepath")
         self.classes = self.samples.default_mask_targets.keys()
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
         img_path = self.img_paths[idx]
         sample = self.samples[img_path]
         img = cv2.imread(img_path)
@@ -41,8 +42,8 @@ class SegmentationTorchDataset(Dataset):
 
         return img, mask
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.img_paths)
 
-    def get_classes(self):
+    def get_classes(self) -> tuple[str]:
         return self.classes

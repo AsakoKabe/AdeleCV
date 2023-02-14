@@ -1,27 +1,36 @@
+from __future__ import annotations
+
 from api.data.segmentations import SegmentationDataset
 from api.optimize import HPOptimizer
 from api.logs import get_logger
 from .base import BaseTask
+from ..data.segmentations.types import DatasetType
 
 
 class SegmentationTask(BaseTask):
-    def __init__(self):
-        super().__init__()
+    # def __init__(self):
+    #     super().__init__()
 
-    def train(self, params):
+    def train(
+            self,
+            params: dict[
+                str,
+                int | float | str | list | tuple
+            ]
+    ) -> None:
         logger = get_logger()
         logger.info("Train models started")
         self._hp_optimizer = HPOptimizer(
-            params["architectures"],
-            params['encoders'],
-            params['pretrained_weight'],
-            params["lr_range"],
-            params["optimizers"],
-            params["loss_fns"],
-            params["epoch_range"],
-            params["strategy"],
-            params["num_trials"],
-            params["device"],
+            architectures=params["architectures"],
+            encoders=params['encoders'],
+            pretrained_weights=params['pretrained_weight'],
+            lr_range=params["lr_range"],
+            optimizers=params["optimizers"],
+            loss_fns=params["loss_fns"],
+            epoch_range=params["epoch_range"],
+            strategy=params["strategy"],
+            num_trials=params["num_trials"],
+            device=params["device"],
             dataset=self._dataset,
             optimize_score=params['optimize_score']
         )
@@ -31,12 +40,12 @@ class SegmentationTask(BaseTask):
 
     def load_dataset(
             self,
-            dataset_path,
-            dataset_type,
-            img_size,
-            split,
-            batch_size,
-    ):
+            dataset_path: str,
+            dataset_type: DatasetType,
+            img_size: tuple[int, int],  # height, width
+            split: tuple[float, float, float],
+            batch_size: int,
+    ) -> None:
         logger = get_logger()
         logger.info("Creating a dataset")
         self._dataset = SegmentationDataset(

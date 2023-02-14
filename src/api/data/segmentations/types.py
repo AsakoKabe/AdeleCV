@@ -6,16 +6,16 @@ import cv2
 
 class DatasetType:
     @staticmethod
-    def create_dataset(dataset_dir):
+    def create_dataset(dataset_dir: str) -> fo.Dataset:
         pass
 
 
 class COCOSemantic(DatasetType):
     @staticmethod
-    def create_dataset(dataset_dir):
+    def create_dataset(dataset_dir: str) -> fo.Dataset:
         dataset = fo.Dataset.from_dir(
-            dataset_type=fo.types.COCODetectionDataset,
             dataset_dir=dataset_dir,
+            dataset_type=fo.types.COCODetectionDataset,
         )
         dataset.delete_sample_field("detections")
 
@@ -37,7 +37,7 @@ class COCOSemantic(DatasetType):
 
 class ImageMask(DatasetType):
     @staticmethod
-    def create_dataset(dataset_dir):
+    def create_dataset(dataset_dir: str) -> fo.Dataset:
         samples = []
         for filepath in os.listdir(dataset_dir + '/image'):
             img_path = dataset_dir + '/image/' + filepath

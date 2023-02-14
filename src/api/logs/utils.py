@@ -3,7 +3,7 @@ import logging
 from config import get_settings
 
 
-def enable_logs(handle_type):
+def enable_logs(handle_type) -> None:
     # todo: другие handles file stream
     logger = logging.getLogger(get_settings().LOGGER_NAME)
     logger.setLevel(logging.DEBUG)
@@ -16,5 +16,5 @@ def enable_logs(handle_type):
     logger.addHandler(handle)
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     return logging.getLogger(get_settings().LOGGER_NAME)

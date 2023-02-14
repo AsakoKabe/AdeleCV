@@ -1,4 +1,5 @@
-from optuna.samplers import RandomSampler, GridSampler, TPESampler, CmaEsSampler, NSGAIISampler, QMCSampler, \
+from optuna.samplers import RandomSampler, GridSampler,\
+    TPESampler, CmaEsSampler, NSGAIISampler, QMCSampler, \
     MOTPESampler
 
 from .hp_optimizer import HPOptimizer
@@ -20,5 +21,5 @@ _hp_optimizers = [
 ]
 
 
-def get_hp_optimizers():
-    return list(map(lambda cls: cls.__name__, _hp_optimizers))
+def get_hp_optimizers() -> list[str]:
+    return [obj.__name__ for obj in _hp_optimizers]

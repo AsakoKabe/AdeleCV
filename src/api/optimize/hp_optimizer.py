@@ -1,51 +1,52 @@
 import pandas as pd
 import torch
-import torch.optim as optim
+from torch import optim
 import optuna
 from optuna.trial import TrialState
 
-from optuna import samplers
+from optuna import samplers, Study, Trial
 import segmentation_models_pytorch as smp
 
+from api.data.segmentations import SegmentationDataset
 from api.logs import get_logger
 from api.models.segmentations import SegmentationModel
 
 
-def _log_study(study):
+def _log_study(study: Study) -> None:
     pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
     complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
 
     logger = get_logger()
     logger.info("Study statistics:")
-    logger.info(f"Number of finished trials: {len(study.trials)}")
-    logger.info(f"Number of pruned trials: {len(pruned_trials)}")
-    logger.info(f"Number of complete trials: {len(complete_trials)}")
+    logger.info("Number of finished trials: %s", len(study.trials))
+    logger.info("Number of pruned trials: %s", len(pruned_trials))
+    logger.info("Number of complete trials: %s", len(complete_trials))
 
     logger.info("Best trial:")
     trial = study.best_trial
 
-    logger.info(f"Value: {trial.value}")
+    logger.info("Value: %s", trial.value)
 
     logger.info("Params: ")
     for key, value in trial.params.items():
-        logger.info(f"{key}: {value}")
+        logger.info("%s: %s", key, value)
 
 
 class HPOptimizer:
     def __init__(
             self,
-            architectures,
-            encoders,
-            pretrained_weights,
-            lr_range,
-            optimizers,
-            loss_fns,
-            epoch_range,
-            strategy,
-            num_trials,
-            device,
-            dataset,
-            optimize_score,
+            architectures: list[str],
+            encoders: list[str],
+            pretrained_weights: list[str],
+            lr_range: tuple[float, float],
+            optimizers: list[str],
+            loss_fns: list[str],
+            epoch_range: tuple[int, int],
+            strategy: str,
+            num_trials: int,
+            device: str,
+            dataset: SegmentationDataset,
+            optimize_score: str,
     ):
         # todo: optimizer для разных тасок
         self.lr_range = lr_range
@@ -59,11 +60,14 @@ class HPOptimizer:
         self.num_trials = num_trials
         self.dataset = dataset
         self.num_classes = dataset.num_classes
-        self.device = torch.device('cuda' if torch.cuda.is_available() and device == 'GPU' else 'cpu')
+        self.device = torch.device(
+            'cuda' if torch.cuda.is_available() and device == 'GPU'
+            else 'cpu'
+        )
         self._stats_models = pd.DataFrame()
         self._optimize_score = optimize_score
 
-    def optimize(self):
+    def optimize(self) -> None:
         direction = 'minimize' if self._optimize_score == 'loss' else 'maximize'
         study = optuna.create_study(
             direction=direction,
@@ -72,7 +76,7 @@ class HPOptimizer:
         study.optimize(self._objective, n_trials=self.num_trials, timeout=600)
         _log_study(study)
 
-    def _create_model(self, trial):
+    def _create_model(self, trial: Trial) -> tuple[SegmentationModel, int]:
         optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
         optimizer = getattr(optim, optimizer_name)
         architecture_name = trial.suggest_categorical("architecture", self.architectures)
@@ -99,7 +103,7 @@ class HPOptimizer:
 
         return model, num_epoch
 
-    def _objective(self, trial):
+    def _objective(self, trial: Trial) -> float:
         model, num_epoch = self._create_model(trial)
         self.dataset.update_datasets(model.transforms)
 
@@ -116,25 +120,25 @@ class HPOptimizer:
 
         return score
 
-    def _train_model(self, model: SegmentationModel):
+    def _train_model(self, model: SegmentationModel) -> float:
         torch.cuda.empty_cache()
         model.train_step(self.dataset.train)
         val_loss = model.val_step(self.dataset.val)
 
         return val_loss[self._optimize_score]
 
-    def _postprocessing_model(self, model):
+    def _postprocessing_model(self, model: SegmentationModel) -> None:
         model.log_test(self.dataset.test)
         self.dataset.add_predictions(model)
         self._add_stats_model(model)
         model.save_weights()
 
-    def _add_stats_model(self, model: SegmentationModel):
+    def _add_stats_model(self, model: SegmentationModel) -> None:
         self._stats_models = pd.concat(
             [self._stats_models, pd.DataFrame([model.stats_model])],
             ignore_index=True
         )
 
     @property
-    def stats_models(self):
+    def stats_models(self) -> pd.DataFrame:
         return self._stats_models

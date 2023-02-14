@@ -14,19 +14,19 @@ class LogMonitoringHandler(logging.Handler):
         # optional take format
         # setFormatter function is derived from logging.Handler
         for key, value in kwargs.items():
-            if "{}".format(key) == "format":
+            if f"{key}" == "format":
                 self.setFormatter(value)
 
         # make the logger send data to this class
         # self.logger_instance.addHandler(self)
         self._logs = []
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         """ Overload of logging.Handler method """
         record = self.format(record)
         self._logs.append(record)
 
-    def pop_logs(self):
+    def pop_logs(self) -> list[str]:
         logs = self._logs.copy()
         self._logs.clear()
 

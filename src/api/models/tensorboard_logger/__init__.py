@@ -1,4 +1,4 @@
-from .TensorboardLogger import TensorboardLogger
+from .tensorboard_logger import TensorboardLogger
 
 
 __all__ = [

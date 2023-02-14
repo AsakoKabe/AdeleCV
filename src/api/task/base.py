@@ -1,6 +1,6 @@
 import zipfile
-from abc import abstractmethod, ABC
-from typing import List
+from abc import ABC
+from pathlib import Path
 
 import pandas as pd
 import fiftyone as fo
@@ -12,7 +12,7 @@ from config import get_settings
 
 class BaseTask(ABC):
     def __init__(self):
-        self.models: List[SegmentationModel] = []
+        self.models: list[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
         self._weights_dir = get_settings().WEIGHTS_PATH
         self._hp_optimizer = None
@@ -22,7 +22,7 @@ class BaseTask(ABC):
         self._tb.configure(argv=[None, '--logdir', get_settings().TENSORBOARD_LOGS_PATH.as_posix()])
         self._tb.launch()
 
-    def export_weights(self, id_selected):
+    def export_weights(self, id_selected: set[str]) -> Path:
         zip_path = self._weights_dir.parent / 'weights.zip'
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for entry in self._weights_dir.rglob("*"):
@@ -31,12 +31,12 @@ class BaseTask(ABC):
 
         return zip_path
 
-    def _create_dataset_session(self):
+    def _create_dataset_session(self) -> None:
         self._session_dataset.dataset = self._dataset.fo_dataset
 
-    def _run_optimize(self):
+    def _run_optimize(self) -> None:
         self._hp_optimizer.optimize()
 
     @property
-    def stats_models(self):
+    def stats_models(self) -> pd.DataFrame:
         return self._stats_models

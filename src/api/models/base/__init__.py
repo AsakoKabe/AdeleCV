@@ -1,4 +1,4 @@
-from .BaseModel import BaseModel
+from .base_model import BaseModel
 
 
 __all__ = [
