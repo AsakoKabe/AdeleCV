@@ -51,7 +51,7 @@ class ImageMask(DatasetType):
             sample.compute_metadata()
             samples.append(sample)
 
-        dataset = fo.Dataset("ImageMask")
+        dataset = fo.Dataset("ImageMask", overwrite=True)
         dataset.add_samples(samples)
 
         dataset.default_mask_targets = {

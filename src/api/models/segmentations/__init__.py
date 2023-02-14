@@ -12,7 +12,7 @@ from .segmentation_model import SegmentationModel
 
 __all__ = [
     "SegmentationModel",
-    "get_segmentations_models",
+    "get_models",
     "get_encoders",
     "get_pretrained_weights",
     "get_torch_optimizers",
@@ -71,7 +71,7 @@ def get_obj_names(objs: list) -> list[str]:
     return [obj.__name__ for obj in objs]
 
 
-def get_segmentations_models() -> list[str]:
+def get_models() -> list[str]:
     return get_obj_names(_segmentations_models)
 
 
