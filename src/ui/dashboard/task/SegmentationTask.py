@@ -4,7 +4,7 @@ from api.data.segmentations import SegmentationDataset
 from api.optimize import HPOptimizer
 from api.logs import get_logger
 from .base import BaseTask
-from ..data.segmentations.types import DatasetType
+from api.data.segmentations.types import DatasetType
 
 
 class SegmentationTask(BaseTask):

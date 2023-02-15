@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
 from api.logs import enable_logs, LogMonitoringHandler
-from api.task import SegmentationTask
+from ui.dashboard.task import SegmentationTask
 from ui.dashboard.utils.notifications import setup_notifications_log_config
 
 # celery + docker + redis
