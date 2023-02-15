@@ -40,7 +40,7 @@ def table_models(df):
                             {'selector': 'table', 'rule': 'table-layout: fixed'},
                         ],
                         style_cell={
-                            'width': '{}%'.format(len(df.columns)),
+                            'width': f'{len(df.columns)}',
                             'textOverflow': 'ellipsis',
                             'overflow': 'hidden'
                         },

@@ -53,7 +53,7 @@ def update_train_params(
         train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
         try:
             _task.train(train_params)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             logger = get_logger()
             logger.error(e)
 

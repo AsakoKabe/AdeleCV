@@ -3,11 +3,11 @@ import shutil
 
 from dash import html, dcc, Output, Input
 
-from api.logs import enable_logs
+import callbacks  # pylint: disable=unused-import,import-error
 from config import get_settings
 from ui.dashboard.components import nav, dataset, train_board, table_models
-from ui.dashboard.app import app, _task
-import callbacks
+from .app import app, _task
+
 
 content = html.Div(
     [
@@ -31,14 +31,14 @@ app.layout = html.Div([nav, content])
 def render_page_content(pathname):
     if pathname == '/':
         return "Page empty"
-    elif pathname == '/dataset':
+    if pathname == '/dataset':
         return dataset
-    elif pathname == '/train':
+    if pathname == '/train':
         return train_board
-    elif pathname == '/table-models':
+    if pathname == '/table-models':
         return table_models(_task.stats_models)
-    else:
-        return "ERROR 404: Page not found!"
+
+    return "ERROR 404: Page not found!"
 
 
 if __name__ == "__main__":

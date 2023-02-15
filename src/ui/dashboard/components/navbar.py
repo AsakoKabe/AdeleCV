@@ -8,7 +8,7 @@ nav = dbc.NavbarSimple(
         dbc.NavLink("Table Models", href="/table-models", active="exact"),
     ],
     brand="AutoDL-CV",
-    brand_href=f"/"
+    brand_href="/"
     # color="light",
     # dark=True,
 )

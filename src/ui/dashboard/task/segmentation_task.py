@@ -3,8 +3,8 @@ from __future__ import annotations
 from api.data.segmentations import SegmentationDataset
 from api.optimize import HPOptimizer
 from api.logs import get_logger
-from .base import BaseTask
 from api.data.segmentations.types import DatasetType
+from .base import BaseTask
 
 
 class SegmentationTask(BaseTask):

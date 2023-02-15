@@ -2,8 +2,8 @@ from dash import Output, Input, State
 from dash.exceptions import PreventUpdate
 
 from api.logs import get_logger
-from ui.dashboard.app import app, _task
 from api.data.segmentations import types
+from ui.dashboard.app import app, _task
 
 
 @app.callback(
@@ -49,7 +49,8 @@ def update_dataset_params(
                 split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
                 batch_size=dataset_params["batch_size"],
             )
-        except Exception as e:
+
+        except Exception as e:  # pylint: disable=broad-exception-caught
             logger = get_logger()
             logger.error(e)
 

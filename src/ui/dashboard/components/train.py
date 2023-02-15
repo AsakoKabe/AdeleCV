@@ -1,6 +1,5 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
-import segmentation_models_pytorch as smp
 
 from api.models.segmentations import get_models, get_encoders, get_pretrained_weights, \
     get_torch_optimizers, get_losses, get_optimize_scores

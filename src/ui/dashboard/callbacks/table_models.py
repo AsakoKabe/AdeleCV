@@ -15,7 +15,7 @@ def export_weights(n_clicks, rows, derived_virtual_selected_rows):
     if not n_clicks:
         raise PreventUpdate()
 
-    id_selected = set([rows[i]['_id'] for i in derived_virtual_selected_rows])
+    id_selected = {rows[i]['_id'] for i in derived_virtual_selected_rows}
     zip_path = _task.export_weights(id_selected)
 
     return dcc.send_file(zip_path.as_posix())

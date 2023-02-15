@@ -9,10 +9,10 @@ import dash_mantine_components as dmc
 
 def get_notification_log_writers():
     def _default_kwargs(color, title, message, auto_close=False):
-        return dict(
-            color=color, title=title, message=message, id=str(uuid.uuid4()),
-            action="show", autoClose=auto_close
-        )
+        return {
+            'color':color, 'title': title, 'message': message, 'id': str(uuid.uuid4()),
+            'action': "show", 'autoClose': auto_close
+        }
 
     def log_info(message, **kwargs):
         return dmc.Notification(**{**_default_kwargs("blue", "Info", message, auto_close=True), **kwargs})
