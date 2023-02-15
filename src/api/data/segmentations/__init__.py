@@ -1,5 +1,5 @@
 from .dataset import SegmentationDataset
-from .types import COCOSemantic, ImageMask
+from .types import COCOSegmentation, ImageMask
 
 
 __all__ = [
@@ -9,7 +9,7 @@ __all__ = [
 
 
 _segmentations_dataset_types = [
-    COCOSemantic,
+    COCOSegmentation,
     ImageMask,
 ]
 

@@ -1,7 +1,9 @@
 import os
+from pathlib import Path
 
 import fiftyone as fo
 import cv2
+from fiftyone import dataset_exists, delete_dataset
 
 
 class DatasetType:
@@ -10,12 +12,16 @@ class DatasetType:
         pass
 
 
-class COCOSemantic(DatasetType):
+class COCOSegmentation(DatasetType):
     @staticmethod
     def create_dataset(dataset_dir: str) -> fo.Dataset:
+        if dataset_exists(__class__.__name__):
+            delete_dataset(__class__.__name__)
+
         dataset = fo.Dataset.from_dir(
             dataset_dir=dataset_dir,
             dataset_type=fo.types.COCODetectionDataset,
+            name=__class__.__name__
         )
         dataset.delete_sample_field("detections")
 
@@ -39,19 +45,20 @@ class ImageMask(DatasetType):
     @staticmethod
     def create_dataset(dataset_dir: str) -> fo.Dataset:
         samples = []
-        for filepath in os.listdir(dataset_dir + '/image'):
-            img_path = dataset_dir + '/image/' + filepath
-            mask_path = dataset_dir + '/mask/' + filepath
+        path = Path(dataset_dir)
+        for filepath in (path / 'image').iterdir():
+            img_path = path / 'image' / filepath.name
+            mask_path = path / 'mask' / filepath.name
 
             sample = fo.Sample(filepath=img_path)
 
-            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE) // 255
+            mask = cv2.imread(mask_path.as_posix(), cv2.IMREAD_GRAYSCALE) // 255
             # print(mask.shape)
             sample["semantic"] = fo.Segmentation(mask=mask)
             sample.compute_metadata()
             samples.append(sample)
 
-        dataset = fo.Dataset("ImageMask", overwrite=True)
+        dataset = fo.Dataset(__class__.__name__, overwrite=True)
         dataset.add_samples(samples)
 
         dataset.default_mask_targets = {

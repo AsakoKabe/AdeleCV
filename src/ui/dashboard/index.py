@@ -6,7 +6,7 @@ from dash import html, dcc, Output, Input
 import callbacks  # pylint: disable=unused-import,import-error
 from config import get_settings
 from ui.dashboard.components import nav, dataset, train_board, table_models
-from .app import app, _task
+from ui.dashboard.app import app, _task
 
 
 content = html.Div(
@@ -16,7 +16,6 @@ content = html.Div(
         dcc.Interval(
             id="interval-notifications"
         ),
-        dcc.Store(id='count-notifications'),
     ]
 )
 

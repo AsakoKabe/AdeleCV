@@ -19,12 +19,10 @@ class SegmentationDataset:
             split: tuple[float, float, float] = (0.7, 0.2, 0.1),
             batch_size: int = 16
     ):
-        # todo: name dataset
         self.dataset_dir = dataset_dir
         self.fo_dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split
         self.batch_size = batch_size
-        # todo: сделать нормальный resize всего датасета
         self.img_size = img_size
         self.fo_dataset.save()
         self.num_classes = len(self.fo_dataset.default_mask_targets)
