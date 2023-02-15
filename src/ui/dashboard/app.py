@@ -1,9 +1,9 @@
-import dash
 import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
 from api.logs import enable_logs, LogMonitoringHandler
 from api.task import SegmentationTask
+from ui.dashboard.utils.notifications import setup_notifications_log_config
 
 # celery + docker + redis
 app = DashProxy(
@@ -11,7 +11,7 @@ app = DashProxy(
     update_title=None,
     external_stylesheets=[dbc.themes.FLATLY],
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
-    transforms=[LogTransform(), NoOutputTransform()],
+    transforms=[LogTransform(log_config=setup_notifications_log_config()), NoOutputTransform()],
     prevent_initial_callbacks=True,
 )
 
