@@ -1,12 +1,13 @@
 import logging
+import sys
 
 
-class LogMonitoringHandler(logging.Handler):
+class LogConsoleHandler(logging.StreamHandler):
     """ Class to redistribute python logging data """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         # Initialize the Handler
-        logging.Handler.__init__(self, *args)
+        super().__init__(stream=sys.stdout)
 
         # optional take format
         # setFormatter function is derived from logging.Handler
@@ -21,8 +22,6 @@ class LogMonitoringHandler(logging.Handler):
         record = self.format(record)
         self._logs.append(record)
 
-    def pop_logs(self) -> list[str]:
-        logs = self._logs.copy()
-        self._logs.clear()
-
-        return logs
+    @property
+    def logs(self):
+        return self._logs

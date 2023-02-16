@@ -33,7 +33,6 @@ class SegmentationTorchDataset(Dataset):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         mask = torch.Tensor(sample['semantic']['mask']).long()
 
-        # todo: долго?
         mask = F.one_hot(mask, num_classes=len(self.classes)).numpy()
 
         transformed = self.transforms(image=img, mask=mask)

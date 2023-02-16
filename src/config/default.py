@@ -13,3 +13,4 @@ class DefaultSettings:
     CACHE_PATH: Path = TMP_PATH / 'cache'
     LOGFILE_PATH: Path = TMP_PATH / 'logfile.log'
     LOGGER_NAME: str = 'autodl'
+    CONSOLE_LOG_NAME: str = 'console-log'

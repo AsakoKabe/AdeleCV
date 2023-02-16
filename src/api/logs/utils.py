@@ -3,18 +3,19 @@ import logging
 from config import get_settings
 
 
-def enable_logs(handle_type) -> None:
-    # todo: другие handles file stream
-    logger = logging.getLogger(get_settings().LOGGER_NAME)
+def enable_logs(
+        handler,
+        name=get_settings().LOGGER_NAME,
+        formatter=logging.Formatter('%(levelname)s - %(message)s')
+) -> None:
+    logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    handle = handle_type()
-    handle.setLevel(logging.DEBUG)
-    # create formatter
-    formatter = logging.Formatter('%(levelname)s - %(message)s')
-    # add formatter to ch
-    handle.setFormatter(formatter)
-    logger.addHandler(handle)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 
-def get_logger() -> logging.Logger:
-    return logging.getLogger(get_settings().LOGGER_NAME)
+def get_logger(
+        name=get_settings().LOGGER_NAME
+) -> logging.Logger:
+    return logging.getLogger(name)

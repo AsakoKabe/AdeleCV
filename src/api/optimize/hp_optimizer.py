@@ -48,7 +48,6 @@ class HPOptimizer:
             dataset: SegmentationDataset,
             optimize_score: str,
     ):
-        # todo: optimizer для разных тасок
         self.lr_range = lr_range
         self.optimizers = optimizers
         self.architectures = architectures

@@ -1,8 +1,11 @@
+import logging
+
 from dash import Output, Input, State
 from dash.exceptions import PreventUpdate
 
 from api.logs import get_logger
 from api.data.segmentations import types
+from config import get_settings
 from ui.dashboard.app import app, _task
 
 
@@ -49,6 +52,8 @@ def update_dataset_params(
                 split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
                 batch_size=dataset_params["batch_size"],
             )
+            logger = logging.getLogger(get_settings().CONSOLE_LOG_NAME)
+            logger.info('test')
 
         except Exception as e:  # pylint: disable=broad-exception-caught
             logger = get_logger()
