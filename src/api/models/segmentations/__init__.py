@@ -27,10 +27,9 @@ _segmentations_models = [
     Linknet,
     FPN,
     PSPNet,
-    # fixme:
-    # DeepLabV3,
-    # DeepLabV3Plus,
-    # PAN,
+    DeepLabV3,
+    DeepLabV3Plus,
+    PAN,
 ]
 
 _pretrained_weights = ['imagenet', 'None']

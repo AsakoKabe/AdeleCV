@@ -84,11 +84,12 @@ class SegmentationModel(BaseModel):
 
     def _get_images_for_logging(
             self,
-            dataset: DataLoader,
+            dataloader: DataLoader,
             index: int = 0
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        img = torch.Tensor(dataset.dataset[index][0]).to(self.device)
-        gt = torch.Tensor(dataset.dataset[index][1]).to(self.device)
+        self.eval_mode()
+        img = torch.Tensor(dataloader.dataset[index][0]).to(self.device)
+        gt = torch.Tensor(dataloader.dataset[index][1]).to(self.device)
         pred = self._torch_model(img.unsqueeze(0))
 
         img_denormalized = denormalize(img)
