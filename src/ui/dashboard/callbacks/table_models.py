@@ -1,6 +1,7 @@
 from dash import Output, Input, State, dcc
 from dash.exceptions import PreventUpdate
 
+from api.modification_models.export import ExportWeights
 from ui.dashboard.app import app, _task
 
 
@@ -16,7 +17,7 @@ def export_weights(n_clicks, rows, derived_virtual_selected_rows):
         raise PreventUpdate()
 
     id_selected = {rows[i]['_id'] for i in derived_virtual_selected_rows}
-    zip_path = _task.export_weights(id_selected)
+    zip_path = ExportWeights().create_zip(id_selected)
 
     return dcc.send_file(zip_path.as_posix())
 
