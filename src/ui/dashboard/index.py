@@ -47,6 +47,10 @@ def render_page_content(pathname):
 
 
 if __name__ == "__main__":
+    # argv = sys.argv
+    # env_path = argv[argv.index('-env')+1]
+    # print(env_path)
+    # load_dotenv(dotenv_path=Path(env_path))
     if os.path.exists(f'{get_settings().TMP_PATH.as_posix()}'):
         shutil.rmtree(f'{get_settings().TMP_PATH.as_posix()}')
     # set debug to false when deploying app
@@ -54,6 +58,5 @@ if __name__ == "__main__":
         port=8080,
         # debug=True
     )
-    # cache.close()
     if os.path.exists(f'{get_settings().TMP_PATH.as_posix()}'):
         shutil.rmtree(f'{get_settings().TMP_PATH.as_posix()}')

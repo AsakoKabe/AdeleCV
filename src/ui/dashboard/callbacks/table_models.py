@@ -2,7 +2,7 @@ from dash import Output, Input, State, dcc
 from dash.exceptions import PreventUpdate
 
 from api.modification_models.export import ExportWeights
-from ui.dashboard.app import app, _task
+from ui.dashboard.app import app
 
 
 @app.callback(

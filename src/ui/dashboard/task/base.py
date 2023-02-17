@@ -1,6 +1,4 @@
-import zipfile
 from abc import ABC
-from pathlib import Path
 
 import pandas as pd
 import fiftyone as fo
