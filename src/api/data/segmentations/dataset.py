@@ -8,6 +8,7 @@ import cv2
 from api.models.segmentations import SegmentationModel
 from .torch_dataset import SegmentationTorchDataset
 from .types import DatasetType
+from ...logs import get_logger
 
 
 class SegmentationDataset:
@@ -29,6 +30,11 @@ class SegmentationDataset:
         self.train, self.val, self.test = None, None, None
         self._transforms = None
         self._split_dataset()
+        get_logger().info("Creating a dataset")
+        get_logger().debug(
+            "Dataset created with params, dataset dir: %s, classes: %s, batch size: %s",
+            self.dataset_dir, self.fo_dataset.default_mask_targets, self.batch_size
+        )
 
     def _split_dataset(self) -> None:
         self.fo_dataset.take(
@@ -46,6 +52,11 @@ class SegmentationDataset:
             bool=False
         ).tag_samples("test")
         self.fo_dataset.untag_samples('valid_test')
+
+        train_size = len(self.fo_dataset.match_tags(["train"], bool=True))
+        valid_size = len(self.fo_dataset.match_tags(["valid"], bool=True))
+        test_size = len(self.fo_dataset.match_tags(["test"], bool=True))
+        get_logger().info("Split dataset train size: %s, valid size: %s, test size: %s", train_size, valid_size, test_size)
 
     def _create_torch_datasets(self, transforms: A.Compose) -> tuple[
         SegmentationTorchDataset,
@@ -88,8 +99,10 @@ class SegmentationDataset:
     def update_datasets(self, transforms: A.Compose) -> None:
         self.transforms = transforms
         self._create_dataloaders()
+        get_logger().debug("Dataset updated")
 
     def add_predictions(self, model: SegmentationModel) -> None:
+        get_logger().debug("Add predictions for model: %s", str(model))
         with fo.ProgressBar() as pb:
             for sample in pb(self.fo_dataset.iter_samples(autosave=True)):
                 img = cv2.imread(sample.filepath, cv2.IMREAD_COLOR)

@@ -14,6 +14,8 @@ def _add_log(log, dash_logger: DashLogger):
         dash_logger.warning(message)
     elif level == 'ERROR':
         dash_logger.error(message)
+    # elif level == 'DEBUG':
+    #     dash_logger.debug(message)
     else:
         dash_logger.log(level, message)
 

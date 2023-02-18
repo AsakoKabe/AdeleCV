@@ -4,6 +4,7 @@ import pandas as pd
 import fiftyone as fo
 from tensorboard import program
 
+from api.logs import get_logger
 from api.models.segmentations import SegmentationModel
 from config import get_settings
 
@@ -21,6 +22,7 @@ class BaseTask(ABC):
         self._tb.launch()
 
     def _create_dataset_session(self) -> None:
+        get_logger().debug("Create fifty one dataset session")
         self._session_dataset.dataset = self._dataset.fo_dataset
 
     def _run_optimize(self) -> None:

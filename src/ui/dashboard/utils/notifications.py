@@ -10,12 +10,15 @@ import dash_mantine_components as dmc
 def get_notification_log_writers():
     def _default_kwargs(color, title, message, auto_close=False):
         return {
-            'color':color, 'title': title, 'message': message, 'id': str(uuid.uuid4()),
+            'color': color, 'title': title, 'message': message, 'id': str(uuid.uuid4()),
             'action': "show", 'autoClose': auto_close
         }
 
     def log_info(message, **kwargs):
         return dmc.Notification(**{**_default_kwargs("blue", "Info", message, auto_close=True), **kwargs})
+
+    def log_debug(message, **kwargs):
+        return dmc.Notification(**{**_default_kwargs("green", "Debug", message, auto_close=True), **kwargs})
 
     def log_warning(message, **kwargs):
         return dmc.Notification(**{**_default_kwargs("yellow", "Warning", message), **kwargs})
@@ -23,7 +26,10 @@ def get_notification_log_writers():
     def log_error(message, **kwargs):
         return dmc.Notification(**{**_default_kwargs("red", "Error", message), **kwargs})
 
-    return {logging.INFO: log_info, logging.WARNING: log_warning, logging.ERROR: log_error}
+    return {
+        logging.INFO: log_info, logging.WARNING: log_warning,
+        logging.ERROR: log_error, "DEBUG": log_debug,
+    }
 
 
 def setup_notifications_log_config():

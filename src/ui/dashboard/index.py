@@ -54,7 +54,7 @@ if __name__ == "__main__":
     if os.path.exists(f'{get_settings().TMP_PATH.as_posix()}'):
         shutil.rmtree(f'{get_settings().TMP_PATH.as_posix()}')
     # set debug to false when deploying app
-    app.run_server(
+    app.run(
         port=8080,
         # debug=True
     )

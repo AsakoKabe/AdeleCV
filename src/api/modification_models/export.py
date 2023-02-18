@@ -3,6 +3,7 @@ from __future__ import annotations
 import zipfile
 from pathlib import Path
 
+from api.logs import get_logger
 from config import get_settings
 
 
@@ -22,6 +23,7 @@ class ExportWeights:
             for entry in self._weights_path.rglob("*"):
                 if id_selected is None or entry.stem in id_selected:
                     zip_file.write(entry, entry.relative_to(self._weights_path))
+        get_logger().info("Create zip with weights, path: %s", zip_path.as_posix())
 
         return zip_path
 

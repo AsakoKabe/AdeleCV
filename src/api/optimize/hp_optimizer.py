@@ -48,44 +48,63 @@ class HPOptimizer:
             dataset: SegmentationDataset,
             optimize_score: str,
     ):
-        self.lr_range = lr_range
-        self.optimizers = optimizers
-        self.architectures = architectures
-        self.encoders = encoders
+        self._lr_range = lr_range
+        self._optimizers = optimizers
+        self._architectures = architectures
+        self._encoders = encoders
         self._pretrained_weights = pretrained_weights
-        self.epoch_range = epoch_range
-        self.loss_fns = loss_fns
-        self.strategy = strategy
-        self.num_trials = num_trials
-        self.dataset = dataset
-        self.num_classes = dataset.num_classes
-        self.device = torch.device(
+        self._epoch_range = epoch_range
+        self._loss_fns = loss_fns
+        self._strategy = strategy
+        self._num_trials = num_trials
+        self._dataset = dataset
+        self._num_classes = dataset.num_classes
+        self._device = torch.device(
             'cuda' if torch.cuda.is_available() and device == 'GPU'
             else 'cpu'
         )
-        self._stats_models = pd.DataFrame()
         self._optimize_score = optimize_score
+        get_logger().debug(
+            "Create hp optimizer with params: lr_range: %s "
+            "optimizers: %s architectures: %s "
+            "encoders: %s pretrained_weights: %s "
+            "epoch_range: %s loss_fns: %s strategy: %s "
+            "num_trials: %s num_classes: %s "
+            "device: %s optimize_score: %s ",
+            self._lr_range,
+            self._optimizers, self._architectures,
+            self._encoders, self._pretrained_weights,
+            self._epoch_range, self._loss_fns, self._strategy,
+            self._num_trials, self._num_classes,
+            self._device, self._optimize_score
+        )
+
+        self._stats_models = pd.DataFrame()
 
     def optimize(self) -> None:
+        get_logger().info("Train models started")
+
         direction = 'minimize' if self._optimize_score == 'loss' else 'maximize'
         study = optuna.create_study(
             direction=direction,
-            sampler=getattr(samplers, self.strategy)()
+            sampler=getattr(samplers, self._strategy)()
         )
-        study.optimize(self._objective, n_trials=self.num_trials, timeout=600)
+        study.optimize(self._objective, n_trials=self._num_trials, timeout=600)
         _log_study(study)
 
+        get_logger().info("Train models is over")
+
     def _create_model(self, trial: Trial) -> tuple[SegmentationModel, int]:
-        optimizer_name = trial.suggest_categorical("optimizer", self.optimizers)
+        optimizer_name = trial.suggest_categorical("optimizer", self._optimizers)
         optimizer = getattr(optim, optimizer_name)
-        architecture_name = trial.suggest_categorical("architecture", self.architectures)
+        architecture_name = trial.suggest_categorical("architecture", self._architectures)
         architecture = getattr(smp, architecture_name)
-        encoder = trial.suggest_categorical("encoders", self.encoders)
+        encoder = trial.suggest_categorical("encoders", self._encoders)
         pretrained_weight = trial.suggest_categorical("pretrained_weight", self._pretrained_weights)
-        lr = trial.suggest_float("lr", self.lr_range[0], self.lr_range[1])
-        loss_name = trial.suggest_categorical("loss", self.loss_fns)
+        lr = trial.suggest_float("lr", self._lr_range[0], self._lr_range[1])
+        loss_name = trial.suggest_categorical("loss", self._loss_fns)
         loss_fn = getattr(smp.losses, loss_name)('binary')
-        num_epoch = trial.suggest_int("num_epoch", self.epoch_range[0], self.epoch_range[1])
+        num_epoch = trial.suggest_int("num_epoch", self._epoch_range[0], self._epoch_range[1])
 
         model = SegmentationModel(
             model=architecture,
@@ -94,17 +113,17 @@ class HPOptimizer:
             optimizer=optimizer,
             lr=lr,
             loss_fn=loss_fn,
-            num_classes=self.num_classes,
+            num_classes=self._num_classes,
             num_epoch=num_epoch,
-            device=self.device,
-            img_size=self.dataset.img_size,
+            device=self._device,
+            img_size=self._dataset.img_size,
         )
 
         return model, num_epoch
 
     def _objective(self, trial: Trial) -> float:
         model, num_epoch = self._create_model(trial)
-        self.dataset.update_datasets(model.transforms)
+        self._dataset.update_datasets(model.transforms)
 
         score = 0
         for epoch in range(num_epoch):
@@ -121,14 +140,14 @@ class HPOptimizer:
 
     def _train_model(self, model: SegmentationModel) -> float:
         torch.cuda.empty_cache()
-        model.train_step(self.dataset.train)
-        val_loss = model.val_step(self.dataset.val)
+        model.train_step(self._dataset.train)
+        val_loss = model.val_step(self._dataset.val)
 
         return val_loss[self._optimize_score]
 
     def _postprocessing_model(self, model: SegmentationModel) -> None:
-        model.log_test(self.dataset.test)
-        self.dataset.add_predictions(model)
+        model.log_test(self._dataset.test)
+        self._dataset.add_predictions(model)
         self._add_stats_model(model)
         model.save_weights()
 

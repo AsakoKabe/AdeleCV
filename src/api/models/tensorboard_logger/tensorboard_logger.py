@@ -5,10 +5,13 @@ import pathlib
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
+from api.logs import get_logger
+
 
 class TensorboardLogger:
     def __init__(self, log_path: pathlib.Path):
         self.log_path = log_path
+        get_logger().debug("Create tensorboard logger, path: %s", self.log_path.as_posix())
 
     def log_metrics(
             self,

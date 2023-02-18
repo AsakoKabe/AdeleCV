@@ -10,8 +10,9 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 
-from config import get_settings
+from api.logs import get_logger
 from api.models.tensorboard_logger import TensorboardLogger
+from config import get_settings
 
 
 class BaseModel(ABC):
@@ -49,7 +50,9 @@ class BaseModel(ABC):
         path = self._weights_path
         if not os.path.exists(path):
             os.mkdir(path)
-        torch.save(self._torch_model, path / f'{self._id}.pt')
+        save_path = path / f'{self._id}.pt'
+        torch.save(self._torch_model, save_path)
+        get_logger().debug("Save weights model: %s, path: %s", str(self), save_path.as_posix())
 
     @property
     def stats_model(self) -> pd.DataFrame:

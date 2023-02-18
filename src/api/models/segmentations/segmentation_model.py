@@ -137,8 +137,7 @@ class SegmentationModel(BaseModel):
             stage='Test'
         )
         self._save_stats_model(hparams, scores)
-        logger = get_logger()
-        logger.info("Model %s trained with test loss %s", str(self), scores['loss'])
+        get_logger().info("Model %s trained with test loss %s", str(self), scores['loss'])
 
     def predict(self, img: np.ndarray) -> torch.Tensor:
         self.eval_mode()

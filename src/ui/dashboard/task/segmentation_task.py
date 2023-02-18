@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from api.data.segmentations import SegmentationDataset
 from api.optimize import HPOptimizer
-from api.logs import get_logger
 from api.data.segmentations.types import DatasetType
 from .base import BaseTask
 
@@ -18,8 +17,6 @@ class SegmentationTask(BaseTask):
                 int | float | str | list | tuple
             ]
     ) -> None:
-        logger = get_logger()
-        logger.info("Train models started")
         self._hp_optimizer = HPOptimizer(
             architectures=params["architectures"],
             encoders=params['encoders'],
@@ -36,7 +33,6 @@ class SegmentationTask(BaseTask):
         )
         self._run_optimize()
         self._stats_models = self._hp_optimizer.stats_models
-        logger.info("Train models is over")
 
     def load_dataset(
             self,
@@ -46,8 +42,6 @@ class SegmentationTask(BaseTask):
             split: tuple[float, float, float],
             batch_size: int,
     ) -> None:
-        logger = get_logger()
-        logger.info("Creating a dataset")
         self._dataset = SegmentationDataset(
             dataset_path,
             dataset_type,
@@ -56,4 +50,3 @@ class SegmentationTask(BaseTask):
             batch_size
         )
         self._create_dataset_session()
-        logger.info("Dataset created")

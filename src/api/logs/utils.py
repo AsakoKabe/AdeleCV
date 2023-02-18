@@ -6,11 +6,12 @@ from config import get_settings
 def enable_logs(
         handler,
         name=get_settings().LOGGER_NAME,
-        formatter=logging.Formatter('%(levelname)s - %(message)s')
+        formatter=logging.Formatter('%(levelname)s - %(message)s'),
+        level=logging.DEBUG,
 ) -> None:
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
-    handler.setLevel(logging.DEBUG)
+    logger.setLevel(level)
+    handler.setLevel(level)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
