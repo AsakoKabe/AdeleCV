@@ -35,10 +35,14 @@ class BaseModel(ABC):
         self._loss_fn = loss_fn
         self._lr = lr
         self._num_epoch = num_epoch
+        if self._num_epoch < 1:
+            raise ValueError("num epoch musa be greater than 0")
         self._metrics = metrics
         self._transforms = transforms
 
         self._num_classes = num_classes
+        if self._num_classes < 2:
+            raise ValueError("num class musa be greater than 1")
         self._curr_epoch = 0
         self._id = uuid4().hex[::5]
 

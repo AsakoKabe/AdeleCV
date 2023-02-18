@@ -548,3 +548,6 @@ check-str-concat-over-line-jumps=no
 # suggestions which would get split by a code formatter (e.g., black). Will
 # default to the setting for ``max-line-length``.
 #max-line-length-suggestions=
+
+
+extension-pkg-whitelist=pydantic

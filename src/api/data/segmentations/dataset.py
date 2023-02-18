@@ -20,10 +20,16 @@ class SegmentationDataset:
             split: tuple[float, float, float] = (0.7, 0.2, 0.1),
             batch_size: int = 16
     ):
+        if sum(split) > 1:
+            raise ValueError(f"The sum split must be equal to 1, but now {sum(split)}")
         self.dataset_dir = dataset_dir
         self.fo_dataset = dataset_type.create_dataset(self.dataset_dir)
         self.split = split
+        if batch_size < 1:
+            raise ValueError(f"Butch size must be greater than 0, but now {batch_size}")
         self.batch_size = batch_size
+        if len(img_size) < 2:
+            raise ValueError(f"Img size must be len = 2 (height, width), but now {len(img_size)}")
         self.img_size = img_size
         self.fo_dataset.save()
         self.num_classes = len(self.fo_dataset.default_mask_targets)

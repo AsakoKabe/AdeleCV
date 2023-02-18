@@ -10,6 +10,7 @@ import segmentation_models_pytorch as smp
 from api.data.segmentations import SegmentationDataset
 from api.logs import get_logger
 from api.models.segmentations import SegmentationModel
+from .hyper_params import HyperParamsSegmentation
 
 
 def _log_study(study: Study) -> None:
@@ -35,27 +36,13 @@ def _log_study(study: Study) -> None:
 class HPOptimizer:
     def __init__(
             self,
-            architectures: list[str],
-            encoders: list[str],
-            pretrained_weights: list[str],
-            lr_range: tuple[float, float],
-            optimizers: list[str],
-            loss_fns: list[str],
-            epoch_range: tuple[int, int],
-            strategy: str,
+            hyper_params: HyperParamsSegmentation,
             num_trials: int,
             device: str,
             dataset: SegmentationDataset,
-            optimize_score: str,
     ):
-        self._lr_range = lr_range
-        self._optimizers = optimizers
-        self._architectures = architectures
-        self._encoders = encoders
-        self._pretrained_weights = pretrained_weights
-        self._epoch_range = epoch_range
-        self._loss_fns = loss_fns
-        self._strategy = strategy
+        self._hyper_params = hyper_params
+        self._strategy = self._hyper_params.strategy
         self._num_trials = num_trials
         self._dataset = dataset
         self._num_classes = dataset.num_classes
@@ -63,28 +50,19 @@ class HPOptimizer:
             'cuda' if torch.cuda.is_available() and device == 'GPU'
             else 'cpu'
         )
-        self._optimize_score = optimize_score
         get_logger().debug(
-            "Create hp optimizer with params: lr_range: %s "
-            "optimizers: %s architectures: %s "
-            "encoders: %s pretrained_weights: %s "
-            "epoch_range: %s loss_fns: %s strategy: %s "
-            "num_trials: %s num_classes: %s "
-            "device: %s optimize_score: %s ",
-            self._lr_range,
-            self._optimizers, self._architectures,
-            self._encoders, self._pretrained_weights,
-            self._epoch_range, self._loss_fns, self._strategy,
-            self._num_trials, self._num_classes,
-            self._device, self._optimize_score
+            "Create hp optimizer with params: "
+            "strategy: %s num_trials: %s num_classes: %s "
+            "device: %s optimize_score: %s  hps: ",
+            self._strategy, self._num_trials, self._num_classes,
+            self._device, self._hyper_params.dict()
         )
-
         self._stats_models = pd.DataFrame()
 
     def optimize(self) -> None:
         get_logger().info("Train models started")
 
-        direction = 'minimize' if self._optimize_score == 'loss' else 'maximize'
+        direction = 'minimize' if self._hyper_params.optimize_score == 'loss' else 'maximize'
         study = optuna.create_study(
             direction=direction,
             sampler=getattr(samplers, self._strategy)()
@@ -95,16 +73,16 @@ class HPOptimizer:
         get_logger().info("Train models is over")
 
     def _create_model(self, trial: Trial) -> tuple[SegmentationModel, int]:
-        optimizer_name = trial.suggest_categorical("optimizer", self._optimizers)
+        optimizer_name = trial.suggest_categorical("optimizer", self._hyper_params.optimizers)
         optimizer = getattr(optim, optimizer_name)
-        architecture_name = trial.suggest_categorical("architecture", self._architectures)
+        architecture_name = trial.suggest_categorical("architecture", self._hyper_params.architectures)
         architecture = getattr(smp, architecture_name)
-        encoder = trial.suggest_categorical("encoders", self._encoders)
-        pretrained_weight = trial.suggest_categorical("pretrained_weight", self._pretrained_weights)
-        lr = trial.suggest_float("lr", self._lr_range[0], self._lr_range[1])
-        loss_name = trial.suggest_categorical("loss", self._loss_fns)
+        encoder = trial.suggest_categorical("encoders", self._hyper_params.encoders)
+        pretrained_weight = trial.suggest_categorical("pretrained_weight", self._hyper_params.pretrained_weights)
+        lr = trial.suggest_float("lr", self._hyper_params.lr_range[0], self._hyper_params.lr_range[1])
+        loss_name = trial.suggest_categorical("loss", self._hyper_params.loss_fns)
         loss_fn = getattr(smp.losses, loss_name)('binary')
-        num_epoch = trial.suggest_int("num_epoch", self._epoch_range[0], self._epoch_range[1])
+        num_epoch = trial.suggest_int("num_epoch", self._hyper_params.epoch_range[0], self._hyper_params.epoch_range[1])
 
         model = SegmentationModel(
             model=architecture,
@@ -143,7 +121,7 @@ class HPOptimizer:
         model.train_step(self._dataset.train)
         val_loss = model.val_step(self._dataset.val)
 
-        return val_loss[self._optimize_score]
+        return val_loss[self._hyper_params.optimize_score]
 
     def _postprocessing_model(self, model: SegmentationModel) -> None:
         model.log_test(self._dataset.test)

@@ -15,10 +15,10 @@ def get_notification_log_writers():
         }
 
     def log_info(message, **kwargs):
-        return dmc.Notification(**{**_default_kwargs("blue", "Info", message, auto_close=True), **kwargs})
+        return dmc.Notification(**{**_default_kwargs("green", "Info", message, auto_close=True), **kwargs})
 
     def log_debug(message, **kwargs):
-        return dmc.Notification(**{**_default_kwargs("green", "Debug", message, auto_close=True), **kwargs})
+        return dmc.Notification(**{**_default_kwargs("blue", "Debug", message, auto_close=True), **kwargs})
 
     def log_warning(message, **kwargs):
         return dmc.Notification(**{**_default_kwargs("yellow", "Warning", message), **kwargs})

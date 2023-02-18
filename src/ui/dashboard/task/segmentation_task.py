@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from api.data.segmentations import SegmentationDataset
-from api.optimize import HPOptimizer
+from api.optimize import HPOptimizer, HyperParamsSegmentation
 from api.data.segmentations.types import DatasetType
 from .base import BaseTask
 
@@ -18,18 +18,20 @@ class SegmentationTask(BaseTask):
             ]
     ) -> None:
         self._hp_optimizer = HPOptimizer(
-            architectures=params["architectures"],
-            encoders=params['encoders'],
-            pretrained_weights=params['pretrained_weight'],
-            lr_range=params["lr_range"],
-            optimizers=params["optimizers"],
-            loss_fns=params["loss_fns"],
-            epoch_range=params["epoch_range"],
-            strategy=params["strategy"],
+            hyper_params=HyperParamsSegmentation(
+                architectures=params["architectures"],
+                encoders=params['encoders'],
+                pretrained_weights=params['pretrained_weight'],
+                lr_range=params["lr_range"],
+                optimizers=params["optimizers"],
+                loss_fns=params["loss_fns"],
+                epoch_range=params["epoch_range"],
+                optimize_score=params['optimize_score'],
+                strategy=params["strategy"],
+            ),
             num_trials=params["num_trials"],
             device=params["device"],
             dataset=self._dataset,
-            optimize_score=params['optimize_score']
         )
         self._run_optimize()
         self._stats_models = self._hp_optimizer.stats_models

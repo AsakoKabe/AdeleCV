@@ -23,6 +23,8 @@ class SegmentationTorchDataset(Dataset):
     ):
         self.samples = fiftyone_dataset
         self.transforms = transforms
+        if self.transforms is None:
+            raise ValueError("Transform must be not None")
         self.img_paths = self.samples.values("filepath")
         self.classes = self.samples.default_mask_targets.keys()
 
