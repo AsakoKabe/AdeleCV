@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pandas as pd
+
 from api.data.segmentations import SegmentationDataset
 from api.optimize import HPOptimizer, HyperParamsSegmentation
 from api.data.segmentations.types import DatasetType
@@ -34,7 +36,11 @@ class SegmentationTask(BaseTask):
             dataset=self._dataset,
         )
         self._run_optimize()
-        self._stats_models = self._hp_optimizer.stats_models
+        self._stats_models = pd.concat(
+            [self._stats_models, self._hp_optimizer.stats_models],
+            ignore_index=True
+        )
+
 
     def load_dataset(
             self,
