@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "adelecv"
+version = "0.1.0"
+description = ""
+authors = ["Denis Mamatin <mamatin-denis@yandex.ru>"]
+readme = "README.md"
+packages = [
+    { include = "AdeleCV" }
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

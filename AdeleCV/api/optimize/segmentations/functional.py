@@ -15,4 +15,9 @@ _hp_optimizers = [
 
 
 def get_hp_optimizers() -> list[str]:
+    """
+    Get list of names optimizer strategy
+
+    :return: List of names hyperparams optimizer strategy
+    """
     return [obj.__name__ for obj in _hp_optimizers]

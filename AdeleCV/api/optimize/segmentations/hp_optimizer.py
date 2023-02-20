@@ -34,6 +34,14 @@ def _log_study(study: Study) -> None:
 
 
 class HPOptimizer:
+    """
+    Class for hyperparams search and model training
+
+    :param hyper_params: Dataclass with hyperparams of models
+    :param num_trials: Number of iterations algorithm (the number of models with pruned models)
+    :param device: GPU or CPU
+    :param dataset: Created dataset
+    """
     def __init__(
             self,
             hyper_params: HyperParamsSegmentation,
@@ -60,6 +68,11 @@ class HPOptimizer:
         self._stats_models = pd.DataFrame()
 
     def optimize(self) -> None:
+        """
+        Run optimize.
+
+        :return: None
+        """
         get_logger().info("Train models started")
 
         direction = 'minimize' if self._hyper_params.optimize_score == 'loss' else 'maximize'
@@ -137,4 +150,9 @@ class HPOptimizer:
 
     @property
     def stats_models(self) -> pd.DataFrame:
+        """
+        Get stats models after training.
+
+        :return: Info about trained models
+        """
         return self._stats_models

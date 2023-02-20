@@ -15,4 +15,9 @@ _segmentations_dataset_types = [
 
 
 def get_segmentations_dataset_types() -> list[str]:
+    """
+    Get formats of datasets
+
+    :return: List of available dataset formats.
+    """
     return [obj.__name__ for obj in _segmentations_dataset_types]

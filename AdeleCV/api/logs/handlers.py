@@ -2,14 +2,15 @@ import logging
 
 
 class LogMonitoringHandler(logging.Handler):
-    """ Class to redistribute python logging data """
+    """
+    :meta private:
+
+    Handler class for collecting internal logs.
+    Used for notifications in the UI
+    """
 
     def __init__(self, *args, **kwargs):
-        # Initialize the Handler
         logging.Handler.__init__(self, *args)
-
-        # optional take format
-        # setFormatter function is derived from logging.Handler
         for key, value in kwargs.items():
             if f"{key}" == "format":
                 self.setFormatter(value)
@@ -17,11 +18,21 @@ class LogMonitoringHandler(logging.Handler):
         self._logs = []
 
     def emit(self, record: logging.LogRecord) -> None:
-        """ Overload of logging.Handler method """
+        """
+        :meta private:
+
+        Overload of logging.Handler method
+
+        :param record: logging.LogRecord
+        """
         record = self.format(record)
         self._logs.append(record)
 
     def pop_logs(self) -> list[str]:
+        """
+        :meta private:
+        :return:
+        """
         logs = self._logs.copy()
         self._logs.clear()
 

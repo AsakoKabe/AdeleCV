@@ -22,7 +22,7 @@ srv = app.server
 
 app.config.suppress_callback_exceptions = True
 
-app.title = "AutoDL-CV"
+app.title = "AdeleCV"
 
 _task = SegmentationTask()
 

@@ -41,7 +41,6 @@ class SegmentationTask(BaseTask):
             ignore_index=True
         )
 
-
     def load_dataset(
             self,
             dataset_path: str,

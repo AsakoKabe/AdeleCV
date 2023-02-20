@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 
 from api.models.segmentations import get_models, get_encoders, get_pretrained_weights, \
     get_torch_optimizers, get_losses, get_optimize_scores
-from .utils import get_hp_optimizers
+from .functional import get_hp_optimizers
 
 
 def _check_contains_and_empty(values: list[str], possible_values: list[str], param_name: str):
@@ -35,6 +35,19 @@ def _check_contain_and_none(value: str, possible_values: list[str], param_name: 
 
 
 class HyperParamsSegmentation(BaseModel):
+    """
+    Dataclass with set of hyperparams. For all possible values see :ref:`model-segmentations`.
+
+    :param strategy: Name optimizer strategy (optuna name Sampler).
+    :param architectures: List of name model (Unet, DeepLabV3, e.g.)
+    :param encoders: List of name encoders (resnet18, mobilenet, e.g.)
+    :param pretrained_weights: List of pretrained weights (imagenet or None), only str! None='None'
+    :param loss_fns: List of names loss func (DiceLoss, JaccardLoss, e.g.)
+    :param optimizers: List of names pytorch optimizers (AdamW, Adadelta, e.g.)
+    :param epoch_range: range epoch (from - to)
+    :param lr_range: range lr (from - to)
+    :param optimize_score: Score for optimizing optimizers (optuna score)
+    """
     strategy: str
     architectures: list[str]
     encoders: list[str]

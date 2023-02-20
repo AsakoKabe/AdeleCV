@@ -4,20 +4,30 @@ import zipfile
 from pathlib import Path
 
 from api.logs import get_logger
-from config import get_settings
 
 
 class ExportWeights:
+    """
+    Class for export weights.
+
+    :param weights_path: Path to save weights.
+    """
     def __init__(
             self,
-            weights_path: Path = get_settings().WEIGHTS_PATH
+            weights_path: Path
     ):
         self._weights_path = weights_path
 
     def create_zip(
             self,
-            id_selected: None | set[str] = None
+            id_selected: None | set[str] | list[str] = None
     ) -> Path:
+        """
+        Create zip file with selected models. If no model in selected then use all models.
+
+        :param id_selected: List with id models from stats_models
+        :return: Path to created zip file.
+        """
         zip_path = self._weights_path.parent / 'weights.zip'
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_file:
             for entry in self._weights_path.rglob("*"):

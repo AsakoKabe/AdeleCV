@@ -6,14 +6,39 @@ from fiftyone import dataset_exists, delete_dataset
 
 
 class DatasetType:
+    """
+    Base class for the dataset conversion class to an internal format.
+
+    Each class must implement method *create_dataset*, in which the fiftyone dataset is created.
+
+    There should be a field for each sample:
+
+    - ``semantic`` - mask with normalized values (mask / 255).
+
+    - ``default_mask_targets`` - mappings for classes (0 - background, 1 - cat, e.g.).
+    """
+
     @staticmethod
     def create_dataset(dataset_dir: str) -> fo.Dataset:
         pass
 
 
 class COCOSegmentation(DatasetType):
+    """
+    Convert from COCO_ dataset
+
+    .. _COCO:
+        https://docs.voxel51.com/integrations/coco.html
+    """
+
     @staticmethod
     def create_dataset(dataset_dir: str) -> fo.Dataset:
+        """
+        Create fiftyone segmentation dataset from Coco
+
+        :param dataset_dir: Path to dataset
+        :return: fo.Dataset with sample semantic (mask / 255) and class mapping
+        """
         if dataset_exists(__class__.__name__):
             delete_dataset(__class__.__name__)
 
@@ -41,8 +66,34 @@ class COCOSegmentation(DatasetType):
 
 
 class ImageMask(DatasetType):
+    r"""
+    Convert from Image and Mask folder.
+
+    Example dataset.
+
+    .
+
+    *\|-- image*
+
+    *\|----- 0.jpg*
+
+    *\|----- 1.jpg*
+
+    *\|-- mask*
+
+    *\|----- 0.jpg*
+
+    *\|----- 1.jpg*
+    """
+
     @staticmethod
     def create_dataset(dataset_dir: str) -> fo.Dataset:
+        """
+        Create fiftyone segmentation dataset from custom format
+
+        :param dataset_dir: Path to dataset
+        :return: fo.Dataset with sample semantic (mask / 255) and class mapping
+        """
         samples = []
         path = Path(dataset_dir)
         for filepath in (path / 'image').iterdir():
@@ -52,7 +103,6 @@ class ImageMask(DatasetType):
             sample = fo.Sample(filepath=img_path)
 
             mask = cv2.imread(mask_path.as_posix(), cv2.IMREAD_GRAYSCALE) // 255
-            # print(mask.shape)
             sample["semantic"] = fo.Segmentation(mask=mask)
             sample.compute_metadata()
             samples.append(sample)

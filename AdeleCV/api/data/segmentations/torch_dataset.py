@@ -9,10 +9,6 @@ import fiftyone as fo
 class SegmentationTorchDataset(Dataset):
     """
     A class to construct a PyTorch segmentations from a FiftyOne segmentations.
-
-    Args: fiftyone_dataset: a FiftyOne segmentations or view that will be used for
-    training or testing transforms (None): a list of PyTorch transforms to
-    apply to images and targets when loading
     """
 
     def __init__(
@@ -21,30 +17,35 @@ class SegmentationTorchDataset(Dataset):
             transforms: A.Compose
             # augmentations=None,
     ):
-        self.samples = fiftyone_dataset
-        self.transforms = transforms
-        if self.transforms is None:
+        """
+
+        :param fiftyone_dataset: FiftyOne segmentations or view that will be used for training or testing
+        :param transforms: List of PyTorch transforms to apply to images and targets when loading
+        """
+        self._samples = fiftyone_dataset
+        self._transforms = transforms
+        if self._transforms is None:
             raise ValueError("Transform must be not None")
-        self.img_paths = self.samples.values("filepath")
-        self.classes = self.samples.default_mask_targets.keys()
+        self._img_paths = self._samples.values("filepath")
+        self._classes = self._samples.default_mask_targets.keys()
 
     def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
-        img_path = self.img_paths[idx]
-        sample = self.samples[img_path]
+        img_path = self._img_paths[idx]
+        sample = self._samples[img_path]
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         mask = torch.Tensor(sample['semantic']['mask']).long()
 
-        mask = F.one_hot(mask, num_classes=len(self.classes)).numpy()
+        mask = F.one_hot(mask, num_classes=len(self._classes)).numpy()
 
-        transformed = self.transforms(image=img, mask=mask)
+        transformed = self._transforms(image=img, mask=mask)
         img = transformed['image']
         mask = transformed['mask']
 
         return img, mask
 
     def __len__(self) -> int:
-        return len(self.img_paths)
+        return len(self._img_paths)
 
     def get_classes(self) -> tuple[str]:
-        return self.classes
+        return self._classes
