@@ -71,7 +71,6 @@ class HPOptimizer:
         """
         Run optimize.
 
-        :return: None
         """
         get_logger().info("Train models started")
 

@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import os
 from abc import abstractmethod, ABC
+from collections.abc import Callable
 from uuid import uuid4
 
-import albumentations
+import albumentations as A
 import numpy as np
 import pandas as pd
 import torch
+from torch import optim
+from torch.nn.modules.loss import _Loss
 from torch.utils.data import DataLoader
+
 
 from api.logs import get_logger
 from api.models.tensorboard_logger import TensorboardLogger
@@ -19,14 +23,14 @@ class BaseModel(ABC):
     def __init__(
             self,
             model: torch.nn.Module,
-            optimizer,
-            lr,
-            loss_fn,
-            transforms,
-            metrics,
-            num_classes,
-            num_epoch,
-            device,
+            optimizer: type[optim.Optimizer],
+            lr: float,
+            loss_fn: _Loss,
+            transforms: A.Compose,
+            metrics: list[Callable],
+            num_classes: int,
+            num_epoch: int,
+            device: torch.device,
     ):
         self._torch_model = model
         self._device = device
@@ -108,7 +112,7 @@ class BaseModel(ABC):
         self._torch_model.eval()
 
     @property
-    def transforms(self) -> albumentations.Compose:
+    def transforms(self) -> A.Compose:
         return self._transforms
 
     def __str__(self) -> str:

@@ -3,7 +3,7 @@ from dash import html, dcc
 
 from api.models.segmentations import get_models, get_encoders, get_pretrained_weights, \
     get_torch_optimizers, get_losses, get_optimize_scores
-from api.optimize import get_hp_optimizers
+from api.optimize.segmentations import get_hp_optimizers
 
 controls = [
     # dbc.Label("Model hyper params", class_name='font-weight-bold'),

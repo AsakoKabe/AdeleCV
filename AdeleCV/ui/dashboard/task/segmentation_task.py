@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from api.data.segmentations import SegmentationDataset
-from api.optimize import HPOptimizer, HyperParamsSegmentation
+from api.optimize.segmentations import HPOptimizer, HyperParamsSegmentation
 from api.data.segmentations.types import DatasetType
 from .base import BaseTask
 

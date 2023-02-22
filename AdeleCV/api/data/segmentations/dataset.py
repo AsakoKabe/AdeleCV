@@ -122,7 +122,6 @@ class SegmentationDataset:
         See: preprocessing smp_
 
         :param transforms: transforms for image
-        :return: None
 
         .. _smp:
             https://smp.readthedocs.io/en/latest/quickstart.html
@@ -139,7 +138,6 @@ class SegmentationDataset:
 
 
         :param model: trained SegmentationModel
-        :return: None
         """
         get_logger().debug("Add predictions for model: %s", str(model))
         with fo.ProgressBar() as pb:
