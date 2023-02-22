@@ -11,3 +11,4 @@ Welcome to AdeleCV's documentation!
    optimize/optimize
    logs
    export
+   config
