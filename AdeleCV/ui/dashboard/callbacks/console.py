@@ -3,7 +3,7 @@ import logging
 from dash import Input, Output
 from dash.exceptions import PreventUpdate
 
-from config import get_settings
+from api.config import Settings
 from ui.dashboard.app import app
 
 
@@ -17,7 +17,7 @@ def add_logs_to_console(
     if n_intervals is None:
         raise PreventUpdate()
 
-    logger = logging.getLogger(get_settings().LOGGER_NAME)
+    logger = logging.getLogger(Settings.LOGGER_NAME)
     console_data = '\n'.join(logger.handlers[1].logs[::-1])
 
     return console_data

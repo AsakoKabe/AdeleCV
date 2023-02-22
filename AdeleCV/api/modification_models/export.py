@@ -3,6 +3,7 @@ from __future__ import annotations
 import zipfile
 from pathlib import Path
 
+from api.config import Settings
 from api.logs import get_logger
 
 
@@ -10,11 +11,11 @@ class ExportWeights:
     """
     Class for export weights.
 
-    :param weights_path: Path to save weights.
+    :param weights_path: Path to saved weights.
     """
     def __init__(
             self,
-            weights_path: Path
+            weights_path: Path = Settings.WEIGHTS_PATH
     ):
         self._weights_path = weights_path
 

@@ -61,7 +61,7 @@ class HPOptimizer:
         get_logger().debug(
             "Create hp optimizer with params: "
             "strategy: %s num_trials: %s num_classes: %s "
-            "device: %s optimize_score: %s  hps: ",
+            "device: %s hps: %s",
             self._strategy, self._num_trials, self._num_classes,
             self._device, self._hyper_params.dict()
         )

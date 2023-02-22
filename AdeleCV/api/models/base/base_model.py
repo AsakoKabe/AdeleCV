@@ -16,7 +16,7 @@ from torch.utils.data import DataLoader
 
 from api.logs import get_logger
 from api.models.tensorboard_logger import TensorboardLogger
-from config import get_settings
+from api.config import Settings
 
 
 class BaseModel(ABC):
@@ -50,8 +50,8 @@ class BaseModel(ABC):
         self._curr_epoch = 0
         self._id = uuid4().hex[::5]
 
-        self._weights_path = get_settings().WEIGHTS_PATH
-        self._logger = TensorboardLogger(get_settings().TENSORBOARD_LOGS_PATH / str(self._id))
+        self._weights_path = Settings.WEIGHTS_PATH
+        self._logger = TensorboardLogger(Settings.TENSORBOARD_LOGS_PATH / str(self._id))
         self._stats_model = None
 
     def save_weights(self) -> None:

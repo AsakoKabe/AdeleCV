@@ -3,8 +3,8 @@ import logging
 import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
+from api.config import Settings
 from api.logs import enable_logs, LogMonitoringHandler
-from config import get_settings
 from ui.dashboard.task import SegmentationTask
 from ui.dashboard.utils import setup_notifications_log_config, LogConsoleHandler
 
@@ -29,6 +29,6 @@ _task = SegmentationTask()
 enable_logs(LogMonitoringHandler())
 enable_logs(
     LogConsoleHandler(),
-    get_settings().LOGGER_NAME,
+    Settings.LOGGER_NAME,
     logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 )

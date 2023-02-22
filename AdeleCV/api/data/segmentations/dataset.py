@@ -6,9 +6,9 @@ import fiftyone as fo
 import cv2
 
 from api.models.segmentations import SegmentationModel
+from api.logs import get_logger
 from .torch_dataset import SegmentationTorchDataset
 from .types import DatasetType
-from ...logs import get_logger
 
 
 class SegmentationDataset:

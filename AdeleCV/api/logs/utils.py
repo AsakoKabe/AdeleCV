@@ -1,11 +1,11 @@
 import logging
 
-from config import get_settings
+from api.config import Settings
 
 
 def enable_logs(
         handler: logging.Handler,
-        name: str = get_settings().LOGGER_NAME,
+        name: str = Settings.LOGGER_NAME,
         formatter: logging.Formatter = logging.Formatter('%(levelname)s - %(message)s'),
         level: int = logging.DEBUG,
 ) -> None:
@@ -26,7 +26,7 @@ def enable_logs(
 
 
 def get_logger(
-        name: str = get_settings().LOGGER_NAME
+        name: str = Settings.LOGGER_NAME
 ) -> logging.Logger:
     """
     Get logger by name
