@@ -93,7 +93,7 @@ dataset = dbc.Container(
                     [
                         html.Div(
                             html.Iframe(
-                                src="http://localhost:5151/datasets/",
+                                src="http://localhost:5151/",
                                 style={"height": "100vh", "width": "100%"},
                             )
                         ),

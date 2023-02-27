@@ -1,18 +1,27 @@
-[tool.poetry]
+[project]
 name = "adelecv"
-version = "0.1.0"
-description = ""
-authors = ["Denis Mamatin <mamatin-denis@yandex.ru>"]
-readme = "README.md"
-packages = [
-    { include = "AdeleCV" }
+version = "0.0.1"
+authors = [
+  { name="Denis Mamatin", email="mamatin-denis@yandex.ru" },
 ]
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+#packages = [
+#    { include = "AdeleCV" }
+#]
 
 
-[tool.poetry.dependencies]
-python = "^3.9"
+[project.urls]
+"Homepage" = "https://github.com/AsakoKabe/AdeleCV"
+"Bug Tracker" = "https://github.com/AsakoKabe/AdeleCV/issues"
 
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

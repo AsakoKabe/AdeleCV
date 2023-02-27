@@ -21,6 +21,7 @@ def _load_settings_from_env() -> None:
 
 class BaseTask(ABC):
     def __init__(self):
+        _load_settings_from_env()
         self.models: list[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
         self._weights_dir = Settings.WEIGHTS_PATH
@@ -30,7 +31,6 @@ class BaseTask(ABC):
         self._tb = program.TensorBoard()
         self._tb.configure(argv=[None, '--logdir', Settings.TENSORBOARD_LOGS_PATH.as_posix()])
         self._tb.launch()
-        _load_settings_from_env()
 
     def _create_dataset_session(self) -> None:
         get_logger().debug("Create fifty one dataset session")
