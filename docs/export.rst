@@ -1,6 +1,6 @@
 Export
 ===================================
 
-.. automodule:: AdeleCV.api.modification_models
+.. automodule:: adelecv.api.modification_models
     :members:
 

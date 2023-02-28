@@ -1,5 +1,5 @@
 Segmentations
 ===================================
 
-.. automodule:: AdeleCV.api.optimize.segmentations
+.. automodule:: adelecv.api.optimize.segmentations
     :members:

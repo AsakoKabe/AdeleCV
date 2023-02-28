@@ -25,7 +25,7 @@ author = "Denis Mamatin"
 
 
 def get_version():
-    sys.path.append('../AdeleCV')
+    sys.path.append('../adelecv')
     from __version__ import __version__ as version
     # sys.path.pop()
     return version

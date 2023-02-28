@@ -1,4 +1,4 @@
 Config
 ~~~~~~~~~~~~~~~~~~~
-.. automodule:: AdeleCV.api.config
+.. automodule:: adelecv.api.config
     :members:

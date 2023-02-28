@@ -3,5 +3,5 @@
 
 Segmentation
 ~~~~~~~~~~~~~~~~~~~
-.. automodule:: AdeleCV.api.models.segmentations
+.. automodule:: adelecv.api.models.segmentations
     :members:

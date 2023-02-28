@@ -1,4 +1,4 @@
 Logs
 ~~~~~~~~~~~~~~~~~~~
-.. automodule:: AdeleCV.api.logs
+.. automodule:: adelecv.api.logs
     :members:
