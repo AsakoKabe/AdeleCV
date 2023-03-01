@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import fiftyone as fo
 import cv2
+import fiftyone as fo
 from fiftyone import dataset_exists, delete_dataset
 
 
@@ -9,13 +9,15 @@ class DatasetType:
     """
     Base class for the dataset conversion class to an internal format.
 
-    Each class must implement method *create_dataset*, in which the fiftyone dataset is created.
+    Each class must implement method *create_dataset*, in which the fiftyone
+     dataset is created.
 
     There should be a field for each sample:
 
     - ``semantic`` - mask with normalized values (mask / 255).
 
-    - ``default_mask_targets`` - mappings for classes (0 - background, 1 - cat, e.g.).
+    - ``default_mask_targets`` - mappings for classes
+     (0 - background, 1 - cat, e.g.).
     """
 
     @staticmethod
@@ -102,7 +104,10 @@ class ImageMask(DatasetType):
 
             sample = fo.Sample(filepath=img_path)
 
-            mask = cv2.imread(mask_path.as_posix(), cv2.IMREAD_GRAYSCALE) // 255
+            mask = cv2.imread(
+                mask_path.as_posix(),
+                cv2.IMREAD_GRAYSCALE
+                ) // 255
             sample["semantic"] = fo.Segmentation(mask=mask)
             sample.compute_metadata()
             samples.append(sample)

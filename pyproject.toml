@@ -16,6 +16,8 @@ docutils = "0.17.1"
 nbsphinx = "^0.8.12"
 ipython = "^8.10.0"
 pylint = "^2.16.2"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
 
 
 [tool.poetry.dependencies]

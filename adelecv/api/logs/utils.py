@@ -6,15 +6,19 @@ from adelecv.api.config import Settings
 def enable_logs(
         handler: logging.Handler,
         name: str = Settings.LOGGER_NAME,
-        formatter: logging.Formatter = logging.Formatter('%(levelname)s - %(message)s'),
+        formatter: logging.Formatter = logging.Formatter(
+            '%(levelname)s - %(message)s'
+        ),
         level: int = logging.DEBUG,
 ) -> None:
     """
     Enabling python logging.
 
-    :param handler: logging.Handler for collecting logging (example StreamHandler)
+    :param handler: logging.Handler for collecting logging
+     (example StreamHandler)
     :param name: name logger
-    :param formatter: str format python logging. default - %(levelname)s - %(message)s
+    :param formatter: str format python logging.
+     default - %(levelname)s - %(message)s
     :param level: python logging level
     """
 

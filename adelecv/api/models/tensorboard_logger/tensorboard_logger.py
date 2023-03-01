@@ -11,7 +11,9 @@ from adelecv.api.logs import get_logger
 class TensorboardLogger:
     def __init__(self, log_path: pathlib.Path):
         self._log_path = log_path
-        get_logger().debug("Create tensorboard logger, path: %s", self._log_path.as_posix())
+        get_logger().debug(
+            "Create tensorboard logger, path: %s", self._log_path.as_posix()
+            )
 
     def log_metrics(
             self,
@@ -43,5 +45,7 @@ class TensorboardLogger:
             scores: dict[str, float]
     ):
         with SummaryWriter(log_dir=self._log_path.as_posix()) as writer:
-            hparam_scores = {f'hparam/{score}': scores[score] for score in scores}
+            hparam_scores = {
+                f'hparam/{score}': scores[score] for score in scores
+            }
             writer.add_hparams(hparams, hparam_scores, run_name='./')

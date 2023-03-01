@@ -1,8 +1,8 @@
-from dash import Output, Input, State
+from dash import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 from adelecv.api.logs import get_logger
-from adelecv.ui.dashboard.app import app, _task
+from adelecv.ui.dashboard.app import _task, app
 
 
 @app.callback(
@@ -26,8 +26,8 @@ from adelecv.ui.dashboard.app import app, _task
     # ],
 )
 def update_train_params(
-    n_clicks,
-    *args,
+        n_clicks,
+        *args,
 ):
     if not n_clicks:
         raise PreventUpdate()
@@ -49,8 +49,10 @@ def update_train_params(
     ]
     train_params = dict(zip(param_names, args))
     if all(train_params.values()):
-        train_params['lr_range'] = (train_params['lr_from'], train_params['lr_to'])
-        train_params['epoch_range'] = (train_params['epoch_from'], train_params['epoch_to'])
+        train_params['lr_range'] = (
+            train_params['lr_from'], train_params['lr_to'])
+        train_params['epoch_range'] = (
+            train_params['epoch_from'], train_params['epoch_to'])
         try:
             _task.train(train_params)
         except Exception as e:  # pylint: disable=broad-exception-caught
@@ -68,4 +70,3 @@ def collapse_train(n, is_open):
     if n:
         return not is_open
     return is_open
-

@@ -1,4 +1,4 @@
-from dash import Output, Input, State, dcc
+from dash import Input, Output, State, dcc
 from dash.exceptions import PreventUpdate
 
 from adelecv.api.config import Settings

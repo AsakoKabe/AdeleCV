@@ -1,9 +1,9 @@
-import torch
-from torch.utils.data import Dataset
-import torch.nn.functional as F
-import cv2
 import albumentations as A
+import cv2
 import fiftyone as fo
+import torch
+import torch.nn.functional as F
+from torch.utils.data import Dataset
 
 
 class SegmentationTorchDataset(Dataset):
@@ -19,8 +19,10 @@ class SegmentationTorchDataset(Dataset):
     ):
         """
 
-        :param fiftyone_dataset: FiftyOne segmentations or view that will be used for training or testing
-        :param transforms: List of PyTorch transforms to apply to images and targets when loading
+        :param fiftyone_dataset: FiftyOne segmentations or view that will
+         be used for training or testing
+        :param transforms: List of PyTorch transforms to apply to images
+         and targets when loading
         """
         self._samples = fiftyone_dataset
         self._transforms = transforms

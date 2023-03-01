@@ -1,9 +1,9 @@
-from dash import Output, Input, State
+from dash import Input, Output, State
 from dash.exceptions import PreventUpdate
 
-from adelecv.api.logs import get_logger
 from adelecv.api.data.segmentations import types
-from adelecv.ui.dashboard.app import app, _task
+from adelecv.api.logs import get_logger
+from adelecv.ui.dashboard.app import _task, app
 
 
 @app.callback(
@@ -23,8 +23,8 @@ from adelecv.ui.dashboard.app import app, _task
     # ],
 )
 def update_dataset_params(
-    n_clicks,
-    *args,
+        n_clicks,
+        *args,
 ):
     if not n_clicks:
         raise PreventUpdate()
@@ -45,8 +45,11 @@ def update_dataset_params(
             _task.load_dataset(
                 dataset_path=dataset_params["dataset_path"],
                 dataset_type=getattr(types, dataset_params["dataset_type"]),
-                img_size=(dataset_params["img_height"], dataset_params["img_width"]),
-                split=(dataset_params["train_size"], dataset_params["val_size"], dataset_params["test_size"]),
+                img_size=(
+                    dataset_params["img_height"], dataset_params["img_width"]),
+                split=(
+                    dataset_params["train_size"], dataset_params["val_size"],
+                    dataset_params["test_size"]),
                 batch_size=dataset_params["batch_size"],
             )
 

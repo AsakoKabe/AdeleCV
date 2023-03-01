@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from collections.abc import Callable
 from uuid import uuid4
 
@@ -13,10 +13,9 @@ from torch import optim
 from torch.nn.modules.loss import _Loss
 from torch.utils.data import DataLoader
 
-
+from adelecv.api.config import Settings
 from adelecv.api.logs import get_logger
 from adelecv.api.models.tensorboard_logger import TensorboardLogger
-from adelecv.api.config import Settings
 
 
 class BaseModel(ABC):
@@ -51,7 +50,9 @@ class BaseModel(ABC):
         self._id = uuid4().hex[::5]
 
         self._weights_path = Settings.WEIGHTS_PATH
-        self._logger = TensorboardLogger(Settings.TENSORBOARD_LOGS_PATH / str(self._id))
+        self._logger = TensorboardLogger(
+            Settings.TENSORBOARD_LOGS_PATH / str(self._id)
+        )
         self._stats_model = None
 
     def save_weights(self) -> None:
@@ -60,7 +61,9 @@ class BaseModel(ABC):
             os.mkdir(path)
         save_path = path / f'{self._id}.pt'
         torch.save(self._torch_model, save_path)
-        get_logger().debug("Save weights model: %s, path: %s", str(self), save_path.as_posix())
+        get_logger().debug(
+            "Save weights model: %s, path: %s", str(self), save_path.as_posix()
+        )
 
     @property
     def stats_model(self) -> pd.DataFrame:
@@ -118,4 +121,5 @@ class BaseModel(ABC):
     def __str__(self) -> str:
         return f'{self._id}_{self._torch_model.__class__.__name__}_' \
                f'{self._optimizer.__class__.__name__}_' \
-               f'{self._loss_fn.__class__.__name__}_lr={str(self._lr).replace(".", ",")}'
+               f'{self._loss_fn.__class__.__name__}' \
+               f'_lr={str(self._lr).replace(".", ",")}'

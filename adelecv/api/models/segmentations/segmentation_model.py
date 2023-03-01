@@ -3,18 +3,20 @@ from __future__ import annotations
 from collections import defaultdict
 
 import numpy as np
+import segmentation_models_pytorch as smp
 import torch
 from segmentation_models_pytorch.encoders import get_preprocessing_fn
-import segmentation_models_pytorch as smp
-from segmentation_models_pytorch.metrics import fbeta_score, f1_score,\
-    iou_score, accuracy, recall, precision
+from segmentation_models_pytorch.metrics import (accuracy, f1_score,
+                                                 fbeta_score, iou_score,
+                                                 precision, recall)
 from torch import optim
 from torch.nn.modules.loss import _Loss
 from torch.utils.data import DataLoader
 
-from adelecv.api.models.base import BaseModel
 from adelecv.api.logs import get_logger
-from .utils import get_preprocessing, denormalize
+from adelecv.api.models.base import BaseModel
+
+from .utils import denormalize, get_preprocessing
 
 
 class SegmentationModel(BaseModel):
@@ -42,7 +44,10 @@ class SegmentationModel(BaseModel):
             lr=lr,
             loss_fn=loss_fn,
             transforms=get_preprocessing(
-                get_preprocessing_fn(encoder_name, pretrained=pretrained_weight)
+                get_preprocessing_fn(
+                    encoder_name,
+                    pretrained=pretrained_weight
+                )
                 if pretrained_weight else None,
                 img_size
             ),
@@ -137,7 +142,8 @@ class SegmentationModel(BaseModel):
             stage='Test'
         )
         self._save_stats_model(hparams, scores)
-        get_logger().info("Model %s trained with test loss %s", str(self), scores['loss'])
+        get_logger().info("Model %s trained with test loss %s", str(self),
+                          scores['loss'])
 
     def predict(self, img: np.ndarray) -> torch.Tensor:
         self.eval_mode()
@@ -162,7 +168,8 @@ class SegmentationModel(BaseModel):
         )
         scores = {}
         for metric in self._metrics:
-            scores[metric.__name__] = metric(tp, fp, fn, tn, reduction='macro-imagewise')
+            scores[metric.__name__] = metric(tp, fp, fn, tn,
+                                             reduction='macro-imagewise')
 
         return scores
 
@@ -170,7 +177,8 @@ class SegmentationModel(BaseModel):
         return f'{self._id}_{self._torch_model.__class__.__name__}_' \
                f'{self._encoder_name}_{self._pretrained_weight}_' \
                f'{self._optimizer.__class__.__name__}_' \
-               f'{self._loss_fn.__class__.__name__}_lr={str(self._lr).replace(".", ",")}'
+               f'{self._loss_fn.__class__.__name__}' \
+               f'_lr={str(self._lr).replace(".", ",")}'
 
     def _get_hparams(self) -> dict[str, str | float | int]:
         return {

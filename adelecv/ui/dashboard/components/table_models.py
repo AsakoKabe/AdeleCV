@@ -1,12 +1,13 @@
-from dash import html, dash_table, dcc
 import dash_bootstrap_components as dbc
+from dash import dash_table, dcc, html
 
 
 def table_models(df):
     cols = [
-            {"name": i, "id": i, "hideable": True, "selectable": True, 'editable': i == 'name'}
-            for i in df.columns
-        ]
+        {"name": i, "id": i, "hideable": True, "selectable": True,
+         'editable': i == 'name'}
+        for i in df.columns
+    ]
 
     return dbc.Container(
         [
@@ -15,8 +16,12 @@ def table_models(df):
                 label="Menu",
                 id='table-menu',
                 children=[
-                    dbc.DropdownMenuItem("Export weights", id='export-weights'),
-                    dbc.DropdownMenuItem("Convert weights", id='convert-weights'),
+                    dbc.DropdownMenuItem(
+                        "Export weights", id='export-weights'
+                        ),
+                    dbc.DropdownMenuItem(
+                        "Convert weights", id='convert-weights'
+                        ),
                 ],
                 style={"margin-bottom": "1%"}
             ),
@@ -37,7 +42,8 @@ def table_models(df):
                         page_current=0,
                         page_size=10,
                         css=[
-                            {'selector': 'table', 'rule': 'table-layout: fixed'},
+                            {'selector': 'table',
+                             'rule': 'table-layout: fixed'},
                         ],
                         style_cell={
                             'width': f'{len(df.columns)}',

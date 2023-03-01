@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import dcc, html
 
 from adelecv.api.data.segmentations import get_segmentations_dataset_types
 
@@ -26,10 +26,16 @@ controls = [
             dbc.Row(
                 [
                     dbc.Col(
-                        [dbc.Input(id='img-height', placeholder='Height', type='number', min='0', value=256)]
+                        [dbc.Input(
+                            id='img-height', placeholder='Height',
+                            type='number', min='0', value=256
+                            )]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='img-width', placeholder='Width', type='number', min='0', value=256)]
+                        [dbc.Input(
+                            id='img-width', placeholder='Width', type='number',
+                            min='0', value=256
+                            )]
                     )
                 ]
             ),
@@ -41,13 +47,22 @@ controls = [
             dbc.Row(
                 [
                     dbc.Col(
-                        [dbc.Input(id='train-size', placeholder='Train', type='number', min='0', max='1', value=0.7)]
+                        [dbc.Input(
+                            id='train-size', placeholder='Train',
+                            type='number', min='0', max='1', value=0.7
+                            )]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='val-size', placeholder='Val', type='number', min='0', max='1', value=0.2)]
+                        [dbc.Input(
+                            id='val-size', placeholder='Val', type='number',
+                            min='0', max='1', value=0.2
+                            )]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='test-size', placeholder='Test', type='number', min='0', max='1', value=0.1)]
+                        [dbc.Input(
+                            id='test-size', placeholder='Test', type='number',
+                            min='0', max='1', value=0.1
+                            )]
                     )
                 ]
             ),

@@ -1,7 +1,6 @@
 from .dataset import SegmentationDataset
 from .types import COCOSegmentation, ImageMask
 
-
 __all__ = [
     "SegmentationDataset",
     "get_segmentations_dataset_types",

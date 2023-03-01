@@ -1,8 +1,10 @@
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import dcc, html
 
-from adelecv.api.models.segmentations import get_models, get_encoders, get_pretrained_weights, \
-    get_torch_optimizers, get_losses, get_optimize_scores
+from adelecv.api.models.segmentations import (get_encoders, get_losses,
+                                              get_models, get_optimize_scores,
+                                              get_pretrained_weights,
+                                              get_torch_optimizers)
 from adelecv.api.optimize.segmentations import get_hp_optimizers
 
 controls = [
@@ -45,10 +47,16 @@ controls = [
             dbc.Row(
                 [
                     dbc.Col(
-                        [dbc.Input(id='lr-from', placeholder='from', type='number', min='0', value=0.001)]
+                        [dbc.Input(
+                            id='lr-from', placeholder='from', type='number',
+                            min='0', value=0.001
+                            )]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='lr-to', placeholder='to', type='number', min='0', value=0.001)]
+                        [dbc.Input(
+                            id='lr-to', placeholder='to', type='number',
+                            min='0', value=0.001
+                            )]
                     )
                 ]
             ),
@@ -80,10 +88,16 @@ controls = [
             dbc.Row(
                 [
                     dbc.Col(
-                        [dbc.Input(id='epoch-from', placeholder='from', type='number', min='1', value=2)]
+                        [dbc.Input(
+                            id='epoch-from', placeholder='from', type='number',
+                            min='1', value=2
+                            )]
                     ),
                     dbc.Col(
-                        [dbc.Input(id='epoch-to', placeholder='to', type='number', min='1', value=5)]
+                        [dbc.Input(
+                            id='epoch-to', placeholder='to', type='number',
+                            min='1', value=5
+                            )]
                     )
                 ]
             ),

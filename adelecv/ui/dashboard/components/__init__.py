@@ -1,10 +1,9 @@
-from .navbar import nav
-from .train import train_board
-from .table_models import table_models
-from .dataset import dataset
 from .console import console
+from .dataset import dataset
 from .homepage import description
-
+from .navbar import nav
+from .table_models import table_models
+from .train import train_board
 
 __all__ = [
     "nav",
@@ -14,4 +13,3 @@ __all__ = [
     "console",
     "description",
 ]
-

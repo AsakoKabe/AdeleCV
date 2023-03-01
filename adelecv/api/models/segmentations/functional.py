@@ -1,13 +1,17 @@
-from segmentation_models_pytorch import Unet, UnetPlusPlus, MAnet, Linknet, FPN,\
-    PSPNet, DeepLabV3, DeepLabV3Plus, PAN
-from segmentation_models_pytorch.losses import JaccardLoss, DiceLoss, FocalLoss,\
-    LovaszLoss, SoftBCEWithLogitsLoss, \
-    SoftCrossEntropyLoss, TverskyLoss, MCCLoss
-from segmentation_models_pytorch.metrics import fbeta_score, f1_score, \
-    iou_score, accuracy, precision, recall
 import segmentation_models_pytorch as smp
-from torch.optim import AdamW, Adadelta, Adam, SGD, RAdam, NAdam, RMSprop, Adagrad
-
+from segmentation_models_pytorch import (FPN, PAN, DeepLabV3, DeepLabV3Plus,
+                                         Linknet, MAnet, PSPNet, Unet,
+                                         UnetPlusPlus)
+from segmentation_models_pytorch.losses import (DiceLoss, FocalLoss,
+                                                JaccardLoss, LovaszLoss,
+                                                MCCLoss, SoftBCEWithLogitsLoss,
+                                                SoftCrossEntropyLoss,
+                                                TverskyLoss)
+from segmentation_models_pytorch.metrics import (accuracy, f1_score,
+                                                 fbeta_score, iou_score,
+                                                 precision, recall)
+from torch.optim import (SGD, Adadelta, Adagrad, Adam, AdamW, NAdam, RAdam,
+                         RMSprop)
 
 _segmentations_models = [
     Unet,

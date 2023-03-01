@@ -1,7 +1,6 @@
-from optuna.samplers import RandomSampler, GridSampler,\
-    TPESampler, CmaEsSampler, NSGAIISampler, QMCSampler, \
-    MOTPESampler
-
+from optuna.samplers import (CmaEsSampler, GridSampler, MOTPESampler,
+                             NSGAIISampler, QMCSampler, RandomSampler,
+                             TPESampler)
 
 _hp_optimizers = [
     RandomSampler,

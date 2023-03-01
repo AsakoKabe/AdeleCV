@@ -3,10 +3,10 @@ from os import environ
 from pathlib import Path
 from uuid import uuid4
 
-import pandas as pd
 import fiftyone as fo
-from tensorboard import program
+import pandas as pd
 from dotenv import load_dotenv
+from tensorboard import program
 
 from adelecv.api.config import Settings
 from adelecv.api.logs import get_logger
@@ -29,7 +29,9 @@ class BaseTask(ABC):
         self._dataset = None
         self._session_dataset = fo.launch_app(remote=True)
         self._tb = program.TensorBoard()
-        self._tb.configure(argv=[None, '--logdir', Settings.TENSORBOARD_LOGS_PATH.as_posix()])
+        self._tb.configure(
+            argv=[None, '--logdir', Settings.TENSORBOARD_LOGS_PATH.as_posix()]
+            )
         self._tb.launch()
 
     def _create_dataset_session(self) -> None:
@@ -42,4 +44,3 @@ class BaseTask(ABC):
     @property
     def stats_models(self) -> pd.DataFrame:
         return self._stats_models
-

@@ -1,6 +1,5 @@
 import dash_bootstrap_components as dbc
 
-
 nav = dbc.NavbarSimple(
     children=[
         dbc.NavLink("Dataset", href="/dataset", active="exact"),

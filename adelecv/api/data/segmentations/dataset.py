@@ -1,19 +1,21 @@
 import albumentations as A
+import cv2
+import fiftyone as fo
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-import fiftyone as fo
-import cv2
 
-from adelecv.api.models.segmentations import SegmentationModel
 from adelecv.api.logs import get_logger
+from adelecv.api.models.segmentations import SegmentationModel
+
 from .torch_dataset import SegmentationTorchDataset
 from .types import DatasetType
 
 
 class SegmentationDataset:
     """
-     A class for storing a dataset, its parameters, fiftyone sessions and partitioning for training.
+     A class for storing a dataset, its parameters,
+     fiftyone sessions and partitioning for training.
 
     :param dataset_dir: Path to dataset
     :param dataset_type: DatasetType inheritor class, which implements a method
@@ -22,6 +24,7 @@ class SegmentationDataset:
     :param split: percentage of splitting the dataset into train val test
     :param batch_size: batch size for pytorch dataloader
     """
+
     def __init__(
             self,
             dataset_dir: str,
@@ -31,15 +34,24 @@ class SegmentationDataset:
             batch_size: int = 16
     ):
         if sum(split) > 1:
-            raise ValueError(f"The sum split must be equal to 1, but now {sum(split)}")
+            raise ValueError(
+                f"The sum split must be equal to 1, but now {sum(split)}"
+            )
         self._dataset_dir = dataset_dir
-        self._fo_dataset = dataset_type.create_dataset(self._dataset_dir)
+        self._fo_dataset = dataset_type.create_dataset(
+            self._dataset_dir
+        )
         self._split = split
         if batch_size < 1:
-            raise ValueError(f"Butch size must be greater than 0, but now {batch_size}")
+            raise ValueError(
+                f"Butch size must be greater than 0, but now {batch_size}"
+            )
         self._batch_size = batch_size
         if len(img_size) < 2:
-            raise ValueError(f"Img size must be len = 2 (height, width), but now {len(img_size)}")
+            raise ValueError(
+                f"Img size must be len = 2 (height, width),"
+                f" but now {len(img_size)}"
+            )
         self._img_size = img_size
         self._fo_dataset.save()
         self._num_classes = len(self._fo_dataset.default_mask_targets)
@@ -48,8 +60,10 @@ class SegmentationDataset:
         self._split_dataset()
         get_logger().info("Creating a dataset")
         get_logger().debug(
-            "Dataset created with params, dataset dir: %s, classes: %s, batch size: %s",
-            self._dataset_dir, self._fo_dataset.default_mask_targets, self._batch_size
+            "Dataset created with params,"
+            " dataset dir: %s, classes: %s, batch size: %s",
+            self._dataset_dir, self._fo_dataset.default_mask_targets,
+            self._batch_size
         )
 
     def _split_dataset(self) -> None:
@@ -72,16 +86,29 @@ class SegmentationDataset:
         train_size = len(self._fo_dataset.match_tags(["train"], bool=True))
         valid_size = len(self._fo_dataset.match_tags(["valid"], bool=True))
         test_size = len(self._fo_dataset.match_tags(["test"], bool=True))
-        get_logger().info("Split dataset train size: %s, valid size: %s, test size: %s", train_size, valid_size, test_size)
+        get_logger().info(
+            "Split dataset train size: %s, valid size: %s, test size: %s",
+            train_size, valid_size,
+            test_size
+        )
 
     def _create_torch_datasets(self, transforms: A.Compose) -> tuple[
         SegmentationTorchDataset,
         SegmentationTorchDataset,
         SegmentationTorchDataset
     ]:
-        train = SegmentationTorchDataset(self._fo_dataset.match_tags('train'), transforms)
-        val = SegmentationTorchDataset(self._fo_dataset.match_tags('valid'), transforms)
-        test = SegmentationTorchDataset(self._fo_dataset.match_tags('test'), transforms)
+        train = SegmentationTorchDataset(
+            self._fo_dataset.match_tags('train'),
+            transforms
+            )
+        val = SegmentationTorchDataset(
+            self._fo_dataset.match_tags('valid'),
+            transforms
+            )
+        test = SegmentationTorchDataset(
+            self._fo_dataset.match_tags('test'),
+            transforms
+            )
 
         return train, val, test
 
@@ -94,7 +121,9 @@ class SegmentationDataset:
         self._transforms = transforms
 
     def _create_dataloaders(self) -> None:
-        train_ds, val_ds, test_ds = self._create_torch_datasets(self.transforms)
+        train_ds, val_ds, test_ds = self._create_torch_datasets(
+            self.transforms
+        )
 
         self._train = DataLoader(
             train_ds,
@@ -117,7 +146,8 @@ class SegmentationDataset:
         :meta private:
 
         Updating is a transformation when creating a new model,
-        because each model from the segmentation model pytorch library contains its own transformation.
+        because each model from the segmentation model pytorch library
+         contains its own transformation.
 
         See: preprocessing smp_
 

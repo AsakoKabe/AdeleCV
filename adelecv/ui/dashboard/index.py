@@ -1,8 +1,9 @@
-from dash import html, dcc, Output, Input
+from dash import Input, Output, dcc, html
 
-import adelecv.ui.dashboard.callbacks  # pylint: disable=unused-import,import-error
-from adelecv.ui.dashboard.components import nav, dataset, train_board, table_models, console, description
-from adelecv.ui.dashboard.app import app, _task
+import adelecv.ui.dashboard.callbacks  # noqa # pylint: disable=unused-import
+from adelecv.ui.dashboard.app import _task, app
+from adelecv.ui.dashboard.components import (console, dataset, description,
+                                             nav, table_models, train_board)
 
 content = html.Div(
     [

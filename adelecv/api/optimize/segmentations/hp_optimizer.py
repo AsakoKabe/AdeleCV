@@ -1,21 +1,25 @@
-import pandas as pd
-import torch
-from torch import optim
 import optuna
-from optuna.trial import TrialState
-
-from optuna import samplers, Study, Trial
+import pandas as pd
 import segmentation_models_pytorch as smp
+import torch
+from optuna import Study, Trial, samplers
+from optuna.trial import TrialState
+from torch import optim
 
 from adelecv.api.data.segmentations import SegmentationDataset
 from adelecv.api.logs import get_logger
 from adelecv.api.models.segmentations import SegmentationModel
+
 from .hyper_params import HyperParamsSegmentation
 
 
 def _log_study(study: Study) -> None:
-    pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
-    complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
+    pruned_trials = study.get_trials(
+        deepcopy=False, states=[TrialState.PRUNED]
+    )
+    complete_trials = study.get_trials(
+        deepcopy=False, states=[TrialState.COMPLETE]
+    )
 
     logger = get_logger()
     logger.info("Study statistics:")
@@ -38,10 +42,12 @@ class HPOptimizer:
     Class for hyperparams search and model training
 
     :param hyper_params: Dataclass with hyperparams of models
-    :param num_trials: Number of iterations algorithm (the number of models with pruned models)
+    :param num_trials: Number of iterations algorithm (the number of models
+     with pruned models)
     :param device: GPU or CPU
     :param dataset: Created dataset
     """
+
     def __init__(
             self,
             hyper_params: HyperParamsSegmentation,
@@ -74,7 +80,8 @@ class HPOptimizer:
         """
         get_logger().info("Train models started")
 
-        direction = 'minimize' if self._hyper_params.optimize_score == 'loss' else 'maximize'
+        direction = 'minimize' if self._hyper_params.optimize_score == 'loss' \
+            else 'maximize'
         study = optuna.create_study(
             direction=direction,
             sampler=getattr(samplers, self._strategy)()
@@ -85,21 +92,38 @@ class HPOptimizer:
         get_logger().info("Train models is over")
 
     def _create_model(self, trial: Trial) -> tuple[SegmentationModel, int]:
-        optimizer_name = trial.suggest_categorical("optimizer", self._hyper_params.optimizers)
+        optimizer_name = trial.suggest_categorical(
+            "optimizer", self._hyper_params.optimizers
+        )
         optimizer = getattr(optim, optimizer_name)
-        architecture_name = trial.suggest_categorical("architecture", self._hyper_params.architectures)
+        architecture_name = trial.suggest_categorical(
+            "architecture", self._hyper_params.architectures
+        )
         architecture = getattr(smp, architecture_name)
-        encoder = trial.suggest_categorical("encoders", self._hyper_params.encoders)
-        pretrained_weight = trial.suggest_categorical("pretrained_weight", self._hyper_params.pretrained_weights)
-        lr = trial.suggest_float("lr", self._hyper_params.lr_range[0], self._hyper_params.lr_range[1])
-        loss_name = trial.suggest_categorical("loss", self._hyper_params.loss_fns)
+        encoder = trial.suggest_categorical(
+            "encoders", self._hyper_params.encoders
+        )
+        pretrained_weight = trial.suggest_categorical(
+            "pretrained_weight", self._hyper_params.pretrained_weights
+        )
+        lr = trial.suggest_float(
+            "lr", self._hyper_params.lr_range[0],
+            self._hyper_params.lr_range[1]
+        )
+        loss_name = trial.suggest_categorical(
+            "loss", self._hyper_params.loss_fns
+        )
         loss_fn = getattr(smp.losses, loss_name)('binary')
-        num_epoch = trial.suggest_int("num_epoch", self._hyper_params.epoch_range[0], self._hyper_params.epoch_range[1])
+        num_epoch = trial.suggest_int(
+            "num_epoch", self._hyper_params.epoch_range[0],
+            self._hyper_params.epoch_range[1]
+        )
 
         model = SegmentationModel(
             model=architecture,
             encoder_name=encoder,
-            pretrained_weight=pretrained_weight if pretrained_weight != "None" else None,
+            pretrained_weight=pretrained_weight if pretrained_weight != "None"
+            else None,
             optimizer=optimizer,
             lr=lr,
             loss_fn=loss_fn,

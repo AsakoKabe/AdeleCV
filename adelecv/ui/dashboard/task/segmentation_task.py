@@ -3,8 +3,10 @@ from __future__ import annotations
 import pandas as pd
 
 from adelecv.api.data.segmentations import SegmentationDataset
-from adelecv.api.optimize.segmentations import HPOptimizer, HyperParamsSegmentation
 from adelecv.api.data.segmentations.types import DatasetType
+from adelecv.api.optimize.segmentations import (HPOptimizer,
+                                                HyperParamsSegmentation)
+
 from .base import BaseTask
 
 
