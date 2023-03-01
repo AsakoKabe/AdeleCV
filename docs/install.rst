@@ -1,15 +1,21 @@
 Installation
 ===============
 
+Install torch cuda if not installed:
+
+.. code-block:: bash
+
+    $ pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+
 PyPI version:
 
 .. code-block:: bash
 
-    $ pip install -U
+    $ pip install -U adelecv
 
 
-Latest version from source:
+Poetry:
 
 .. code-block:: bash
 
-    $ pip install -U
+    $ poetry add adelecv

@@ -4,6 +4,7 @@ Welcome to AdeleCV's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   architecture
    install
    example_api
    data/data
