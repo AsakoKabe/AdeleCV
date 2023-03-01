@@ -1,6 +1,7 @@
 <div align="center">
  
-![logo](docs/logo.png)  
+<img src="docs/logo.png" alt="drawing" width="200"/>
+
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
 based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
     [FiftyOne](https://docs.voxel51.com/), [Dash](https://dash.plotly.com/),
