@@ -15,6 +15,7 @@ autodocsumm = "^0.2.10"
 docutils = "0.17.1"
 nbsphinx = "^0.8.12"
 ipython = "^8.10.0"
+pylint = "^2.16.2"
 
 
 [tool.poetry.dependencies]
@@ -48,3 +49,6 @@ torch-cuda = "python -m pip install torch torchvision torchaudio --extra-index-u
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+adelecv_dashboard = 'adelecv.ui.dashboard.index:main'

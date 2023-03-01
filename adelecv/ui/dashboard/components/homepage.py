@@ -1,17 +1,6 @@
-from dash import dcc, html
+from dash import html
 import dash_bootstrap_components as dbc
 
-# description = dbc.Container(dcc.Markdown(
-#     '''
-#     Hi! This is an instruction for dashboard components.
-#
-#     Dataset: Loading dataset and displaying a window with fiftyone.
-#
-#     To do this, you need to specify the path to the dataset, format of the dataset,
-#     the size of the image, split train val test, batch size.
-#
-# '''
-# ))
 
 description = dbc.Container(
     [
@@ -43,7 +32,7 @@ description = dbc.Container(
         ),
         dbc.Row(
             [
-dbc.Col(
+                dbc.Col(
                     [
                         html.H2('Table Models'),
                         html.P('Table with training results and management of export and convert of weights.\n\n'

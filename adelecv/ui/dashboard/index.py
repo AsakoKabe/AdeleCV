@@ -1,6 +1,6 @@
 from dash import html, dcc, Output, Input
 
-import callbacks  # pylint: disable=unused-import,import-error
+import adelecv.ui.dashboard.callbacks  # pylint: disable=unused-import,import-error
 from adelecv.ui.dashboard.components import nav, dataset, train_board, table_models, console, description
 from adelecv.ui.dashboard.app import app, _task
 
@@ -41,8 +41,16 @@ def render_page_content(pathname):
     return "ERROR 404: Page not found!"
 
 
-if __name__ == "__main__":
+def main() -> None:
     app.run(
         port=8080,
-        debug=True
+        debug=False
     )
+
+
+if __name__ == "__main__":
+    # app.run(
+    #     port=8080,
+    #     debug=True
+    # )
+    main()
