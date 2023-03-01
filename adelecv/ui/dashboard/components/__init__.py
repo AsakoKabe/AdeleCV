@@ -3,6 +3,7 @@ from .train import train_board
 from .table_models import table_models
 from .dataset import dataset
 from .console import console
+from .homepage import description
 
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "train_board",
     "table_models",
     "console",
+    "description",
 ]
 

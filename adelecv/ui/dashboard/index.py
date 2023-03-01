@@ -1,9 +1,8 @@
 from dash import html, dcc, Output, Input
 
 import callbacks  # pylint: disable=unused-import,import-error
-from adelecv.ui.dashboard.components import nav, dataset, train_board, table_models, console
+from adelecv.ui.dashboard.components import nav, dataset, train_board, table_models, console, description
 from adelecv.ui.dashboard.app import app, _task
-
 
 content = html.Div(
     [
@@ -29,7 +28,7 @@ app.layout = html.Div([nav, content])
 )
 def render_page_content(pathname):
     if pathname == '/':
-        return "Page empty"
+        return description
     if pathname == '/dataset':
         return dataset
     if pathname == '/train':
@@ -45,5 +44,5 @@ def render_page_content(pathname):
 if __name__ == "__main__":
     app.run(
         port=8080,
-        # debug=True
+        debug=True
     )
