@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "adelecv"
-version = "0.0.7"
+version = "0.0.9"
 authors = ["Denis Mamatin <mamatin-denis@yandex.ru>"]
 description = ""
 readme = "README.md"
