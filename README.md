@@ -27,7 +27,7 @@ The main features of this library are:
  - Displaying training statistics in tensorboard
  - Support for all samples from optuna
  - Segmentation use smp: 9 model architectures, popular losses and metrics, see [doc smp](https://github.com/qubvel/segmentation_models.pytorch)
- - convert weights to another format, currently supported - 0
+ - Convert weights to another format, currently supported - 0
  
 ### [📚 Project Documentation 📚](https://adelecv.readthedocs.io/en/latest/)
 
