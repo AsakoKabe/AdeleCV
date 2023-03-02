@@ -1,9 +1,18 @@
+from __future__ import annotations
+
+import logging
+from os import environ
+
+import click
 from dash import Input, Output, dcc, html
 
 import adelecv.ui.dashboard.callbacks  # noqa # pylint: disable=unused-import
+from adelecv.api.config import Settings
+from adelecv.api.logs import LogMonitoringHandler, enable_logs
 from adelecv.ui.dashboard.app import _task, app
 from adelecv.ui.dashboard.components import (console, dataset, description,
                                              nav, table_models, train_board)
+from adelecv.ui.dashboard.utils import LogConsoleHandler
 
 content = html.Div(
     [
@@ -31,9 +40,9 @@ def render_page_content(pathname):
     if pathname == '/':
         return description
     if pathname == '/dataset':
-        return dataset
+        return dataset()
     if pathname == '/train':
-        return train_board
+        return train_board()
     if pathname == '/table-models':
         return table_models(_task.stats_models)
     if pathname == '/log-console':
@@ -42,16 +51,29 @@ def render_page_content(pathname):
     return "ERROR 404: Page not found!"
 
 
-def main() -> None:
+@click.command()
+@click.option("--envfile", '-ef', help='Path to env file')
+def main(envfile: str | None) -> None:
+    """
+    Dashboard for AdeleCV.
+    """
+
+    _task.launch(envfile)
+    enable_logs(
+        LogMonitoringHandler(), level=environ.get('NOTIFICATION_LEVEL')
+        )
+    enable_logs(
+        LogConsoleHandler(),
+        Settings.LOGGER_NAME,
+        logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+    )
     app.run(
-        port=8080,
+        port=Settings.DASHBOARD_PORT,
         debug=False
     )
 
 
 if __name__ == "__main__":
-    # app.run(
-    #     port=8080,
-    #     debug=True
-    # )
-    main()
+    main('.env')

@@ -11,9 +11,6 @@ from .base import BaseTask
 
 
 class SegmentationTask(BaseTask):
-    # def __init__(self):
-    #     super().__init__()
-
     def train(
             self,
             params: dict[

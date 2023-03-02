@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
+from adelecv.api.config import Settings
 from adelecv.api.models.segmentations import (get_encoders, get_losses,
                                               get_models, get_optimize_scores,
                                               get_pretrained_weights,
@@ -50,13 +51,13 @@ controls = [
                         [dbc.Input(
                             id='lr-from', placeholder='from', type='number',
                             min='0', value=0.001
-                            )]
+                        )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='lr-to', placeholder='to', type='number',
                             min='0', value=0.001
-                            )]
+                        )]
                     )
                 ]
             ),
@@ -91,13 +92,13 @@ controls = [
                         [dbc.Input(
                             id='epoch-from', placeholder='from', type='number',
                             min='1', value=2
-                            )]
+                        )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='epoch-to', placeholder='to', type='number',
                             min='1', value=5
-                            )]
+                        )]
                     )
                 ]
             ),
@@ -154,35 +155,38 @@ controls = [
     ),
 ]
 
-train_board = dbc.Container(
-    [
-        html.Hr(),
-        dbc.Button(
-            "Hide settings",
-            id="collapse-train-settings-btn",
-            style={"margin-bottom": "1%"}
-        ),
-        dbc.Row(
-            [
-                dbc.Collapse(
-                    dbc.Card(controls, body=True),
-                    id="collapse-train-settings",
-                    is_open=True,
-                    class_name='col-md-3',
-                    dimension='width',
-                ),
-                dbc.Col(
-                    [
-                        html.Div(
-                            html.Iframe(
-                                src="http://localhost:6006/",
-                                style={"height": "100vh", "width": "100%"},
-                            )
-                        ),
-                    ],
-                    # md=6
-                )
-            ],
-        ),
-    ],
-)
+
+def train_board() -> dbc.Container:
+    return dbc.Container(
+        [
+            html.Hr(),
+            dbc.Button(
+                "Hide settings",
+                id="collapse-train-settings-btn",
+                style={"margin-bottom": "1%"}
+            ),
+            dbc.Row(
+                [
+                    dbc.Collapse(
+                        dbc.Card(controls, body=True),
+                        id="collapse-train-settings",
+                        is_open=True,
+                        class_name='col-md-3',
+                        dimension='width',
+                    ),
+                    dbc.Col(
+                        [
+                            html.Div(
+                                html.Iframe(
+                                    src=f"http://localhost:"
+                                        f"{Settings.TENSORBOARD_PORT}/",
+                                    style={"height": "100vh", "width": "100%"},
+                                )
+                            ),
+                        ],
+                        # md=6
+                    )
+                ],
+            ),
+        ],
+    )

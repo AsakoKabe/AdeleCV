@@ -1,15 +1,9 @@
-import logging
-
 import dash_bootstrap_components as dbc
 from dash_extensions.enrich import DashProxy, LogTransform, NoOutputTransform
 
-from adelecv.api.config import Settings
-from adelecv.api.logs import LogMonitoringHandler, enable_logs
 from adelecv.ui.dashboard.task import SegmentationTask
-from adelecv.ui.dashboard.utils import (LogConsoleHandler,
-                                        setup_notifications_log_config)
+from adelecv.ui.dashboard.utils import setup_notifications_log_config
 
-# celery + docker + redis
 app = DashProxy(
     __name__,
     update_title=None,
@@ -28,10 +22,3 @@ app.config.suppress_callback_exceptions = True
 app.title = "AdeleCV"
 
 _task = SegmentationTask()
-
-enable_logs(LogMonitoringHandler())
-enable_logs(
-    LogConsoleHandler(),
-    Settings.LOGGER_NAME,
-    logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-)

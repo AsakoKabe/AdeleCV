@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 from os import environ
 from pathlib import Path
@@ -13,25 +15,50 @@ from adelecv.api.logs import get_logger
 from adelecv.api.models.segmentations import SegmentationModel
 
 
-def _load_settings_from_env() -> None:
-    load_dotenv(dotenv_path='../.env')
-    if environ.get('TMP_PATH') is not None:
-        Settings.update_tmp_path(Path(environ.get('TMP_PATH')) / uuid4().hex)
+def _load_settings_from_env(env_path: Path) -> None:
+    load_dotenv(dotenv_path=env_path)
+
+    tmp_path = environ.get('TMP_PATH')
+    dashboard_port = environ.get('DASHBOARD_PORT')
+    fiftyone_port = environ.get('FIFTYONE_PORT')
+    tensorboard_port = environ.get('TENSORBOARD_PORT')
+
+    if tmp_path is not None:
+        Settings.update_tmp_path(Path(tmp_path) / uuid4().hex)
+    if dashboard_port is not None:
+        Settings.update_dashboard_port(int(dashboard_port))
+    if fiftyone_port is not None:
+        Settings.update_fiftyone_port(int(fiftyone_port))
+    if tensorboard_port is not None:
+        Settings.update_tensorboard_port(int(tensorboard_port))
 
 
 class BaseTask(ABC):
     def __init__(self):
-        _load_settings_from_env()
+        self._weights_dir = None
         self.models: list[SegmentationModel] = []
         self._stats_models = pd.DataFrame()
-        self._weights_dir = Settings.WEIGHTS_PATH
         self._hp_optimizer = None
         self._dataset = None
-        self._session_dataset = fo.launch_app(remote=True)
+        self._tb = None
+        self._session_dataset = None
+
+    def launch(self, env_path: Path | None):
+        if env_path is not None:
+            _load_settings_from_env(Path(env_path))
+
+        self._weights_dir = Settings.WEIGHTS_PATH
+        self._session_dataset = fo.launch_app(
+            remote=True, port=Settings.FIFTYONE_PORT
+        )
         self._tb = program.TensorBoard()
         self._tb.configure(
-            argv=[None, '--logdir', Settings.TENSORBOARD_LOGS_PATH.as_posix()]
-            )
+            argv=[
+                None,
+                '--logdir', Settings.TENSORBOARD_LOGS_PATH.as_posix(),
+                '--port', str(Settings.TENSORBOARD_PORT)
+            ]
+        )
         self._tb.launch()
 
     def _create_dataset_session(self) -> None:

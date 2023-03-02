@@ -32,5 +32,7 @@ def notify(
         raise PreventUpdate()
 
     logger = get_logger()
+    # the logger for notifications must be enabled first. It's poorly
+    # written, I'll fix it in the future
     for log in logger.handlers[0].pop_logs():
         _add_log(log, dash_logger)

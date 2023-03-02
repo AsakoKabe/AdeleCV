@@ -1,8 +1,9 @@
 import dash_bootstrap_components as dbc
+import pandas as pd
 from dash import dash_table, dcc, html
 
 
-def table_models(df):
+def table_models(df: pd.DataFrame) -> dbc.Container:
     cols = [
         {"name": i, "id": i, "hideable": True, "selectable": True,
          'editable': i == 'name'}

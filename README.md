@@ -7,12 +7,9 @@ based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
     [FiftyOne](https://docs.voxel51.com/), [Dash](https://dash.plotly.com/),
     [Segmentation Model Pytorch](https://github.com/qubvel/segmentation_models.pytorch).**  
 
-[![Generic badge](https://img.shields.io/badge/License-MIT-<COLOR>.svg?style=for-the-badge)](https://github.com/AsakoKabe/AdeleCV/blob/main/LICENSE) 
-
-[//]: # ([![GitHub Workflow Status &#40;branch&#41;]&#40;https://img.shields.io/github/actions/workflow/status/qubvel/segmentation_models.pytorch/tests.yml?branch=master&style=for-the-badge&#41;]&#40;https://github.com/qubvel/segmentation_models.pytorch/actions/workflows/tests.yml&#41; )
+[![Generic badge](https://img.shields.io/badge/License-MIT-<COLOR>.svg?style=for-the-badge)](https://github.com/AsakoKabe/AdeleCV/blob/main/LICENSE)
 [![Read the Docs](https://img.shields.io/readthedocs/smp?style=for-the-badge&logo=readthedocs&logoColor=white)](https://adelecv.readthedocs.io/en/latest/) 
-
-[//]: # (<br>)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/AsakoKabe/AdeleCV/code-style.yaml?branch=main&style=for-the-badge)](https://github.com/AsakoKabe/AdeleCV/actions/workflows/code-style.yaml)
 
 [//]: # ([![PyPI]&#40;https://img.shields.io/pypi/v/segmentation-models-pytorch?color=blue&style=for-the-badge&logo=pypi&logoColor=white&#41;]&#40;https://pypi.org/project/segmentation-models-pytorch/&#41; )
 [//]: # ([![PyPI - Downloads]&#40;https://img.shields.io/pypi/dm/segmentation-models-pytorch?style=for-the-badge&color=blue&#41;]&#40;https://pepy.tech/project/segmentation-models-pytorch&#41; )
@@ -36,9 +33,10 @@ Visit [Read The Docs Project Page](https://adelecv.readthedocs.io/en/latest/) or
 ### 📋 Table of content
  1. [Examples](#examples)
  2. [Installation](#installation)
- 3. [Architecture](#architecture) 
- 4. [Citing](#citing)
- 5. [License](#license)
+ 3. [Instruction Dashboard](#instruction-dashboard)
+ 4. [Architecture](#architecture) 
+ 5. [Citing](#citing)
+ 6. [License](#license)
 
 
 ### 💡 Examples <a name="examples"></a>
@@ -59,6 +57,33 @@ Poetry:
 ```bash
 $ poetry add adelecv
 ````
+
+### 📜 Instruction Dashboard <a name="instruction-dashboard"></a>
+1. Create .env file. 
+
+See [docs](https://adelecv.readthedocs.io/en/latest/config.html). 
+
+Notification_LEVEL: DEBUG | INFO | ERROR
+
+Example:
+```
+TMP_PATH='./tmp'
+DASHBOARD_PORT=8080
+FIFTYONE_PORT=5151
+TENSORBOARD_PORT=6006
+NOTIFICATION_LEVEL=DEBUG
+```
+
+2. Run.
+```bash
+adelecv_dashboard --envfile .env
+```
+
+3. Help
+```bash
+adelecv_dashboard --help
+```
+
 
 ### 🏰 Architecture <a name="architecture"></a>
 ![architecture](docs/architecture.png) 
