@@ -1,6 +1,6 @@
 <div align="center">
  
-<img src="docs/logo.png" alt="drawing" width="200"/>
+<img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png" alt="drawing" width="200"/>
 
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
 based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
@@ -86,7 +86,7 @@ adelecv_dashboard --help
 
 
 ### 🏰 Architecture <a name="architecture"></a>
-![architecture](docs/architecture.png) 
+![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png) 
 
 The user can use the api or dashboard(web app). 
 The api is based on 5 modules:
