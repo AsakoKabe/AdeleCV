@@ -9,7 +9,7 @@ controls = [
         [
             # html.Br(),
             dbc.Label("Path Dataset"),
-            dbc.Input(id='segmentations-path', value=r'F:\dataset\ph2')
+            dbc.Input(id='segmentations-path')
         ]
     ),
     dbc.Form(
@@ -29,13 +29,13 @@ controls = [
                     dbc.Col(
                         [dbc.Input(
                             id='img-height', placeholder='Height',
-                            type='number', min='0', value=256
+                            type='number', min='0'
                         )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='img-width', placeholder='Width', type='number',
-                            min='0', value=256
+                            min='0'
                         )]
                     )
                 ]
@@ -50,19 +50,19 @@ controls = [
                     dbc.Col(
                         [dbc.Input(
                             id='train-size', placeholder='Train',
-                            type='number', min='0', max='1', value=0.7
+                            type='number', min='0', max='1'
                         )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='val-size', placeholder='Val', type='number',
-                            min='0', max='1', value=0.2
+                            min='0', max='1'
                         )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='test-size', placeholder='Test', type='number',
-                            min='0', max='1', value=0.1
+                            min='0', max='1',
                         )]
                     )
                 ]
@@ -72,7 +72,7 @@ controls = [
     dbc.Form(
         [
             dbc.Label('Batch size'),
-            dbc.Input(id='batch-size', type='number', min='1', value=16)
+            dbc.Input(id='batch-size', type='number', min='1')
         ]
     ),
     dbc.Form(

@@ -76,4 +76,4 @@ def main(envfile: str | None) -> None:
 
 
 if __name__ == "__main__":
-    main('.env')
+    main()
