@@ -131,4 +131,4 @@ autodoc_member_order = 'bysource'
 
 # Include example --------------------------------------------------------
 import shutil
-shutil.copy('../example/example_api.ipynb', './example_api.ipynb')
+shutil.copy('../example/api.ipynb', './api.ipynb')

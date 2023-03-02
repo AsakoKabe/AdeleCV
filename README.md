@@ -40,7 +40,7 @@ Visit [Read The Docs Project Page](https://adelecv.readthedocs.io/en/latest/) or
 
 
 ### 💡 Examples <a name="examples"></a>
- - Example api [notebook](example/example_api.ipynb) and [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](example/example_api.ipynb)
+ - Example api [notebook](https://github.com/AsakoKabe/AdeleCV/blob/main/example/api.ipynb)
  - See [video](youtube.com) on the example of using dashboard
 
 ### 🛠 Installation <a name="installation"></a>
