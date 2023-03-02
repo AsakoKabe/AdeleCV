@@ -1,0 +1,101 @@
+.show-hide, .export{
+    --bs-badge-padding-x: 0.65em;
+    --bs-badge-padding-y: 0.35em;
+    --bs-badge-font-size: 0.9em;
+    --bs-badge-font-weight: 700;
+    --bs-badge-color: #fff;
+    --bs-badge-border-radius: 1rem;
+    display: inline-block;
+    padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+    font-size: var(--bs-badge-font-size);
+    font-weight: var(--bs-badge-font-weight);
+    line-height: 1;
+    /*color: var(--bs-badge-color);*/
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--bs-badge-border-radius);
+    --bs-bg-opacity: 1;
+    --bs-light-rgb: 236,240,241;
+    background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;
+    color: #7b8a8b;
+    margin-bottom: 0.3rem;
+    border: none;
+}
+
+.console {
+  /*position: fixed;*/
+  font-family: monospace,monospace;
+  color: #fff;
+  /*width: calc(100% - 3em);*/
+  /*max-width: 100%;*/
+  max-height: calc(100% - 3em);
+  overflow-y: auto;
+  /*margin: 1em 1em;*/
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.5em;
+  box-shadow: 0 0.75em 3em rgba(50, 50, 50, 0.5);
+  z-index: 100;
+  line-height: 1.5;
+}
+
+.console-input:before {
+  content: '> ';
+  color: #FC3565;
+  vertical-align: top;
+}
+
+#outputs {
+    white-space: pre-wrap;
+}
+.output-cmd:before {
+  content: '> ';
+  color: #FC3565;
+  vertical-align: top;
+}
+.output-text:before {
+  content: '> ';
+  color: #5F8787;
+  font-weight: 600 !important;
+  vertical-align: top;
+}
+
+.output-text,
+.output-cmd {
+  width: 100%;
+  display: block;
+}
+
+.console-inner {
+  padding: 0.3em 1.1em;
+}
+
+.output-text,
+.output-cmd {
+  display: block;
+  white-space: pre;
+}
+
+#outputs div {
+  opacity: 0.85;
+}
+
+#outputs div div {
+  color: #46f01d;
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+#outputs a {
+  color: #46f01d;
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.console-inner .output-text#ready {
+  color: #3df5b8;
+  font-style: italic;
+  opacity: 0.75;
+}

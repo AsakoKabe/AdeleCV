@@ -1,0 +1,36 @@
+name: Check code style for pull request / develop branch
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+  push:
+    branches: [ main, dev ]
+
+
+jobs:
+  code-style:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/development.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Set up Python 3.10.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.9
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip pylint flake8
+    - name: Pylint run
+      run: |
+        pylint --disable import-error ./adelecv
+    - name: flake8 run
+      run: |
+        flake8 ./adelecv
+    - name: isort run
+      run: |
+        isort ./adelecv 
