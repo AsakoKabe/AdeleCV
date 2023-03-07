@@ -1,5 +1,5 @@
 <div align="center">
- 
+
 <img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png?raw=true" alt="drawing" width="200"/>
 
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
@@ -86,8 +86,7 @@ adelecv_dashboard --help
 
 
 ### 🏰 Architecture <a name="architecture"></a>
-
-![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png?raw=true) 
+![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png?raw=true)
 
 The user can use the api or dashboard(web app). 
 The api is based on 5 modules:

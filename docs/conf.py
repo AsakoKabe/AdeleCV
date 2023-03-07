@@ -51,7 +51,6 @@ extensions = [
     "sphinx.ext.doctest",
     'autodocsumm',
     'nbsphinx',
-    'IPython.sphinxext.ipython_console_highlighting'
 ]
 
 intersphinx_mapping = {
@@ -97,7 +96,8 @@ autodoc_inherit_docstrings = False
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
 napoleon_numpy_docstring = False
-nbsphinx_allow_errors = True
+# nbsphinx_allow_errors = True
+nbsphinx_execute = 'never'
 
 autodoc_mock_imports = [
     'torch',
@@ -138,4 +138,5 @@ autodoc_member_order = 'bysource'
 
 # Include example --------------------------------------------------------
 import shutil
+
 shutil.copy('../example/api.ipynb', './api.ipynb')
