@@ -52,7 +52,7 @@ def render_page_content(pathname):
 
 
 @click.command()
-@click.option("--envfile", '-ef', help='Path to env file')
+@click.option("--envfile", '-ef', help='Path to env file', required=True)
 def main(envfile: str | None) -> None:
     """
     Dashboard for AdeleCV.

@@ -1,6 +1,6 @@
 <div align="center">
  
-<img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png" alt="drawing" width="200"/>
+<img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png?raw=true" alt="drawing" width="200"/>
 
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
 based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
@@ -41,7 +41,7 @@ Visit [Read The Docs Project Page](https://adelecv.readthedocs.io/en/latest/) or
 
 ### 💡 Examples <a name="examples"></a>
  - Example api [notebook](https://github.com/AsakoKabe/AdeleCV/blob/main/example/api.ipynb)
- - See [video](youtube.com) on the example of using dashboard
+ - See [video](https://www.youtube.com/watch?v=3kztXbAnkYg&ab_channel=DenisMamatin) on the example of using dashboard
 
 ### 🛠 Installation <a name="installation"></a>
 Install torch cuda if not installed:
@@ -86,7 +86,7 @@ adelecv_dashboard --help
 
 
 ### 🏰 Architecture <a name="architecture"></a>
-![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png) 
+![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png?raw=true) 
 
 The user can use the api or dashboard(web app). 
 The api is based on 5 modules:
