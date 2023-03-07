@@ -3,3 +3,4 @@ autodocsumm
 docutils==0.17.1
 nbsphinx
 ipython
+tomli

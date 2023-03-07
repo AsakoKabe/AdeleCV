@@ -86,6 +86,7 @@ adelecv_dashboard --help
 
 
 ### 🏰 Architecture <a name="architecture"></a>
+
 ![architecture](https://github.com/AsakoKabe/AdeleCV/blob/main/docs/architecture.png?raw=true) 
 
 The user can use the api or dashboard(web app). 
