@@ -6,7 +6,7 @@ Welcome to AdeleCV's documentation!
 
    architecture
    install
-   example_api
+   api
    data/data
    models/models
    optimize/optimize
