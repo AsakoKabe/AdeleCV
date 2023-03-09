@@ -5,6 +5,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 import sys
 from datetime import datetime
+import importlib.metadata
 
 # -- Path setup --------------------------------------------------------------
 
@@ -25,10 +26,14 @@ author = "Denis Mamatin"
 
 
 def get_version():
-    sys.path.append('../adelecv')
-    from __version__ import __version__ as version
+    # sys.path.append('../adelecv')
+    # from __version__ import __version__ as version
     # sys.path.pop()
-    return version
+    import tomli
+    with open("../pyproject.toml", "rb") as f:
+        toml = tomli.load(f)
+
+    return toml["tool"]["poetry"]["version"]
 
 
 version = get_version()
@@ -91,6 +96,8 @@ autodoc_inherit_docstrings = False
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
 napoleon_numpy_docstring = False
+# nbsphinx_allow_errors = True
+nbsphinx_execute = 'never'
 
 autodoc_mock_imports = [
     'torch',
@@ -102,7 +109,7 @@ autodoc_mock_imports = [
     'fiftyone',
     'pandas',
     'optuna',
-    'pydantic'
+    'pydantic',
 ]
 
 autoclass_content = 'both'
@@ -131,4 +138,5 @@ autodoc_member_order = 'bysource'
 
 # Include example --------------------------------------------------------
 import shutil
-shutil.copy('../example/example_api.ipynb', './example_api.ipynb')
+
+shutil.copy('../example/api.ipynb', './api.ipynb')

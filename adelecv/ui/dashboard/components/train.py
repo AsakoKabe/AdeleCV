@@ -27,7 +27,6 @@ controls = [
                 get_encoders(),
                 id='encoders',
                 multi=True,
-                value=['mobilenet_v2'],
             )
         ]
     ),
@@ -38,7 +37,6 @@ controls = [
                 get_pretrained_weights(),
                 id='pretrained-weight',
                 multi=True,
-                value=['imagenet'],
             )
         ]
     ),
@@ -50,13 +48,13 @@ controls = [
                     dbc.Col(
                         [dbc.Input(
                             id='lr-from', placeholder='from', type='number',
-                            min='0', value=0.001
+                            min='0',
                         )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='lr-to', placeholder='to', type='number',
-                            min='0', value=0.001
+                            min='0',
                         )]
                     )
                 ]
@@ -91,13 +89,13 @@ controls = [
                     dbc.Col(
                         [dbc.Input(
                             id='epoch-from', placeholder='from', type='number',
-                            min='1', value=2
+                            min='1'
                         )]
                     ),
                     dbc.Col(
                         [dbc.Input(
                             id='epoch-to', placeholder='to', type='number',
-                            min='1', value=5
+                            min='1'
                         )]
                     )
                 ]
@@ -112,14 +110,13 @@ controls = [
             dcc.Dropdown(
                 get_hp_optimizers(),
                 id='strategy',
-                value='TPESampler'
             )
         ]
     ),
     dbc.Form(
         [
             dbc.Label("Num trials"),
-            dbc.Input(id='num-trials', type='number', min='1', value=10)
+            dbc.Input(id='num-trials', type='number', min='1')
         ]
     ),
     dbc.Form(
@@ -128,7 +125,6 @@ controls = [
             dcc.Dropdown(
                 get_optimize_scores(),
                 id='optimize-score',
-                value='loss',
             )
         ]
     ),
@@ -138,7 +134,6 @@ controls = [
             dcc.Dropdown(
                 ["GPU", "CPU"],
                 id='device',
-                value='GPU'
             )
         ]
     ),

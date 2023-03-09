@@ -52,8 +52,8 @@ def render_page_content(pathname):
 
 
 @click.command()
-@click.option("--envfile", '-ef', help='Path to env file')
-def main(envfile: str | None) -> None:
+@click.option("--envfile", '-ef', help='Path to env file', required=True)
+def main(envfile: str = './.env') -> None:
     """
     Dashboard for AdeleCV.
     """
@@ -76,4 +76,4 @@ def main(envfile: str | None) -> None:
 
 
 if __name__ == "__main__":
-    main('.env')
+    main()
