@@ -11,9 +11,9 @@ based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
 [![Read the Docs](https://img.shields.io/readthedocs/smp?style=for-the-badge&logo=readthedocs&logoColor=white)](https://adelecv.readthedocs.io/en/latest/) 
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/AsakoKabe/AdeleCV/code-style.yaml?branch=main&style=for-the-badge)](https://github.com/AsakoKabe/AdeleCV/actions/workflows/code-style.yaml)
 
-[//]: # ([![PyPI]&#40;https://img.shields.io/pypi/v/segmentation-models-pytorch?color=blue&style=for-the-badge&logo=pypi&logoColor=white&#41;]&#40;https://pypi.org/project/segmentation-models-pytorch/&#41; )
-[//]: # ([![PyPI - Downloads]&#40;https://img.shields.io/pypi/dm/segmentation-models-pytorch?style=for-the-badge&color=blue&#41;]&#40;https://pepy.tech/project/segmentation-models-pytorch&#41; )
-[//]: # (<br>)
+[![PyPI](https://img.shields.io/pypi/v/adelecv?color=blue&style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/adelecv/) 
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/adelecv?style=for-the-badge&color=blue)](https://pepy.tech/project/adelecv) 
+<br>
 </div>
 
 The main features of this library are:
@@ -74,7 +74,7 @@ TENSORBOARD_PORT=6006
 NOTIFICATION_LEVEL=DEBUG
 ```
 
-2. Run.
+2. Run (about 30 seconds (I'm working on acceleration)).
 ```bash
 adelecv_dashboard --envfile .env
 ```
