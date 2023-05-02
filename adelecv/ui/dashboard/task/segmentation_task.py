@@ -56,3 +56,4 @@ class SegmentationTask(BaseTask):
             batch_size
         )
         self._create_dataset_session()
+        self.img_shape = img_size

@@ -50,7 +50,7 @@ class ConvertWeights:
         self._weights_path = weights_path
         self._supported_formats = ['onnx']
         self._converter = {
-            'onnx': TorchToOnnx(img_shape)
+            'onnx': TorchToOnnx(self._input_shape)
         }
 
     def run(

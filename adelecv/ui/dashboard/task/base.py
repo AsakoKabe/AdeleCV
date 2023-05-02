@@ -42,6 +42,7 @@ class BaseTask(ABC):
         self._dataset = None
         self._tb = None
         self._session_dataset = None
+        self._img_shape = None
 
     def launch(self, env_path: Path | None):
         if env_path is not None:
@@ -71,3 +72,11 @@ class BaseTask(ABC):
     @property
     def stats_models(self) -> pd.DataFrame:
         return self._stats_models
+
+    @property
+    def img_shape(self) -> list[int, int]:
+        return self._img_shape
+
+    @img_shape.setter
+    def img_shape(self, new_val: list[int, int]):
+        self._img_shape = new_val

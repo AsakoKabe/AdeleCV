@@ -5,8 +5,8 @@ import torch
 
 
 class BaseConverter(abc.ABC):
-    def __init__(self, input_shape):
-        self._dummy_input = torch.zeros(input_shape)
+    def __init__(self, input_shape: list[int]):
+        self._dummy_input = torch.zeros(input_shape)    # BxCxHxW
 
     @property
     def dummy_input(self):
