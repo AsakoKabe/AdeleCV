@@ -101,7 +101,7 @@ The Dash library was used for dashboard. It is based on components and callbacks
 ### 📝 Citing
 ```
 @misc{Mamatin:2023,
-  Author = {Denis Mamtin},
+  Author = {Denis Mamatin},
   Title = {AdeleCV},
   Year = {2023},
   Publisher = {GitHub},
