@@ -2,6 +2,8 @@
 
 <img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png?raw=true" alt="drawing" width="200"/>
 
+**Auto DEap LEarning Computer Vision**
+
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
 based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
     [FiftyOne](https://docs.voxel51.com/), [Dash](https://dash.plotly.com/),
@@ -24,7 +26,7 @@ The main features of this library are:
  - Displaying training statistics in tensorboard
  - Support for all samples from optuna
  - Segmentation use smp: 9 model architectures, popular losses and metrics, see [doc smp](https://github.com/qubvel/segmentation_models.pytorch)
- - Convert weights to another format, currently supported - 0
+ - Convert weights to another format, currently supported - 1 (onnx)
  
 ### [📚 Project Documentation 📚](https://adelecv.readthedocs.io/en/latest/)
 
@@ -101,7 +103,7 @@ The Dash library was used for dashboard. It is based on components and callbacks
 ### 📝 Citing
 ```
 @misc{Mamatin:2023,
-  Author = {Denis Mamtin},
+  Author = {Denis Mamatin},
   Title = {AdeleCV},
   Year = {2023},
   Publisher = {GitHub},

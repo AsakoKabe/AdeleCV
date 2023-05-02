@@ -69,10 +69,7 @@ def main(envfile: str = './.env') -> None:
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
     )
-    app.run(
-        port=Settings.DASHBOARD_PORT,
-        debug=False
-    )
+    app.run()
 
 
 if __name__ == "__main__":

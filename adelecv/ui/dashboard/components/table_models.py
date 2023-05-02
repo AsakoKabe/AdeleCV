@@ -20,13 +20,23 @@ def table_models(df: pd.DataFrame) -> dbc.Container:
                     dbc.DropdownMenuItem(
                         "Export weights", id='export-weights'
                         ),
-                    dbc.DropdownMenuItem(
-                        "Convert weights", id='convert-weights'
-                        ),
+                    dbc.DropdownMenu(
+                        label="Convert weights",
+                        id='convert-weights',
+                        children=[
+                            dbc.DropdownMenuItem(
+                                "ONNX", id='convert-weights-format-onnx'
+                            ),
+                        ],
+                        color="secondary",
+                        direction="end",
+                        style={"margin-bottom": "1%"}
+                    ),
                 ],
                 style={"margin-bottom": "1%"}
             ),
             dcc.Download(id="download-weights"),
+            dcc.Download(id="download-converted-onnx"),
             html.Div(
                 [
                     dash_table.DataTable(

@@ -60,7 +60,7 @@ class BaseModel(ABC):
         if not os.path.exists(path):
             os.mkdir(path)
         save_path = path / f'{self._id}.pt'
-        torch.save(self._torch_model, save_path)
+        torch.save(self._torch_model.cpu(), save_path)
         get_logger().debug(
             "Save weights model: %s, path: %s", str(self), save_path.as_posix()
         )
