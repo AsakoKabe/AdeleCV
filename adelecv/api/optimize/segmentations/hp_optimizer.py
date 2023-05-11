@@ -37,7 +37,7 @@ def _log_study(study: Study) -> None:
         logger.info("%s: %s", key, value)
 
 
-class HPOptimizer:
+class HyperParamsOptimizer:
     """
     Class for hyperparams search and model training
 
