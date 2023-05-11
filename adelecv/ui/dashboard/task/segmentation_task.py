@@ -4,7 +4,7 @@ import pandas as pd
 
 from adelecv.api.data.segmentations import SegmentationDataset
 from adelecv.api.data.segmentations.types import DatasetType
-from adelecv.api.optimize.segmentations import (HPOptimizer,
+from adelecv.api.optimize.segmentations import (HyperParamsOptimizer,
                                                 HyperParamsSegmentation)
 
 from .base import BaseTask
@@ -18,7 +18,7 @@ class SegmentationTask(BaseTask):
                 int | float | str | list | tuple
             ]
     ) -> None:
-        self._hp_optimizer = HPOptimizer(
+        self._hp_optimizer = HyperParamsOptimizer(
             hyper_params=HyperParamsSegmentation(
                 architectures=params["architectures"],
                 encoders=params['encoders'],
