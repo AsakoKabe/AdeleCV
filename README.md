@@ -2,7 +2,7 @@
 
 <img src="https://github.com/AsakoKabe/AdeleCV/blob/main/docs/logo.png?raw=true" alt="drawing" width="200"/>
 
-**Auto DEap LEarning Computer Vision**
+**Auto DEep LEarning Computer Vision**
 
 **Python library and dashboard for hyperparameter search and model training for computer vision tasks
 based on [PyTorch](https://pytorch.org/), [Optuna](https://optuna.org/),
